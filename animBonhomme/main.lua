@@ -49,6 +49,9 @@ legsRight.height = 0
 
 local angle = 0
 local offsetAngle = 10
+local legsToLeft = true
+local legsToRight = false
+local difAngle = 0.01
 
 
 function love.keypressed(key)
@@ -88,13 +91,35 @@ end
 -- manage keyboard
 function updateMove()
   if love.keyboard.isDown("right") then
-    print("right")
-    -- TODO
+    
+    legsLeft.x = legsLeft.x + 1
+    legsRight.x = legsRight.x + 1
+    torso.x = torso.x + 1
   end
   if love.keyboard.isDown("left") then
-    print("left")
-    -- TODO
+    
+    legsLeft.x = legsLeft.x - 1
+    legsRight.x = legsRight.x - 1
+    torso.x = torso.x - 1
   end
+  
+  if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
+    
+    angle = angle + difAngle
+    
+    if angle > 0.5 and legsToLeft == true then
+      legsToLeft = false
+      legsToRight = true
+      difAngle = - 0.01
+    end
+    if angle < - 0.5 and legsToRight == true then
+      legsToLeft = true
+      legsToRight = false
+      difAngle = 0.01
+    end
+  
+  end
+  
   if love.keyboard.isDown("space") then
     print("space")
     -- TODO
@@ -106,9 +131,10 @@ end
 
 function love.update(dt)
   updateMove()
-  love.timer.sleep(.01)
-	angle = angle + dt * math.pi/2
-	angle = angle % (2*math.pi)
+  
+  --love.timer.sleep(.01)
+	--angle = angle + dt * math.pi/2
+	--angle = angle % (2*math.pi)
   
 end
 
