@@ -1,11 +1,5 @@
--- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
 io.stdout:setvbuf('no')
 
--- Empèche Love de filtrer les contours des images quand elles sont redimentionnées
--- Indispensable pour du pixel art
-love.graphics.setDefaultFilter("nearest")
-
--- Cette ligne permet de déboguer pas à pas dans ZeroBraneStudio
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 -- proportion human body
@@ -47,11 +41,32 @@ legsRight.y = 0
 legsRight.width = 0
 legsRight.height = 0
 
+arms = {}
+arms.width = 0
+arms.height = 0
+
+armsLeft = {}
+armsLeft.x = 0
+armsLeft.y = 0
+armsLeft.width = 0
+armsLeft.height = 0
+
+armsRight = {}
+armsRight.x = 0
+armsRight.y = 0
+armsRight.width = 0
+armsRight.height = 0
+
+
 local angle = 0
 local offsetAngle = 10
 local legsToLeft = true
 local legsToRight = false
 local difAngle = 0.01
+local onTheMove = false
+local thresholdAngle = 0.05
+local maxAngleWalk = 0.5
+local speedWalk = 2
 
 
 function love.keypressed(key)
@@ -84,40 +99,49 @@ function love.load()
   torso.x = windowWidth/2 - torso.width/2
   torso.y = legsLeft.y - (torso.height - offsetAngle*2)
     
+  arms.width = body.pixel
+  arms.height = body.arms * body.pixel
+  
+  armsLeft.x = windowWidth/2 - arms.width/2
+  armsLeft.y = torso.y
+
+  armsRight.x = windowWidth/2 - arms.width/2
+  armsRight.y = torso.y
   
   
 end
 
 -- manage keyboard
-function updateMove()
-  if love.keyboard.isDown("right") then
-    
-    legsLeft.x = legsLeft.x + 1
-    legsRight.x = legsRight.x + 1
-    torso.x = torso.x + 1
-  end
-  if love.keyboard.isDown("left") then
-    
-    legsLeft.x = legsLeft.x - 1
-    legsRight.x = legsRight.x - 1
-    torso.x = torso.x - 1
-  end
-  
+function updateMove(dt)
   if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
-    
+    onTheMove = true
     angle = angle + difAngle
     
-    if angle > 0.5 and legsToLeft == true then
+    if angle > maxAngleWalk and legsToLeft == true then
       legsToLeft = false
       legsToRight = true
       difAngle = - 0.01
     end
-    if angle < - 0.5 and legsToRight == true then
+    if angle < - maxAngleWalk and legsToRight == true then
       legsToLeft = true
       legsToRight = false
       difAngle = 0.01
     end
+   end
   
+   if love.keyboard.isDown("right") then
+    legsLeft.x = legsLeft.x + speedWalk
+    legsRight.x = legsRight.x + speedWalk
+    torso.x = torso.x + speedWalk
+    armsLeft.x = armsLeft.x + speedWalk
+    armsRight.x = armsRight.x + speedWalk
+  end
+  if love.keyboard.isDown("left") then
+    legsLeft.x = legsLeft.x - speedWalk
+    legsRight.x = legsRight.x - speedWalk
+    torso.x = torso.x - speedWalk
+    armsLeft.x = armsLeft.x - speedWalk
+    armsRight.x = armsRight.x - speedWalk
   end
   
   if love.keyboard.isDown("space") then
@@ -127,15 +151,25 @@ function updateMove()
   if love.keyboard.isDown("r") then
     love.graphics.rotate(angle)
   end
+  if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then
+    love.timer.sleep(.01)
+    if angle > thresholdAngle then
+      angle = angle - dt
+    
+    elseif angle < - thresholdAngle then
+      angle = angle + dt
+    
+    elseif angle < thresholdAngle or angle > - thresholdAngle then
+      onTheMove = false
+      angle = 0
+    end
+    
+  end
 end
 
 function love.update(dt)
-  updateMove()
-  
-  --love.timer.sleep(.01)
-	--angle = angle + dt * math.pi/2
-	--angle = angle % (2*math.pi)
-  
+  updateMove(dt)
+    
 end
 
 function love.draw()
@@ -144,6 +178,14 @@ function love.draw()
   love.graphics.rectangle("fill", ground.x, ground.y, ground.width, ground.height)
   
   -- draw body
+  love.graphics.push()
+  love.graphics.translate(armsRight.x + arms.width/2, armsRight.y + offsetAngle)
+	love.graphics.rotate(angle)
+	love.graphics.translate(-armsRight.x - arms.width/2, -armsRight.y - offsetAngle)
+  love.graphics.setColor(255, 128, 0) -- orange
+  love.graphics.rectangle("fill", armsRight.x, armsRight.y, arms.width, arms.height)
+  love.graphics.pop()
+  
   love.graphics.push()
   love.graphics.translate(legsRight.x + legs.width/2, legsRight.y + offsetAngle)
 	love.graphics.rotate(angle)
@@ -167,22 +209,17 @@ function love.draw()
   love.graphics.rectangle("fill", legsLeft.x, legsLeft.y, legs.width, legs.height)
   love.graphics.pop()
   
-  --test()
+  love.graphics.push()
+  love.graphics.translate(armsLeft.x + arms.width/2, armsLeft.y + offsetAngle)
+	love.graphics.rotate(-angle)
+	love.graphics.translate(-armsLeft.x - arms.width/2, -armsLeft.y - offsetAngle)
+  love.graphics.setColor(255, 0, 255) -- pink
+  love.graphics.rectangle("fill", armsLeft.x, armsLeft.y, arms.width, arms.height)
+  love.graphics.pop()
+  
+  
   
   -- back to black
   love.graphics.setColor(0, 0, 0)
   
-end
-
-
-function test()
-  local width = love.graphics.getWidth()
-	local height = love.graphics.getHeight()
-  
-  love.graphics.translate(width/2, height/2)
-	love.graphics.rotate(angle)
-	love.graphics.translate(-width/2, -height/2)
-	-- draw a white rectangle slightly off center
-	love.graphics.setColor(0xff, 0xff, 0xff)
-	love.graphics.rectangle('fill', width/2-100, height/2-100, 300, 400)
 end
