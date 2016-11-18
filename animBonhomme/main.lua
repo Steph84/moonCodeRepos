@@ -160,14 +160,15 @@ function updateMove(dt)
 end
 
 function updateTransformation(dt)
-  if love.keyboard.isDown("up") then
-    body.pixel = body.pixel + 1
+  if love.keyboard.isDown("up") and ((legsLeft.y + legs.height) - (head.y - head.radius)) < (windowHeight - ground.height - ground.offset - 5) then -- margin 10 for the ceiling
+    body.pixel = body.pixel + 0.5
     bodyVolume()
     xReset()
     yReset()
+    print((legsLeft.y + legs.height) - (head.y - head.radius))
   end
-  if love.keyboard.isDown("down") then
-    body.pixel = body.pixel - 1
+  if love.keyboard.isDown("down") and ((legsLeft.y + legs.height) - (head.y - head.radius)) > (50 + 5) then
+    body.pixel = body.pixel - 0.5
     bodyVolume()
     xReset()
     yReset()
