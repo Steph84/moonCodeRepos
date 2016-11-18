@@ -54,6 +54,12 @@ function love.load()
   
   yReset()
   
+  -- play background music
+  bgm = love.audio.newSource("dkTheme.mp3", "stream")
+  bgm:setLooping(true)
+  bgm:setVolume(0.5)
+  bgm:play()
+  
 end
 
 function yReset()
