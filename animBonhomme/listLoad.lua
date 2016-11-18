@@ -3,8 +3,9 @@
 
 -- proportion human body
 body =  {}
-body.pixel = 50
+body.pixel = 30
 body.head = 1
+body.nose = 0.1
 body.torso = 3
 body.legs = 4
 body.arms = 2
@@ -16,7 +17,7 @@ ground = {}
 ground.x = 0
 ground.y = 0
 ground.width = 0
-ground.height = 0
+ground.height = 50
 ground.offset = 10
 
 torso = {}
@@ -61,3 +62,16 @@ head = {}
 head.radius = 0
 head.x = 0
 head.y = 0
+
+nose = {}
+nose.radius = 0
+nose.x = 0
+nose.y = 0
+
+moving = {}
+moving.onTheGround = true
+moving.onTheWalk = false
+moving.onTheRun = false
+moving.onTheJump = false
+moving.onTheCrouch = false
+moving.standStill = true
