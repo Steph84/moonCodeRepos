@@ -4,27 +4,6 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 require"listLoad"
 
--- a mettre dans la list load
-local angleScissor = 0
-local speedScissorWalk = 0.01
-local speedScissorRun = 0.05
-local speedScissorJump = 0.1
-
-local maxAngleWalk = 0.5
-local maxAngleRun = 0.7
-
-local thresholdStill = 0.05
-
-local supportingFoot = "left"
-local rightLegTo = "right"
-local rightArmTo = "left"
-
-local speedWalk = 3
-local speedRun = 6
-local speedJump = 0
-
-
-
 -- geometry of the body
 function bodyVolume()
   legs.width = body.pixel
@@ -75,10 +54,10 @@ function love.load()
   yReset()
   
   -- play background music
-  --bgm = love.audio.newSource("dkTheme.mp3", "stream")
-  --bgm:setLooping(true)
-  --bgm:setVolume(0.25)
-  --bgm:play()
+  bgm = love.audio.newSource("dkTheme.mp3", "stream")
+  bgm:setLooping(true)
+  bgm:setVolume(0.25)
+  bgm:play()
   
 end
 
@@ -117,18 +96,20 @@ end
 
 -- manage the legs movement while walk or run
 function legsScissoring(speedScissor)
-  if supportingFoot == "left" then
-    angleScissor = angleScissor + speedScissor
-  elseif supportingFoot == "right" then
-    angleScissor = angleScissor - speedScissor
+  if moving.supportingFoot == "left" then
+    moving.angleScissor = moving.angleScissor + speedScissor
+  elseif moving.supportingFoot == "right" then
+    moving.angleScissor = moving.angleScissor - speedScissor
   end
 end
 
 -- procedural movement
 function updateMove(dt)
   
+  body.bottomY = legsLeft.y + legs.height
+  
   -- state of the movement
-  if love.keyboard.isDown("space") then
+  if love.keyboard.isDown("space") and not (love.keyboard.isDown("right") or love.keyboard.isDown("left")) or body.bottomY < ground.y - 10 then
     moving.onTheJump = true
     moving.onTheCrouch = false
     moving.onTheGround = false
@@ -138,12 +119,12 @@ function updateMove(dt)
     moving.onTheCrouch = true
     moving.onTheGround = false
     moving.standStill = false
-  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and not love.keyboard.isDown("lshift") then
+  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and not love.keyboard.isDown("lshift") and not love.keyboard.isDown("space") then
     moving.onTheWalk = true
     moving.onTheRun = false
     moving.onTheGround = true
     moving.standStill = false
-  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and love.keyboard.isDown("lshift") then
+  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and love.keyboard.isDown("lshift") and not love.keyboard.isDown("space") then
     moving.onTheRun = true
     moving.onTheWalk = false
     moving.onTheGround = true
@@ -160,23 +141,23 @@ function updateMove(dt)
   -- manage the walking
   if moving.onTheWalk == true then
     
-    if rightLegTo == "right" then
-      legsScissoring(speedScissorWalk)
-    elseif rightLegTo == "left" then
-      legsScissoring(-speedScissorWalk)
+    if moving.rightLegTo == "right" then
+      legsScissoring(moving.speedScissorWalk)
+    elseif moving.rightLegTo == "left" then
+      legsScissoring(-moving.speedScissorWalk)
     end
     
-    if angleScissor > maxAngleWalk then
-      rightLegTo = "left"
-    elseif angleScissor < - maxAngleWalk then
-      rightLegTo = "right"
+    if moving.angleScissor > moving.maxAngleWalk then
+      moving.rightLegTo = "left"
+    elseif moving.angleScissor < - moving.maxAngleWalk then
+      moving.rightLegTo = "right"
     end
     
     if love.keyboard.isDown("right") then
-      movementX(speedWalk)
+      movementX(moving.speedWalk)
     end
     if love.keyboard.isDown("left") then
-      movementX(-speedWalk)
+      movementX(-moving.speedWalk)
     end
     
   end
@@ -184,24 +165,24 @@ function updateMove(dt)
   -- manage the running
   if moving.onTheRun == true then
     
-    if rightLegTo == "right" then
-      legsScissoring(speedScissorRun)
-    elseif rightLegTo == "left" then
-      legsScissoring(-speedScissorRun)
+    if moving.rightLegTo == "right" then
+      legsScissoring(moving.speedScissorRun)
+    elseif moving.rightLegTo == "left" then
+      legsScissoring(-moving.speedScissorRun)
     end
     
-    if angleScissor > maxAngleRun then
-      rightLegTo = "left"
-    elseif angleScissor < - maxAngleRun then
-      rightLegTo = "right"
+    if moving.angleScissor > moving.maxAngleRun then
+      moving.rightLegTo = "left"
+    elseif moving.angleScissor < - moving.maxAngleRun then
+      moving.rightLegTo = "right"
     end
     
     if love.keyboard.isDown("right") then
-      movementX(speedRun)
+      movementX(moving.speedRun)
     end
     if love.keyboard.isDown("left") then
-      movementX(-speedRun)
-  end
+      movementX(-moving.speedRun)
+    end
     
   end
   
@@ -210,33 +191,46 @@ function updateMove(dt)
     
     love.timer.sleep(.01)
     
-    if angleScissor > thresholdStill then
-      angleScissor = angleScissor - dt
-    elseif angleScissor < - thresholdStill then
-      angleScissor = angleScissor + dt
-    elseif angleScissor < thresholdStill or angleScissor > - thresholdStill then
-      angleScissor = 0
+    if moving.angleScissor > moving.thresholdStill then
+      moving.angleScissor = moving.angleScissor - dt
+    elseif moving.angleScissor < - moving.thresholdStill then
+      moving.angleScissor = moving.angleScissor + dt
+    elseif moving.angleScissor < moving.thresholdStill or moving.angleScissor > - moving.thresholdStill then
+      moving.angleScissor = 0
+    end
+  end
+  
+  if moving.onTheJump == true then
+    movementY(moving.speedJump)
+    moving.speedJump = moving.speedJump - dt*9.81
+    if moving.speedJump > 0 then
+      moving.angleScissor = moving.angleScissor + dt*moving.speedScissorJump
+    else moving.angleScissor = moving.angleScissor - dt*moving.speedScissorJump
+    end
+    
+    if legsLeft.y > (windowHeight - ground.height - ground.offset - legs.height) + 1 then
+      yReset()
+      moving.onTheJump = false
+      moving.speedJump = 7
+    end
+     
+    if moving.angleScissor > moving.maxAngleJump then
+      moving.angleScissor = moving.maxAngleJump
+    end
+    if moving.angleScissor < 0.01 then
+      moving.angleScissor = 0
     end
   end
   
   
-  -- FUCK IT !!
   
-  if moving.onTheJump == true then
-    movementY(speedJump)
-    speedJump = speedJump - dt*9.81
-  end
   
-  if legsLeft.y > (windowHeight - ground.height - ground.offset - legs.height) + 1 then
-    yReset()
-    moving.onTheJump = false
-    speedJump = 5
-  end
   
+  
+  -- manage the side boundaries
   if head.x > windowWidth then
     stuckBoundary(windowWidth)
   end
-  
   if head.x < 0 then
     stuckBoundary(0)
   end
@@ -275,7 +269,7 @@ function love.draw()
   -- draw body
   love.graphics.push()
   love.graphics.translate(armsRight.x + arms.width/2, armsRight.y + ground.offset)
-	love.graphics.rotate(-angleScissor)
+	love.graphics.rotate(-moving.angleScissor)
 	love.graphics.translate(-armsRight.x - arms.width/2, -armsRight.y - ground.offset)
   love.graphics.setColor(255, 128, 0) -- orange
   love.graphics.rectangle("fill", armsRight.x, armsRight.y, arms.width, arms.height, body.radius, body.radius)
@@ -283,7 +277,7 @@ function love.draw()
   
   love.graphics.push()
   love.graphics.translate(legsRight.x + legs.width/2, legsRight.y + ground.offset)
-	love.graphics.rotate(angleScissor)
+	love.graphics.rotate(moving.angleScissor)
 	love.graphics.translate(-legsRight.x - legs.width/2, -legsRight.y - ground.offset)
   love.graphics.setColor(0, 255, 0) -- green
   love.graphics.rectangle("fill", legsRight.x, legsRight.y, legs.width, legs.height, body.radius, body.radius)
@@ -306,7 +300,7 @@ function love.draw()
   
   love.graphics.push()
   love.graphics.translate(legsLeft.x + legs.width/2, legsLeft.y + ground.offset)
-	love.graphics.rotate(-angleScissor)
+	love.graphics.rotate(-moving.angleScissor)
 	love.graphics.translate(-legsLeft.x - legs.width/2, -legsLeft.y - ground.offset)
   love.graphics.setColor(0, 0, 255) -- blue
   love.graphics.rectangle("fill", legsLeft.x, legsLeft.y, legs.width, legs.height, body.radius, body.radius)
@@ -314,7 +308,7 @@ function love.draw()
   
   love.graphics.push()
   love.graphics.translate(armsLeft.x + arms.width/2, armsLeft.y + ground.offset)
-	love.graphics.rotate(angleScissor)
+	love.graphics.rotate(moving.angleScissor)
 	love.graphics.translate(-armsLeft.x - arms.width/2, -armsLeft.y - ground.offset)
   love.graphics.setColor(255, 0, 255) -- pink
   love.graphics.rectangle("fill", armsLeft.x, armsLeft.y, arms.width, arms.height, body.radius, body.radius)

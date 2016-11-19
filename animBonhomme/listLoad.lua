@@ -12,6 +12,7 @@ body.arms = 2
 body.hands = 0.5
 body.feet = 0.5
 body.radius = body.pixel
+body.bottomY = 0
 
 ground = {}
 ground.x = 0
@@ -75,3 +76,22 @@ moving.onTheRun = false
 moving.onTheJump = false
 moving.onTheCrouch = false
 moving.standStill = true
+
+moving.angleScissor = 0
+moving.speedScissorWalk = 0.01
+moving.speedScissorRun = 0.05
+moving.speedScissorJump = 2.0
+
+moving.maxAngleWalk = 0.4
+moving.maxAngleRun = 0.9
+moving.maxAngleJump = 1.2
+
+moving.thresholdStill = 0.05
+
+moving.supportingFoot = "left"
+moving.rightLegTo = "right"
+moving.rightArmTo = "left"
+
+moving.speedWalk = 3
+moving.speedRun = 9
+moving.speedJump = 7
