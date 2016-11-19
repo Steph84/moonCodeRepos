@@ -38,6 +38,14 @@ function yReset()
   nose.y = head.y
 end
 
+-- allow to play the background music
+function backgroundMusic()
+  bgm = love.audio.newSource("dkTheme.mp3", "stream")
+  bgm:setLooping(true)
+  bgm:setVolume(0.25)
+  bgm:play()
+end
+
 function love.load()
   windowWidth = love.graphics.getWidth() -- 800
   windowHeight = love.graphics.getHeight() -- 600
@@ -47,17 +55,13 @@ function love.load()
   ground.x = ground.offset/2
   ground.y = windowHeight - ground.height - ground.offset/2
   
+  -- load the coordinates and the size of the body
   bodyVolume()
-  
   xReset()
-  
   yReset()
   
   -- play background music
-  bgm = love.audio.newSource("dkTheme.mp3", "stream")
-  bgm:setLooping(true)
-  bgm:setVolume(0.25)
-  bgm:play()
+  --backgroundMusic()
   
 end
 
@@ -105,11 +109,11 @@ end
 
 -- procedural movement
 function updateMove(dt)
-  
+  -- y coordinate of the lower part of the body
   body.bottomY = legsLeft.y + legs.height
   
   -- state of the movement
-  if love.keyboard.isDown("space") and not (love.keyboard.isDown("right") or love.keyboard.isDown("left")) or body.bottomY < ground.y - 10 then
+  if love.keyboard.isDown("space") or body.bottomY < ground.y - 10 then -- if "space" key or the body is in the air
     moving.onTheJump = true
     moving.onTheCrouch = false
     moving.onTheGround = false
@@ -119,12 +123,12 @@ function updateMove(dt)
     moving.onTheCrouch = true
     moving.onTheGround = false
     moving.standStill = false
-  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and not love.keyboard.isDown("lshift") and not love.keyboard.isDown("space") then
+  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and not love.keyboard.isDown("lshift") then
     moving.onTheWalk = true
     moving.onTheRun = false
     moving.onTheGround = true
     moving.standStill = false
-  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and love.keyboard.isDown("lshift") and not love.keyboard.isDown("space") then
+  elseif (love.keyboard.isDown("right") or love.keyboard.isDown("left")) and love.keyboard.isDown("lshift") then
     moving.onTheRun = true
     moving.onTheWalk = false
     moving.onTheGround = true
@@ -135,24 +139,31 @@ function updateMove(dt)
     moving.onTheWalk = false
     moving.onTheCrouch = false
     moving.standStill = true
-    -- no onTheJump update during the jump
+    moving.onTheJump = false
   end
   
   -- manage the walking
   if moving.onTheWalk == true then
     
-    if moving.rightLegTo == "right" then
-      legsScissoring(moving.speedScissorWalk)
-    elseif moving.rightLegTo == "left" then
-      legsScissoring(-moving.speedScissorWalk)
+    if moving.onTheJump == false then -- if there is no jump
+      
+      -- scissoring move
+      if moving.rightLegTo == "right" then
+        legsScissoring(moving.speedScissorWalk)
+      elseif moving.rightLegTo == "left" then
+        legsScissoring(-moving.speedScissorWalk)
+      end
+      
+      -- scissoring alternation
+      if moving.angleScissor > moving.maxAngleWalk then
+        moving.rightLegTo = "left"
+      elseif moving.angleScissor < - moving.maxAngleWalk then
+        moving.rightLegTo = "right"
+      end
+      
     end
     
-    if moving.angleScissor > moving.maxAngleWalk then
-      moving.rightLegTo = "left"
-    elseif moving.angleScissor < - moving.maxAngleWalk then
-      moving.rightLegTo = "right"
-    end
-    
+    -- moving along x
     if love.keyboard.isDown("right") then
       movementX(moving.speedWalk)
     end
@@ -165,18 +176,25 @@ function updateMove(dt)
   -- manage the running
   if moving.onTheRun == true then
     
-    if moving.rightLegTo == "right" then
-      legsScissoring(moving.speedScissorRun)
-    elseif moving.rightLegTo == "left" then
-      legsScissoring(-moving.speedScissorRun)
+    if moving.onTheJump == false then -- if there is no jump
+      
+      -- scissoring move
+      if moving.rightLegTo == "right" then
+        legsScissoring(moving.speedScissorRun)
+      elseif moving.rightLegTo == "left" then
+        legsScissoring(-moving.speedScissorRun)
+      end
+      
+      -- scissoring alternation
+      if moving.angleScissor > moving.maxAngleRun then
+        moving.rightLegTo = "left"
+      elseif moving.angleScissor < - moving.maxAngleRun then
+        moving.rightLegTo = "right"
+      end
+      
     end
     
-    if moving.angleScissor > moving.maxAngleRun then
-      moving.rightLegTo = "left"
-    elseif moving.angleScissor < - moving.maxAngleRun then
-      moving.rightLegTo = "right"
-    end
-    
+    -- moving along x
     if love.keyboard.isDown("right") then
       movementX(moving.speedRun)
     end
@@ -191,6 +209,7 @@ function updateMove(dt)
     
     love.timer.sleep(.01)
     
+    -- to have the legs back straight
     if moving.angleScissor > moving.thresholdStill then
       moving.angleScissor = moving.angleScissor - dt
     elseif moving.angleScissor < - moving.thresholdStill then
@@ -198,34 +217,39 @@ function updateMove(dt)
     elseif moving.angleScissor < moving.thresholdStill or moving.angleScissor > - moving.thresholdStill then
       moving.angleScissor = 0
     end
+    
   end
   
+  -- manage the jumping
   if moving.onTheJump == true then
+    
+    -- moving along y
     movementY(moving.speedJump)
     moving.speedJump = moving.speedJump - dt*9.81
+    
+    -- manage the scissoring jump
     if moving.speedJump > 0 then
       moving.angleScissor = moving.angleScissor + dt*moving.speedScissorJump
     else moving.angleScissor = moving.angleScissor - dt*moving.speedScissorJump
     end
     
-    if legsLeft.y > (windowHeight - ground.height - ground.offset - legs.height) + 1 then
+    -- during the ascension
+    if moving.angleScissor > moving.maxAngleJump then
+      moving.angleScissor = moving.maxAngleJump
+    end
+    -- during the landing
+    if moving.angleScissor < 0.01 then
+      moving.angleScissor = 0
+    end
+    
+    -- jumping stop
+    if body.bottomY > (ground.y - 5) then
       yReset()
       moving.onTheJump = false
       moving.speedJump = 7
     end
      
-    if moving.angleScissor > moving.maxAngleJump then
-      moving.angleScissor = moving.maxAngleJump
-    end
-    if moving.angleScissor < 0.01 then
-      moving.angleScissor = 0
-    end
   end
-  
-  
-  
-  
-  
   
   -- manage the side boundaries
   if head.x > windowWidth then
