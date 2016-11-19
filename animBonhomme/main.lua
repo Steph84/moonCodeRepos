@@ -27,6 +27,17 @@ function xReset()
   nose.x = windowWidth/2 + head.radius + nose.radius
 end
 
+function myXReset(actualX, actualVol)
+  legsLeft.x = actualX[1][1] + 0.26-- actualVol[1][1]/2
+  legsRight.x = actualX[1][2] - actualVol[1][1]/2
+  torso.x = actualX[1][3] + 0.33 --+ actualVol[1][2]/2
+  armsLeft.x = actualX[1][4] + 0.26-- actualVol[1][3]/2
+  armsRight.x = actualX[1][5] - actualVol[1][3]/2
+  head.x = actualX[1][6]
+  nose.x = actualX[1][7] - 0.32-- actualVol[1][4]/2 - actualVol[1][5]/2
+end
+
+
 -- allow to get back the body on the ground
 function yReset()
   legsLeft.y = windowHeight - ground.height - ground.offset - legs.height
@@ -264,6 +275,9 @@ end
 -- manage the size modification
 function updateTransformation(dt)
   local bodySize = (legsLeft.y + legs.height) - (head.y - head.radius)
+  --local actualXCoordinate = {}
+  --local actualVolumeParts = {}
+  
   if love.keyboard.isDown("up") and bodySize < (windowHeight - ground.height - ground.offset - 5) then
     body.pixel = body.pixel + 0.5
     -- for the moment reset to the center of the window
@@ -275,7 +289,11 @@ function updateTransformation(dt)
     body.pixel = body.pixel - 0.5
     -- for the moment reset to the center of the window
     bodyVolume()
+    
+    --table.insert(actualXCoordinate, {legsLeft.x, legsRight.x, torso.x, armsLeft.x, armsRight.x, head.x, nose.x})
+    --table.insert(actualVolumeParts, {legs.width, torso.width, arms.width, head.radius, nose.radius})
     xReset()
+    --myXReset(actualXCoordinate, actualVolumeParts)
     yReset()
   end
 end
