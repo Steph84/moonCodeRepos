@@ -1,8 +1,11 @@
 io.stdout:setvbuf('no')
 
-if arg[#arg] == "-debug" then require("mobdebug").start() end
+--if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 require"listLoad"
+require"mediaLoad"
+
+local actualScreen = nil
 
 -- geometry of the body
 function bodyVolume()
@@ -49,14 +52,6 @@ function yReset()
   nose.y = head.y
 end
 
--- allow to play the background music
-function backgroundMusic()
-  bgm = love.audio.newSource("dkTheme.mp3", "stream")
-  bgm:setLooping(true)
-  bgm:setVolume(0.25)
-  bgm:play()
-end
-
 function love.load()
   windowWidth = love.graphics.getWidth() -- 800
   windowHeight = love.graphics.getHeight() -- 600
@@ -71,8 +66,13 @@ function love.load()
   xReset()
   yReset()
   
+  -- load pictures
+  menuPic = love.graphics.newImage("pictures/menu.png")
+  
   -- play background music
   --backgroundMusic()
+  
+  actualScreen = "menu"
   
 end
 
@@ -299,69 +299,115 @@ function updateTransformation(dt)
 end
 
 function love.update(dt)
-  updateMove(dt)
-  updateTransformation(dt)
+  
+  if actualScreen == "menu" then
+    updateMenu()
+  elseif actualScreen == "loadBody" then
+    updateBody()
+  elseif actualScreen == "animation" then
+    updateMove(dt)
+    updateTransformation(dt)
+  end
 end
+
+
+function drawBody()
+  
+  love.timer.sleep(1)
+  
+  love.graphics.setColor(255, 255, 255) -- white
+  local loadBar = 0
+  --[[while loadBar < ground.width do
+  loadBar = loadBar + 1
+  love.graphics.rectangle("fill", ground.x, ground.y, loadBar, ground.height)
+  end]]
+  
+  
+  love.graphics.rectangle("fill", ground.x, ground.y, 0, ground.height)
+  love.timer.sleep(1)
+  love.graphics.rectangle("fill", ground.x, ground.y, 10, ground.height)
+  love.timer.sleep(1)
+  love.graphics.rectangle("fill", ground.x, ground.y, 50, ground.height)
+  love.timer.sleep(1)
+  love.graphics.rectangle("fill", ground.x, ground.y, 150, ground.height)
+  love.timer.sleep(1)
+  love.graphics.rectangle("fill", ground.x, ground.y, ground.width, ground.height)
+
+  --actualScreen = "animation"
+  
+end
+
+
 
 function love.draw()
-  -- draw ground
-  love.graphics.setColor(255, 255, 255) -- white
-  love.graphics.rectangle("fill", ground.x, ground.y, ground.width, ground.height)
   
-  -- draw body
-  love.graphics.push()
-  love.graphics.translate(armsRight.x + arms.width/2, armsRight.y + ground.offset)
-	love.graphics.rotate(-moving.angleScissor)
-	love.graphics.translate(-armsRight.x - arms.width/2, -armsRight.y - ground.offset)
-  love.graphics.setColor(255, 128, 0) -- orange
-  love.graphics.rectangle("fill", armsRight.x, armsRight.y, arms.width, arms.height, body.radius, body.radius)
-  love.graphics.pop()
-  
-  love.graphics.push()
-  love.graphics.translate(legsRight.x + legs.width/2, legsRight.y + ground.offset)
-	love.graphics.rotate(moving.angleScissor)
-	love.graphics.translate(-legsRight.x - legs.width/2, -legsRight.y - ground.offset)
-  love.graphics.setColor(0, 255, 0) -- green
-  love.graphics.rectangle("fill", legsRight.x, legsRight.y, legs.width, legs.height, body.radius, body.radius)
-  love.graphics.pop()
-  
-  love.graphics.push()
-  love.graphics.setColor(255, 0, 0) -- red
-  love.graphics.rectangle("fill", torso.x, torso.y, torso.width, torso.height, body.radius, body.radius)
-  love.graphics.pop()
-  
-  love.graphics.push()
-  love.graphics.setColor(255, 255, 0) -- yellow
-  love.graphics.circle("fill", head.x, head.y, head.radius)
-  love.graphics.pop()
-  
-  love.graphics.push()
-  love.graphics.setColor(255, 0, 0) -- red
-  love.graphics.circle("fill", nose.x, nose.y, nose.radius)
-  love.graphics.pop()
-  
-  love.graphics.push()
-  love.graphics.translate(legsLeft.x + legs.width/2, legsLeft.y + ground.offset)
-	love.graphics.rotate(-moving.angleScissor)
-	love.graphics.translate(-legsLeft.x - legs.width/2, -legsLeft.y - ground.offset)
-  love.graphics.setColor(0, 0, 255) -- blue
-  love.graphics.rectangle("fill", legsLeft.x, legsLeft.y, legs.width, legs.height, body.radius, body.radius)
-  love.graphics.pop()
-  
-  love.graphics.push()
-  love.graphics.translate(armsLeft.x + arms.width/2, armsLeft.y + ground.offset)
-	love.graphics.rotate(moving.angleScissor)
-	love.graphics.translate(-armsLeft.x - arms.width/2, -armsLeft.y - ground.offset)
-  love.graphics.setColor(255, 0, 255) -- pink
-  love.graphics.rectangle("fill", armsLeft.x, armsLeft.y, arms.width, arms.height, body.radius, body.radius)
-  love.graphics.pop()
-  
-  
-  -- back to black
-  love.graphics.setColor(0, 0, 0)
+  if actualScreen == "menu" then
+    drawMenu()
+  elseif actualScreen == "loadBody" then
+    drawBody()
+  elseif actualScreen == "animation" then
+    -- draw ground
+    love.graphics.setColor(255, 255, 255) -- white
+    love.graphics.rectangle("fill", ground.x, ground.y, ground.width, ground.height)
+    
+    -- draw body
+    love.graphics.push()
+    love.graphics.translate(armsRight.x + arms.width/2, armsRight.y + ground.offset)
+    love.graphics.rotate(-moving.angleScissor)
+    love.graphics.translate(-armsRight.x - arms.width/2, -armsRight.y - ground.offset)
+    love.graphics.setColor(255, 128, 0) -- orange
+    love.graphics.rectangle("fill", armsRight.x, armsRight.y, arms.width, arms.height, body.radius, body.radius)
+    love.graphics.pop()
+    
+    love.graphics.push()
+    love.graphics.translate(legsRight.x + legs.width/2, legsRight.y + ground.offset)
+    love.graphics.rotate(moving.angleScissor)
+    love.graphics.translate(-legsRight.x - legs.width/2, -legsRight.y - ground.offset)
+    love.graphics.setColor(0, 255, 0) -- green
+    love.graphics.rectangle("fill", legsRight.x, legsRight.y, legs.width, legs.height, body.radius, body.radius)
+    love.graphics.pop()
+    
+    love.graphics.push()
+    love.graphics.setColor(255, 0, 0) -- red
+    love.graphics.rectangle("fill", torso.x, torso.y, torso.width, torso.height, body.radius, body.radius)
+    love.graphics.pop()
+    
+    love.graphics.push()
+    love.graphics.setColor(255, 255, 0) -- yellow
+    love.graphics.circle("fill", head.x, head.y, head.radius)
+    love.graphics.pop()
+    
+    love.graphics.push()
+    love.graphics.setColor(255, 0, 0) -- red
+    love.graphics.circle("fill", nose.x, nose.y, nose.radius)
+    love.graphics.pop()
+    
+    love.graphics.push()
+    love.graphics.translate(legsLeft.x + legs.width/2, legsLeft.y + ground.offset)
+    love.graphics.rotate(-moving.angleScissor)
+    love.graphics.translate(-legsLeft.x - legs.width/2, -legsLeft.y - ground.offset)
+    love.graphics.setColor(0, 0, 255) -- blue
+    love.graphics.rectangle("fill", legsLeft.x, legsLeft.y, legs.width, legs.height, body.radius, body.radius)
+    love.graphics.pop()
+    
+    love.graphics.push()
+    love.graphics.translate(armsLeft.x + arms.width/2, armsLeft.y + ground.offset)
+    love.graphics.rotate(moving.angleScissor)
+    love.graphics.translate(-armsLeft.x - arms.width/2, -armsLeft.y - ground.offset)
+    love.graphics.setColor(255, 0, 255) -- pink
+    love.graphics.rectangle("fill", armsLeft.x, armsLeft.y, arms.width, arms.height, body.radius, body.radius)
+    love.graphics.pop()
+  end
   
 end
 
---function love.keypressed(key)
+
+function love.keypressed(key)
   --print(key)
---end
+  if actualScreen == "menu" then
+    if key == "g" then
+      --actualScreen = "loadBody"
+      actualScreen = "animation" -- to remove
+    end
+  end
+end
