@@ -3,9 +3,22 @@ io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
+local whiteColor = {255, 255, 255}
+local redColor = {255, 0, 0}
+local orangeColor = {255, 128, 0}
+local yellowColor = {255, 255, 0}
+local green1Color = {128, 255, 0}
+local green2Color = {0, 255, 0}
+local green3Color = {0, 255, 128}
+local blue1Color = {0, 255, 255}
+local blue2Color = {0, 128, 255}
+local blue3Color = {0, 0, 255}
+local purple1Color = {127, 0, 255}
+local purple2Color = {255, 0, 255}
+local purple3Color = {255, 0, 127}
+
 local windowWidth = 600
 local windowHeight = 600
-local whiteColor = {255, 255, 255}
 local coorPoints = {}
 
 listPoints = {}
@@ -32,6 +45,9 @@ level.c = 0
 level.l = 0
 level.gap = 0
 
+listArcs = {}
+
+
 
 
   
@@ -56,7 +72,6 @@ function love.load()
   level.gap = 100
   level.c = ((windowWidth)/level.gap) - 1
   level.l = ((windowHeight - startPoint.gap - endPoint.gap)/level.gap) - 1
-  
   
   listPoints.rad = 10
   
@@ -103,10 +118,52 @@ function love.load()
     by = by + level.gap
   end
 
+  arc1 = {startPoint.x, startPoint.y, coorPoints[1][1], coorPoints[1][2]}
+  arc2 = {startPoint.x, startPoint.y, coorPoints[2][1], coorPoints[2][2]}
+  
+  arc3 = {coorPoints[1][1], coorPoints[1][2], coorPoints[3][1], coorPoints[3][2]}
+  arc4 = {coorPoints[1][1], coorPoints[1][2], coorPoints[4][1], coorPoints[4][2]}
+  arc5 = {coorPoints[2][1], coorPoints[2][2], coorPoints[3][1], coorPoints[3][2]}
+  
+  arc6 = {coorPoints[3][1], coorPoints[3][2], coorPoints[5][1], coorPoints[5][2]}
+  arc7 = {coorPoints[4][1], coorPoints[4][2], coorPoints[5][1], coorPoints[5][2]}
+  arc8 = {coorPoints[4][1], coorPoints[4][2], coorPoints[6][1], coorPoints[6][2]}
+  
+  arc9 = {coorPoints[5][1], coorPoints[5][2], coorPoints[7][1], coorPoints[7][2]}
+  arc10 = {coorPoints[5][1], coorPoints[5][2], coorPoints[8][1], coorPoints[8][2]}
+  arc11 = {coorPoints[6][1], coorPoints[6][2], coorPoints[8][1], coorPoints[8][2]}
+  
+  arc12 = {endPoint.x, endPoint.y, coorPoints[7][1], coorPoints[7][2]}
+  arc13 = {endPoint.x, endPoint.y, coorPoints[8][1], coorPoints[8][2]}
 
-
-
-  tempRand = love.math.random(3, 4)
+  table.insert(listArcs, arc1)
+  table.insert(listArcs, arc2)
+  table.insert(listArcs, arc3)
+  table.insert(listArcs, arc4)
+  table.insert(listArcs, arc5)
+  table.insert(listArcs, arc6)
+  table.insert(listArcs, arc7)
+  table.insert(listArcs, arc8)
+  table.insert(listArcs, arc9)
+  table.insert(listArcs, arc10)
+  table.insert(listArcs, arc11)
+  table.insert(listArcs, arc12)
+  table.insert(listArcs, arc13)
+  
+  arc1.phero = 0
+  arc2.phero = 0
+  arc3.phero = 0
+  arc4.phero = 0
+  arc5.phero = 0
+  arc6.phero = 0
+  arc7.phero = 0
+  arc8.phero = 0
+  arc9.phero = 0
+  arc10.phero = 0
+  arc11.phero = 0
+  arc12.phero = 0
+  arc13.phero = 0
+  
  
 
   
@@ -123,32 +180,43 @@ function love.draw()
   love.graphics.circle("fill", endPoint.x, endPoint.y, endPoint.rad, endPoint.seg)  
 
   love.graphics.setColor(whiteColor)
-  
-  
   local coorTuple, xyCoor
   for coorTuple = 1, #coorPoints do
-    print("machin", coorPoints[coorTuple])
     love.graphics.circle("fill", coorPoints[coorTuple][1], coorPoints[coorTuple][2], listPoints.rad)
   end
   
-  love.graphics.line(startPoint.x, startPoint.y, coorPoints[1][1], coorPoints[1][2])
-  love.graphics.line(startPoint.x, startPoint.y, coorPoints[2][1], coorPoints[2][2])
-  
-  love.graphics.line(coorPoints[1][1], coorPoints[1][2], coorPoints[3][1], coorPoints[3][2])
-  love.graphics.line(coorPoints[1][1], coorPoints[1][2], coorPoints[4][1], coorPoints[4][2])
-  love.graphics.line(coorPoints[2][1], coorPoints[2][2], coorPoints[3][1], coorPoints[3][2])
-  
-  love.graphics.line(coorPoints[3][1], coorPoints[3][2], coorPoints[5][1], coorPoints[5][2])
-  love.graphics.line(coorPoints[4][1], coorPoints[4][2], coorPoints[5][1], coorPoints[5][2])
-  love.graphics.line(coorPoints[4][1], coorPoints[4][2], coorPoints[6][1], coorPoints[6][2])
-  
-  love.graphics.line(coorPoints[5][1], coorPoints[5][2], coorPoints[7][1], coorPoints[7][2])
-  love.graphics.line(coorPoints[5][1], coorPoints[5][2], coorPoints[8][1], coorPoints[8][2])
-  love.graphics.line(coorPoints[6][1], coorPoints[6][2], coorPoints[8][1], coorPoints[8][2])
-  
-  love.graphics.line(endPoint.x, endPoint.y, coorPoints[7][1], coorPoints[7][2])
-  love.graphics.line(endPoint.x, endPoint.y, coorPoints[8][1], coorPoints[8][2])
-
+  local arcNum
+  for arcNum = 1, #listArcs do
+    if listArcs[arcNum].phero == 0 then
+      love.graphics.setColor(whiteColor)
+    elseif listArcs[arcNum].phero == 0.1 then
+      love.graphics.setColor(redColor)
+    elseif listArcs[arcNum].phero == 0.2 then
+      love.graphics.setColor(orangeColor)
+    elseif listArcs[arcNum].phero == 0.3 then
+      love.graphics.setColor(yellowColor)
+    elseif listArcs[arcNum].phero == 0.4 then
+      love.graphics.setColor(green1Color)
+    elseif listArcs[arcNum].phero == 0.5 then
+      love.graphics.setColor(green2Color)
+    elseif listArcs[arcNum].phero == 0.6 then
+      love.graphics.setColor(green3Color)
+    elseif listArcs[arcNum].phero == 0.7 then
+      love.graphics.setColor(blue1Color)
+    elseif listArcs[arcNum].phero == 0.8 then
+      love.graphics.setColor(blue2Color)
+    elseif listArcs[arcNum].phero == 0.9 then
+      love.graphics.setColor(blue3Color)
+    elseif listArcs[arcNum].phero == 1.0 then
+      love.graphics.setColor(purple1Color)
+    elseif listArcs[arcNum].phero == 1.1 then
+      love.graphics.setColor(purple2Color)
+    elseif listArcs[arcNum].phero == 1.2 then
+      love.graphics.setColor(purple3Color)
+    end
+    love.graphics.line(listArcs[arcNum])
+    love.graphics.setColor(whiteColor)
+  end
 
 end
 
