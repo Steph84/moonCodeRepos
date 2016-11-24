@@ -47,6 +47,12 @@ level.gap = 0
 
 listArcs = {}
 
+sprite = {}
+sprite.x = 0
+sprite.y = 0
+sprite.pict = love.graphics.newImage("pictures/antPic.png")
+sprite.w = sprite.pict:getWidth()
+sprite.h = sprite.pict:getHeight()
 
 
 
@@ -164,13 +170,16 @@ function love.load()
   arc12.phero = 0
   arc13.phero = 0
   
- 
-
+  sprite.x = startPoint.x
+  sprite.y = startPoint.y
+  sprite.orien = math.rad(180)
   
 end
 
 function love.update(dt)
-
+  --TODO
+  --faire evoluer x, y et orien
+  
 end
 
 function love.draw()
@@ -217,7 +226,9 @@ function love.draw()
     love.graphics.line(listArcs[arcNum])
     love.graphics.setColor(whiteColor)
   end
-
+  
+  love.graphics.draw(sprite.pict, sprite.x, sprite.y, sprite.orien, 0.2, 0.2, sprite.w/2, sprite.h/2)
+  
 end
 
 function love.keypressed(key)
