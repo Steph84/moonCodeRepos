@@ -1,0 +1,11 @@
+animer l apparition des membres : 
+	ils aparaissent dans les 4 coins
+	ils se rejoingent au centre pour s assembler
+
+faire une animation pour la fermeture
+	ils se séparent et tombetn direct au sol
+	voir a ce qu ils roulent un peu sur le sol
+
+le faire s acroupir
+
+a voir...
