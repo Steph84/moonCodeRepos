@@ -47,12 +47,15 @@ level.gap = 0
 
 listArcs = {}
 
-sprite = {}
-sprite.x = 0
-sprite.y = 0
-sprite.pict = love.graphics.newImage("pictures/antPic.png")
-sprite.w = sprite.pict:getWidth()
-sprite.h = sprite.pict:getHeight()
+ant = {}
+ant.x = 0
+ant.y = 0
+ant.pict = love.graphics.newImage("pictures/antPic.png")
+ant.w = ant.pict:getWidth()
+ant.h = ant.pict:getHeight()
+ant.dir = "bottom"
+ant.pos = "start"
+ant.next = " "
 
 
 
@@ -124,62 +127,55 @@ function love.load()
     by = by + level.gap
   end
 
-  arc1 = {startPoint.x, startPoint.y, coorPoints[1][1], coorPoints[1][2]}
-  arc2 = {startPoint.x, startPoint.y, coorPoints[2][1], coorPoints[2][2]}
   
-  arc3 = {coorPoints[1][1], coorPoints[1][2], coorPoints[3][1], coorPoints[3][2]}
-  arc4 = {coorPoints[1][1], coorPoints[1][2], coorPoints[4][1], coorPoints[4][2]}
-  arc5 = {coorPoints[2][1], coorPoints[2][2], coorPoints[3][1], coorPoints[3][2]}
-  
-  arc6 = {coorPoints[3][1], coorPoints[3][2], coorPoints[5][1], coorPoints[5][2]}
-  arc7 = {coorPoints[4][1], coorPoints[4][2], coorPoints[5][1], coorPoints[5][2]}
-  arc8 = {coorPoints[4][1], coorPoints[4][2], coorPoints[6][1], coorPoints[6][2]}
-  
-  arc9 = {coorPoints[5][1], coorPoints[5][2], coorPoints[7][1], coorPoints[7][2]}
-  arc10 = {coorPoints[5][1], coorPoints[5][2], coorPoints[8][1], coorPoints[8][2]}
-  arc11 = {coorPoints[6][1], coorPoints[6][2], coorPoints[8][1], coorPoints[8][2]}
-  
-  arc12 = {endPoint.x, endPoint.y, coorPoints[7][1], coorPoints[7][2]}
-  arc13 = {endPoint.x, endPoint.y, coorPoints[8][1], coorPoints[8][2]}
+  listArcs[1] = {startPoint.x, startPoint.y, coorPoints[1][1], coorPoints[1][2]}
+  listArcs[2] = {startPoint.x, startPoint.y, coorPoints[2][1], coorPoints[2][2]}
+  listArcs[3] = {coorPoints[1][1], coorPoints[1][2], coorPoints[3][1], coorPoints[3][2]}
+  listArcs[4] = {coorPoints[1][1], coorPoints[1][2], coorPoints[4][1], coorPoints[4][2]}
+  listArcs[5] = {coorPoints[2][1], coorPoints[2][2], coorPoints[3][1], coorPoints[3][2]}
+  listArcs[6] = {coorPoints[3][1], coorPoints[3][2], coorPoints[5][1], coorPoints[5][2]}
+  listArcs[7] = {coorPoints[4][1], coorPoints[4][2], coorPoints[5][1], coorPoints[5][2]}
+  listArcs[8] = {coorPoints[4][1], coorPoints[4][2], coorPoints[6][1], coorPoints[6][2]}
+  listArcs[9] = {coorPoints[5][1], coorPoints[5][2], coorPoints[7][1], coorPoints[7][2]}
+  listArcs[10] = {coorPoints[5][1], coorPoints[5][2], coorPoints[8][1], coorPoints[8][2]}
+  listArcs[11] = {coorPoints[6][1], coorPoints[6][2], coorPoints[8][1], coorPoints[8][2]}
+  listArcs[12] = {endPoint.x, endPoint.y, coorPoints[7][1], coorPoints[7][2]}
+  listArcs[13] = {endPoint.x, endPoint.y, coorPoints[8][1], coorPoints[8][2]}
 
-  table.insert(listArcs, arc1)
-  table.insert(listArcs, arc2)
-  table.insert(listArcs, arc3)
-  table.insert(listArcs, arc4)
-  table.insert(listArcs, arc5)
-  table.insert(listArcs, arc6)
-  table.insert(listArcs, arc7)
-  table.insert(listArcs, arc8)
-  table.insert(listArcs, arc9)
-  table.insert(listArcs, arc10)
-  table.insert(listArcs, arc11)
-  table.insert(listArcs, arc12)
-  table.insert(listArcs, arc13)
+  local arcNum
+  for arcNum = 1, 13 do
+    listArcs[arcNum].phero = 0
+  end
+
   
-  arc1.phero = 0
-  arc2.phero = 0
-  arc3.phero = 0
-  arc4.phero = 0
-  arc5.phero = 0
-  arc6.phero = 0
-  arc7.phero = 0
-  arc8.phero = 0
-  arc9.phero = 0
-  arc10.phero = 0
-  arc11.phero = 0
-  arc12.phero = 0
-  arc13.phero = 0
-  
-  sprite.x = startPoint.x
-  sprite.y = startPoint.y
-  sprite.orien = math.rad(180)
+  ant.x = startPoint.x
+  ant.y = startPoint.y
+  ant.orien = math.rad(180)
   
 end
 
 function love.update(dt)
   --TODO
   --faire evoluer x, y et orien
-  
+  if ant.dir == "bottom" then
+    if ant.pos == "start" then
+      tempRand = love.math.random(2)
+      ant.next = coorPoints[tempRand]
+      ant.pos = "arc"
+    end
+    if ant.pos == "arc" then
+      -- faire pivoter (orien)
+      
+      --faire aller vers le point suivant
+      if ant.y < ant.next[2] then
+        ant.x = ant.x + 40*dt -- 0 1 ou 2
+        ant.y = ant.y + 20*dt -- 1
+      end
+    end
+    
+    
+    
+  end
 end
 
 function love.draw()
@@ -189,7 +185,7 @@ function love.draw()
   love.graphics.circle("fill", endPoint.x, endPoint.y, endPoint.rad, endPoint.seg)  
 
   love.graphics.setColor(whiteColor)
-  local coorTuple, xyCoor
+  local coorTuple--, xyCoor
   for coorTuple = 1, #coorPoints do
     love.graphics.circle("fill", coorPoints[coorTuple][1], coorPoints[coorTuple][2], listPoints.rad)
   end
@@ -227,7 +223,7 @@ function love.draw()
     love.graphics.setColor(whiteColor)
   end
   
-  love.graphics.draw(sprite.pict, sprite.x, sprite.y, sprite.orien, 0.2, 0.2, sprite.w/2, sprite.h/2)
+  love.graphics.draw(ant.pict, ant.x, ant.y, ant.orien, 0.2, 0.2, ant.w/2, ant.h/2)
   
 end
 
