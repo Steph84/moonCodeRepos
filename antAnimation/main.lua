@@ -55,9 +55,11 @@ ant.w = ant.pict:getWidth()
 ant.h = ant.pict:getHeight()
 ant.dir = "bottom"
 ant.pos = "start"
+ant.actual = {}
 ant.next = " "
 
 
+local speed = 30
 
   
 function love.load()
@@ -151,7 +153,15 @@ function love.load()
   ant.x = startPoint.x
   ant.y = startPoint.y
   ant.orien = math.rad(180)
+  ant.actual = {startPoint.x, startPoint.y}
   
+end
+
+function moveSpeed(dt, actualX)
+  local subWay = (ant.next[1] - actualX)/100
+  --print(ant.next[1], actualX, subWay)
+  ant.x = ant.x + subWay*speed*dt
+  return ant.x
 end
 
 function love.update(dt)
@@ -163,16 +173,39 @@ function love.update(dt)
       ant.next = coorPoints[tempRand]
       ant.pos = "arc"
     end
+    
     if ant.pos == "arc" then
       -- faire pivoter (orien)
-      
-      --faire aller vers le point suivant
+      --print(ant.next[1], ant.next[2], ant.x, ant.y)
       if ant.y < ant.next[2] then
-        ant.x = ant.x + 40*dt -- 0 1 ou 2
-        ant.y = ant.y + 20*dt -- 1
+        moveSpeed(dt, ant.actual[1])
+        ant.y = ant.y + 1*speed*dt
+      else
+        ant.pos = "node"
+        ant.actual = ant.next
+        ant.next = " "
       end
     end
-    
+    if ant.pos == "node" then
+      print(tempRand)
+      -- a remplacer par un switch case
+      if tempRand == 1 then
+        tempRand = 0
+        tempRand = love.math.random(3, 4)
+      elseif tempRand == 2 then
+        tempRand = 3
+      elseif tempRand == 4 then
+        tempRand = 0
+        tempRand = love.math.random(5, 6)
+      elseif tempRand == 3 then
+        tempRand = 5
+      ant.pos = "arc"
+      ant.next = coorPoints[tempRand]
+      print(tempRand, coorPoints[tempRand][1], coorPoints[tempRand][2])
+      end
+      
+      
+    end
     
     
   end
