@@ -14,6 +14,4 @@ function updateBody()
   
 end
 
-function drawMenu()
-  love.graphics.draw(menuPic, (windowWidth-menuPic:getWidth())/2, 0)
-end
+

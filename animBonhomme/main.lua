@@ -6,6 +6,8 @@ require"listLoad"
 require"mediaLoad"
 
 local actualScreen = nil
+local windowWidth = 1000
+local windowHeight = 600
 
 -- geometry of the body
 function bodyVolume()
@@ -53,8 +55,9 @@ function yReset()
 end
 
 function love.load()
-  windowWidth = love.graphics.getWidth() -- 800
-  windowHeight = love.graphics.getHeight() -- 600
+  love.window.setMode(windowWidth, windowHeight)
+  --windowWidth = love.graphics.getWidth() -- 800
+  --windowHeight = love.graphics.getHeight() -- 600
   
   -- build the ground
   ground.width = windowWidth - ground.offset
@@ -68,6 +71,7 @@ function love.load()
   
   -- load pictures
   menuPic = love.graphics.newImage("pictures/menu.png")
+  animPic = love.graphics.newImage("pictures/anim.png")
   
   -- play background music
   --backgroundMusic()
@@ -337,6 +341,10 @@ function drawBody()
   
 end
 
+function drawMenu()
+  love.graphics.draw(menuPic, (windowWidth-menuPic:getWidth())/2, 0)
+end
+
 
 
 function love.draw()
@@ -346,8 +354,12 @@ function love.draw()
   elseif actualScreen == "loadBody" then
     drawBody()
   elseif actualScreen == "animation" then
-    -- draw ground
     love.graphics.setColor(255, 255, 255) -- white
+    love.graphics.rectangle("fill", 0, 0, windowWidth, windowHeight)
+    -- load background picture
+    love.graphics.draw(animPic, (windowWidth-animPic:getWidth())/2, 0)
+    
+    -- draw ground (white)
     love.graphics.rectangle("fill", ground.x, ground.y, ground.width, ground.height)
     
     -- draw body
@@ -405,7 +417,7 @@ end
 function love.keypressed(key)
   --print(key)
   if actualScreen == "menu" then
-    if key == "g" then
+    if key == "return" then
       --actualScreen = "loadBody"
       actualScreen = "animation" -- to remove
     end
