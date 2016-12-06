@@ -24,7 +24,7 @@ function randShot(min, max, number)
   
   -- pick of the values
   for k = 1, number do
-    tempRand = math.random(1, #randArea - 1)
+    tempRand = math.random(1, #randArea)
     table.insert(result, randArea[tempRand])
     table.remove(randArea, tempRand)
     tempRand = 0
