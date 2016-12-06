@@ -79,6 +79,17 @@ function love.load()
     end
   end
   
+  -- creation first line of arcs
+  pointId = 2
+  local numFirstArcs = 1
+  for pointId = 1, #levelAntHill.listPoints - 2 do -- parse all the nodes (-2 to remove start and end points)
+    if levelAntHill.listPoints[pointId].isOn == true and numFirstArcs < levelAntHill.numPtsLine + 1 then -- if the node exists and there is still nodes in the first line
+      levelAntHill.listArcs[numFirstArcs] = {id = 1, startX = levelAntHill.listPoints[1].x, startY = levelAntHill.listPoints[1].y, endX = levelAntHill.listPoints[pointId].x, endY = levelAntHill.listPoints[pointId].y, phero = 0} -- creation of the arc
+      numFirstArcs = numFirstArcs + 1
+    end
+    pointId = pointId + 1
+  end
+  
   
 end
 
@@ -108,6 +119,14 @@ function love.draw()
   -- end point
   love.graphics.setColor({255, 128, 0})
   love.graphics.circle("fill", levelAntHill.listPoints[pointId + 1].x, levelAntHill.listPoints[pointId + 1].y, levelAntHill.circleRad, levelAntHill.circleSeg)
+
+  -- arcs
+  love.graphics.setColor({255, 255, 255})
+  for arcNum = 1, #levelAntHill.listArcs do
+    love.graphics.line(levelAntHill.listArcs[arcNum].startX, levelAntHill.listArcs[arcNum].startY, levelAntHill.listArcs[arcNum].endX, levelAntHill.listArcs[arcNum].endY)
+    
+  end
+
 
 end
 
