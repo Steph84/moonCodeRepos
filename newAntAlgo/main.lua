@@ -34,6 +34,23 @@ function randNodes(min, max, number)
   return result
 end
 
+function randArcs()
+  local arite = math.floor(levelAntHill.numPtsLine * 2/3)
+  local listRandArcs = {}
+  local a = 0
+  for i = 1, arite do
+    tempRandArcs = math.random(1, levelAntHill.numPtsLine)
+    if tempRandArcs ~= a then
+      table.insert(listRandArcs, tempRandArcs)
+      a = tempRandArcs
+    end
+  end
+  for j = 1, #listRandArcs do
+    print(j, listRandArcs[j])
+  end
+  return listRandArcs
+end
+
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight, {centered = false, x = 100, y = 100}) -- resize the window and place it
@@ -73,24 +90,33 @@ function love.load()
       for s = 1, #tempSelect do
         if c == tempSelect[s] then
           levelAntHill.listPoints[pointId].isOn = true -- the node exists
+          table.insert(levelAntHill.listNodes, levelAntHill.listPoints[pointId]) -- creation of the nodes list
         end
       end
       pointId = pointId + 1 -- continue with the following node
     end
   end
   
-  -- creation first line of arcs
-  local numFirstArcs = 1
-  for pointId = 1, #levelAntHill.listPoints - 2 do -- parse all the nodes (-2 to remove start and end points)
-    if levelAntHill.listPoints[pointId].isOn == true and numFirstArcs < levelAntHill.numPtsLine + 1 then -- if the node exists and there is still nodes in the first line
-      levelAntHill.listArcs[numFirstArcs] = {id = numFirstArcs, startX = levelAntHill.listPoints[1].x, startY = levelAntHill.listPoints[1].y, endX = levelAntHill.listPoints[pointId].x, endY = levelAntHill.listPoints[pointId].y, phero = 0} -- creation of the arc
-      numFirstArcs = numFirstArcs + 1
-    end
-    pointId = pointId + 1
+  -- creation of arcs
+  local pointsToGo = levelAntHill.numPtsLine - 1
+  for arcId = 1, levelAntHill.numPtsLine do
+    
+    -- creation of the arcs from the start point
+    levelAntHill.listArcs[arcId] = {id = arcId, startX = levelAntHill.listPoints[1].x, startY = levelAntHill.listPoints[1].y, endX = levelAntHill.listNodes[arcId].x, endY = levelAntHill.listNodes[arcId].y, phero = 0} -- creation of the arc
+    
+    -- creation of the following arcs 2nd line
+    local tempRandBis = 0
+    -- tempRandBis = math.random(1, levelAntHill.numPtsLine)
+    -- tempRandList = randArcs()
+    levelAntHill.listArcs[arcId + levelAntHill.numPtsLine] = {id = arcId + levelAntHill.numPtsLine, startX = levelAntHill.listNodes[arcId].x, startY = levelAntHill.listNodes[arcId].y, endX = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].x, endY = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].y, phero = 0} -- creation of the arc
+    pointsToGo = pointsToGo - 1
   end
-  local lastPointId = pointId
+  
+  
   
   --[[
+  local lastPointId = pointId
+  
   -- creation second line of arcs
   local numFollowArcs = numFirstArcs
   local pointsToGo = levelAntHill.numPtsLine - 1
@@ -102,6 +128,7 @@ function love.load()
     numFollowArcs = numFollowArcs + 1
   end
   ]]
+  
   
 end
 

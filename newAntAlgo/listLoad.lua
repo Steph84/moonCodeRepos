@@ -4,6 +4,7 @@ levelAntHill.line = 0
 levelAntHill.columnGap = 100
 levelAntHill.column = 0
 levelAntHill.listPoints = {}
+levelAntHill.listNodes = {}
 levelAntHill.listArcs = {}
 levelAntHill.circleRad = 10
 levelAntHill.circleSeg = 6
