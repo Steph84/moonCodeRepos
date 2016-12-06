@@ -7,6 +7,7 @@ levelAntHill.listPoints = {}
 levelAntHill.listArcs = {}
 levelAntHill.circleRad = 10
 levelAntHill.circleSeg = 6
+levelAntHill.numPtsLine = 3
 --volatile pheromone function
 
 antAlive = {}

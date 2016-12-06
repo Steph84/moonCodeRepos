@@ -7,16 +7,22 @@ require "listLoad"
 
 local windowWidth = 1000
 local windowHeight = 600
+local tempSelect = {}
 
+-- function allowing to pick a number of value between min and max
 function randShot(min, max, number)
+  
   local randArea = {}
   local result = {}
   local tempRand = 0
+  
+  -- total list to pick in
   for i = min, max do
     table.insert(randArea, i)
     i = i + 1
   end
   
+  -- pick of the values
   for k = 1, number do
     tempRand = math.random(1, #randArea - 1)
     table.insert(result, randArea[tempRand])
@@ -38,9 +44,10 @@ function love.load()
   levelAntHill.column = ((windowWidth)/levelAntHill.columnGap) - 1
   -- print(levelAntHill.line, levelAntHill.column)
   
-  
+  -- start point
   levelAntHill.listPoints[1] = {id = "startPoint", x = windowWidth/2, y = 50}
   
+  -- initialization of the map with all the possible points
   local l, c
   local pointId = 2
   local pointX, pointY = 0, 0
@@ -54,21 +61,21 @@ function love.load()
     pointY = pointY + levelAntHill.lineGap
   end
   
+  -- end point
   levelAntHill.listPoints[pointId + 1] = {id = "endPoint", x = windowWidth/2, y = windowHeight - 50}
   
-  
+  -- random selection of nodes into the map
   local tempSelect = {}
-  pointId = 2
+  pointId = 2 -- begin after the start point
   for l = 1, levelAntHill.line do
-    tempSelect = {}
-    tempSelect = randShot(1, levelAntHill.column, 3)
+    tempSelect = randShot(1, levelAntHill.column, levelAntHill.numPtsLine)
     for c = 1, levelAntHill.column do
       for s = 1, #tempSelect do
         if c == tempSelect[s] then
-          levelAntHill.listPoints[pointId].isOn = true
+          levelAntHill.listPoints[pointId].isOn = true -- the node exists
         end
       end
-      pointId = pointId + 1
+      pointId = pointId + 1 -- continue with the following node
     end
   end
   
