@@ -10,7 +10,7 @@ local windowHeight = 600
 local tempSelect = {}
 
 -- function allowing to pick a number of value between min and max
-function randShot(min, max, number)
+function randNodes(min, max, number)
   
   local randArea = {}
   local result = {}
@@ -68,7 +68,7 @@ function love.load()
   local tempSelect = {}
   pointId = 2 -- begin after the start point
   for l = 1, levelAntHill.line do
-    tempSelect = randShot(1, levelAntHill.column, levelAntHill.numPtsLine)
+    tempSelect = randNodes(1, levelAntHill.column, levelAntHill.numPtsLine)
     for c = 1, levelAntHill.column do
       for s = 1, #tempSelect do
         if c == tempSelect[s] then
@@ -80,16 +80,28 @@ function love.load()
   end
   
   -- creation first line of arcs
-  pointId = 2
   local numFirstArcs = 1
   for pointId = 1, #levelAntHill.listPoints - 2 do -- parse all the nodes (-2 to remove start and end points)
     if levelAntHill.listPoints[pointId].isOn == true and numFirstArcs < levelAntHill.numPtsLine + 1 then -- if the node exists and there is still nodes in the first line
-      levelAntHill.listArcs[numFirstArcs] = {id = 1, startX = levelAntHill.listPoints[1].x, startY = levelAntHill.listPoints[1].y, endX = levelAntHill.listPoints[pointId].x, endY = levelAntHill.listPoints[pointId].y, phero = 0} -- creation of the arc
+      levelAntHill.listArcs[numFirstArcs] = {id = numFirstArcs, startX = levelAntHill.listPoints[1].x, startY = levelAntHill.listPoints[1].y, endX = levelAntHill.listPoints[pointId].x, endY = levelAntHill.listPoints[pointId].y, phero = 0} -- creation of the arc
       numFirstArcs = numFirstArcs + 1
     end
     pointId = pointId + 1
   end
+  local lastPointId = pointId
   
+  --[[
+  -- creation second line of arcs
+  local numFollowArcs = numFirstArcs
+  local pointsToGo = levelAntHill.numPtsLine - 1
+  for pointId = 2, 2 + pointsToGo do
+    local tempRandBis = 0
+    tempRandBis = math.random(1, levelAntHill.numPtsLine)
+    levelAntHill.listArcs[numFollowArcs] = {id = numFollowArcs, startX = levelAntHill.listPoints[pointId].x, startY = levelAntHill.listPoints[pointId].y, endX = levelAntHill.listPoints[pointId + pointsToGo + tempRandBis].x, endY = levelAntHill.listPoints[pointId + pointsToGo + tempRandBis].y, phero = 0} -- creation of the arc
+    pointsToGo = pointsToGo - 1
+    numFollowArcs = numFollowArcs + 1
+  end
+  ]]
   
 end
 
