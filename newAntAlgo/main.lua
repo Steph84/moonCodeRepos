@@ -8,6 +8,7 @@ require "listLoad"
 local windowWidth = 1000
 local windowHeight = 600
 local tempSelect = {}
+local speed = 30
 
 antAlive.pic = love.graphics.newImage("pictures/antPic.png")
 antAlive.w = antAlive.pic:getWidth()
@@ -139,10 +140,48 @@ function love.load()
   -- ant alive
   antAlive.orien = math.rad(180)
   antAlive.posActual = {levelAntHill.listPoints[1].x, levelAntHill.listPoints[1].y}
-  
+  antAlive.dir = "down"
+end
+
+function moveSpeed(dt, previousX)
+  local subWay = (antAlive.posNext[1] - previousX)/100
+  antAlive.posActual[1] = antAlive.posActual[1] + subWay*speed*dt
+  return antAlive.posActual[1]
 end
 
 function love.update(dt)
+  
+  if antAlive.dir == "down" then
+    if antAlive.moving == false then
+      if antAlive.posActual[1] == levelAntHill.listPoints[1].x and antAlive.posActual[2] == levelAntHill.listPoints[1].y then
+        local nodeChoice = math.random(1, levelAntHill.numPtsLine)
+        antAlive.posPrevious = {levelAntHill.listPoints[1].x, levelAntHill.listPoints[1].y}
+        --antAlive.posActual = 
+        antAlive.posNext = {levelAntHill.listNodes[nodeChoice].x, levelAntHill.listNodes[nodeChoice].y}
+        antAlive.moving = true
+      end
+    end
+    
+    if antAlive.moving == true then
+      if antAlive.posActual[2] < antAlive.posNext[2] then
+        moveSpeed(dt, antAlive.posPrevious[1])
+        antAlive.posActual[2] = antAlive.posActual[2] + 1*speed*dt
+      else
+        --antAlive.posPrevious =
+        antAlive.posActual = {antAlive.posNext[1], antAlive.posNext[2]}
+        antAlive.posNext = {} -- a voir
+        antAlive.moving = false
+      end
+    end
+    
+  end
+  -- mode aller et mode retour
+  
+  -- choice function
+  
+  -- moving function
+  
+  -- update position the 3
 
 end
 

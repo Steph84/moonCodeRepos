@@ -15,9 +15,11 @@ antAlive = {}
 antAlive.pic = nil
 antAlive.w = 0
 antAlive.h = 0
+antAlive.dir = " " -- or "up"
 antAlive.posPrevious = {}
 antAlive.posActual = {}
 antAlive.posNext = {}
+antAlive.moving = false
 -- choice function
 
 pathAlgo = {}
