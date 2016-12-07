@@ -12,9 +12,12 @@ levelAntHill.numPtsLine = 3
 --volatile pheromone function
 
 antAlive = {}
-antAlive.posPrevious = nil
-antAlive.posActual = nil
-antAlive.posNext = nil
+antAlive.pic = nil
+antAlive.w = 0
+antAlive.h = 0
+antAlive.posPrevious = {}
+antAlive.posActual = {}
+antAlive.posNext = {}
 -- choice function
 
 pathAlgo = {}

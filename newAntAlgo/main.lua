@@ -9,6 +9,10 @@ local windowWidth = 1000
 local windowHeight = 600
 local tempSelect = {}
 
+antAlive.pic = love.graphics.newImage("pictures/antPic.png")
+antAlive.w = antAlive.pic:getWidth()
+antAlive.h = antAlive.pic:getHeight()
+
 -- function allowing to pick a number of value between min and max
 function randNodes(min, max, number)
   
@@ -97,6 +101,8 @@ function love.load()
     end
   end
   
+-- part of the arcs creation is not quite good
+-- have to rearrange
   -- creation of arcs
   local pointsToGo = levelAntHill.numPtsLine - 1
   for arcId = 1, levelAntHill.numPtsLine do
@@ -113,11 +119,26 @@ function love.load()
   end
   
   for arcId = 1 + levelAntHill.numPtsLine*2, levelAntHill.numPtsLine*3 do
-    levelAntHill.listArcs[arcId] = {id = arcId, startX = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].x, startY = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].y, endX = levelAntHill.listNodes[arcId].x, endY = levelAntHill.listNodes[arcId].y, phero = 0} -- creation of the arc
-    levelAntHill.listArcs[arcId + levelAntHill.numPtsLine] = {id = arcId, startX = levelAntHill.listNodes[arcId].x, startY = levelAntHill.listNodes[arcId].y, endX = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].x, endY = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].y, phero = 0} -- creation of the arc
     
+    -- arcs of the third line
+    levelAntHill.listArcs[arcId] = {id = arcId, startX = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].x, startY = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].y, endX = levelAntHill.listNodes[arcId].x, endY = levelAntHill.listNodes[arcId].y, phero = 0} -- creation of the arc
+    
+    -- arcs of the fourth line
+    levelAntHill.listArcs[arcId + levelAntHill.numPtsLine] = {id = arcId, startX = levelAntHill.listNodes[arcId].x, startY = levelAntHill.listNodes[arcId].y, endX = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].x, endY = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].y, phero = 0} -- creation of the arc
   end
   
+  for arcId = 1 + levelAntHill.numPtsLine*4, levelAntHill.numPtsLine*5 do
+    
+    -- arcs of the third line
+    levelAntHill.listArcs[arcId] = {id = arcId, startX = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].x, startY = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].y, endX = levelAntHill.listNodes[arcId].x, endY = levelAntHill.listNodes[arcId].y, phero = 0} -- creation of the arc
+    
+    -- arcs of the fourth line to the end point
+    levelAntHill.listArcs[arcId + levelAntHill.numPtsLine] = {id = arcId, startX = levelAntHill.listNodes[arcId].x, startY = levelAntHill.listNodes[arcId].y, endX = levelAntHill.listPoints[#levelAntHill.listPoints].x, endY = levelAntHill.listPoints[#levelAntHill.listPoints].y, phero = 0} -- creation of the arc
+  end
+  
+  -- ant alive
+  antAlive.orien = math.rad(180)
+  antAlive.posActual = {levelAntHill.listPoints[1].x, levelAntHill.listPoints[1].y}
   
 end
 
@@ -153,6 +174,10 @@ function love.draw()
   for arcNum = 1, #levelAntHill.listArcs do
     love.graphics.line(levelAntHill.listArcs[arcNum].startX, levelAntHill.listArcs[arcNum].startY, levelAntHill.listArcs[arcNum].endX, levelAntHill.listArcs[arcNum].endY)
     
+  
+  love.graphics.draw(antAlive.pic, antAlive.posActual[1], antAlive.posActual[2], antAlive.orien, 0.2, 0.2, antAlive.w/2, antAlive.h/2)
+  
+  
   end
 
 
