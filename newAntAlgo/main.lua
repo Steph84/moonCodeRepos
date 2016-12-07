@@ -112,22 +112,11 @@ function love.load()
     pointsToGo = pointsToGo - 1
   end
   
-  
-  
-  --[[
-  local lastPointId = pointId
-  
-  -- creation second line of arcs
-  local numFollowArcs = numFirstArcs
-  local pointsToGo = levelAntHill.numPtsLine - 1
-  for pointId = 2, 2 + pointsToGo do
-    local tempRandBis = 0
-    tempRandBis = math.random(1, levelAntHill.numPtsLine)
-    levelAntHill.listArcs[numFollowArcs] = {id = numFollowArcs, startX = levelAntHill.listPoints[pointId].x, startY = levelAntHill.listPoints[pointId].y, endX = levelAntHill.listPoints[pointId + pointsToGo + tempRandBis].x, endY = levelAntHill.listPoints[pointId + pointsToGo + tempRandBis].y, phero = 0} -- creation of the arc
-    pointsToGo = pointsToGo - 1
-    numFollowArcs = numFollowArcs + 1
+  for arcId = 1 + levelAntHill.numPtsLine*2, levelAntHill.numPtsLine*3 do
+    levelAntHill.listArcs[arcId] = {id = arcId, startX = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].x, startY = levelAntHill.listNodes[arcId - levelAntHill.numPtsLine].y, endX = levelAntHill.listNodes[arcId].x, endY = levelAntHill.listNodes[arcId].y, phero = 0} -- creation of the arc
+    levelAntHill.listArcs[arcId + levelAntHill.numPtsLine] = {id = arcId, startX = levelAntHill.listNodes[arcId].x, startY = levelAntHill.listNodes[arcId].y, endX = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].x, endY = levelAntHill.listNodes[arcId + levelAntHill.numPtsLine].y, phero = 0} -- creation of the arc
+    
   end
-  ]]
   
   
 end
