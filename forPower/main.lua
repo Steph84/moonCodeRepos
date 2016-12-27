@@ -83,12 +83,22 @@ function love.update(dt)
   
   cursorX = cell.width * cursorColumn - cell.width/2 - 5
   
-  --TODO !!!!
-  beta = love.mouse.isDown(1)
-  if beta == true then
-    grid.listTokens[2].tokenType = "yellow"
+  beta = love.mouse.isDown(1) -- left click
+  delta = love.mouse.isDown(2) -- right click
+  
+  if beta == true and whosTurn == "yellow" then
+    if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then
+      grid.listTokens[42 - 7 + cursorColumn].tokenType = "yellow"
+    elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then
+      grid.listTokens[42 - 14 + cursorColumn].tokenType = "yellow"
+    end
+    whosTurn = "red"
   end
   
+  if delta == true and whosTurn == "red" then
+    grid.listTokens[42 - 7 + cursorColumn].tokenType = "red"
+    whosTurn = "yellow"
+  end
   
   
 end
