@@ -10,6 +10,8 @@ local windowHeight = 600
 grid = {}
 grid.column = 7
 grid.line = 7
+grid.listTokens = {}
+grid.tokenDiam = 0
 
 cell = {}
 cell.height = 0
@@ -40,29 +42,18 @@ function love.load()
   cell.height = windowHeight/grid.line
   cell.width = windowWidth/grid.column
   
-  token.d = cell.width - 10
+  grid.tokenDiam = cell.width - 10
   
-  -- initialization of the grid (empty)
   local l, c
-  for l = 2, grid.line do
-    grid[l] = {}
-    for c = 1, grid.column do
-      grid[l][c] = "empty"
-    end
-  end
-  
-  
-  local lbis, cbis
-  local tempCell
+  local tokenId = 1
   local bx, by = 0, 0
   by = cell.height + cell.height/2
-  for lbis = 2, grid.line do
+  for l = 2, grid.line do
     bx = cell.width/2
-    for cbis = 1, grid.column do
-      tempCell = {}
-      tempCell = {bx, by}
-      table.insert(coordTokens, tempCell)
+    for c = 1, grid.column do
+      grid.listTokens[tokenId] = {id = tokenId, tabX = c, tabY = l, pixX = bx, pixY = by, tokenType = "empty"}
       bx = bx + cell.width
+      tokenId = tokenId + 1
     end
     by = by + cell.height
   end
@@ -92,9 +83,10 @@ function love.update(dt)
   
   cursorX = cell.width * cursorColumn - cell.width/2 - 5
   
+  --TODO !!!!
   beta = love.mouse.isDown(1)
   if beta == true then
-    grid[6][cursorColumn] = "yellow"
+    grid.listTokens[2].tokenType = "yellow"
   end
   
   
@@ -106,30 +98,25 @@ function love.draw()
   love.graphics.setColor(myColors.blue)
   love.graphics.rectangle("fill", 0, cell.height, windowWidth, windowHeight - cell.height)
   
-  print(grid[6][2])
   
   local l, c
+  local tokenId = 1
   for l = 2, grid.line do
     for c = 1, grid.column do
-      if grid[l][c] == "empty" then
+      if grid.listTokens[tokenId].tokenType == "empty" then
         love.graphics.setColor(myColors.black)
-      elseif grid[l][c] == "yellow" then
+      elseif grid.listTokens[tokenId].tokenType == "yellow" then
         love.graphics.setColor(myColors.yellow)
-      elseif grid[l][c] == "red" then
+      elseif grid.listTokens[tokenId].tokenType == "red" then
         love.graphics.setColor(myColors.red)
       end
-      local g
-      for g = 1, #coordTokens do
-      love.graphics.circle("fill", coordTokens[g][1], coordTokens[g][2], token.d/2)
-      end
+      love.graphics.circle("fill", grid.listTokens[tokenId].pixX, grid.listTokens[tokenId].pixY, grid.tokenDiam/2)
+    tokenId = tokenId + 1
     end
   end
   
   
-  local g
-  for g = 1, #coordTokens do
-  love.graphics.circle("fill", coordTokens[g][1], coordTokens[g][2], token.d/2)
-  end
+ 
 
   if whosTurn == "yellow" then
     love.graphics.setColor(myColors.yellow)
