@@ -30,6 +30,9 @@ local coordTokens = {}
 
 cursorX = 0
 cursorY = 0
+cursorColumn = 0
+
+whosTurn = "yellow"
 
 function love.load()
   
@@ -65,30 +68,36 @@ function love.load()
   end
   
   cursorY = cell.height - 20
-  print(cursorY)
+  
 end
 
 function love.update(dt)
   alpha = love.mouse.getX()
-  local tempCoord = cell.width
-  if alpha < tempCoord then
-    cursorX = tempCoord - tempCoord/2 - 5
-  elseif alpha < tempCoord * 2 then
-    cursorX = tempCoord * 2 - tempCoord/2 - 5
-  elseif alpha < tempCoord * 3 then
-    cursorX = tempCoord * 3 - tempCoord/2 - 5
-  elseif alpha < tempCoord * 4 then
-    cursorX = tempCoord * 4 - tempCoord/2 - 5
-  elseif alpha < tempCoord * 5 then
-    cursorX = tempCoord * 5 - tempCoord/2 - 5
-  elseif alpha < tempCoord * 6 then
-    cursorX = tempCoord * 6 - tempCoord/2 - 5
-  elseif alpha < tempCoord * 7 then
-    cursorX = tempCoord * 7 - tempCoord/2 - 5
+  
+  if alpha < cell.width * 1 then
+    cursorColumn = 1
+  elseif alpha < cell.width * 2 then
+    cursorColumn = 2
+  elseif alpha < cell.width * 3 then
+    cursorColumn = 3
+  elseif alpha < cell.width * 4 then
+    cursorColumn = 4
+  elseif alpha < cell.width * 5 then
+    cursorColumn = 5
+  elseif alpha < cell.width * 6 then
+    cursorColumn = 6
+  elseif alpha < cell.width * 7 then
+    cursorColumn = 7
   end
-  --print(alpha)
-  --TODO
-  -- cursorX update
+  
+  cursorX = cell.width * cursorColumn - cell.width/2 - 5
+  
+  beta = love.mouse.isDown(1)
+  if beta == true then
+    grid[6][cursorColumn] = "yellow"
+  end
+  
+  
   
 end
 
@@ -96,22 +105,37 @@ function love.draw()
 
   love.graphics.setColor(myColors.blue)
   love.graphics.rectangle("fill", 0, cell.height, windowWidth, windowHeight - cell.height)
-    
+  
+  print(grid[6][2])
+  
   local l, c
   for l = 2, grid.line do
     for c = 1, grid.column do
       if grid[l][c] == "empty" then
         love.graphics.setColor(myColors.black)
+      elseif grid[l][c] == "yellow" then
+        love.graphics.setColor(myColors.yellow)
+      elseif grid[l][c] == "red" then
+        love.graphics.setColor(myColors.red)
+      end
+      local g
+      for g = 1, #coordTokens do
+      love.graphics.circle("fill", coordTokens[g][1], coordTokens[g][2], token.d/2)
       end
     end
   end
+  
   
   local g
   for g = 1, #coordTokens do
   love.graphics.circle("fill", coordTokens[g][1], coordTokens[g][2], token.d/2)
   end
 
-  love.graphics.setColor(myColors.green)
+  if whosTurn == "yellow" then
+    love.graphics.setColor(myColors.yellow)
+  elseif whosTurn == "red" then
+    love.graphics.setColor(myColors.red)
+  end
   love.graphics.rectangle("fill", cursorX, cursorY, 10, 10)
 
 end
