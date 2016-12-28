@@ -36,6 +36,8 @@ cursorColumn = 0
 
 whosTurn = "yellow"
 
+winState = false
+
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
@@ -62,97 +64,125 @@ function love.load()
   
 end
 
-function checkWin(player)
+function checkLineWin(player)
   local a
-  local b, c = 0
+  local fourSum, fourSucc = 0, 0
+  local middleToken
   
-  if grid.listTokens[39].tokenType == player then -- possibility of win on line
+  for middleToken = 4, 39, 7 do
     
-  for a = 36, 42 do
-    if grid.listTokens[a].tokenType == player then
-      b = b + 1
-    end
-  end
-  if b >= 4 then
-    c = 1
-    local d
-    for d = -3, 3 do
-      if grid.listTokens[39 + d].tokenType == player then
-        c = c + 1
-        if c >= 4 then
-          print(player, " win !")
+    if grid.listTokens[middleToken].tokenType == player then -- possibility of win on line
+      
+      for a = (middleToken - 3), (middleToken + 3) do -- check if there are 4 tokens in the line
+        if grid.listTokens[a].tokenType == player then
+          fourSum = fourSum + 1
         end
       end
-    end
+      
+      if fourSum >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = -3, 3 do
+          if grid.listTokens[middleToken + d].tokenType == player then
+            fourSucc = fourSucc + 1
+            if fourSucc >= 4 then
+              return true -- win !!
+            end
+          else fourSucc = 0
+        end
+        
+        end
+      end
     
+    end
+
   end
   
-  end
+  return false -- no win
   
 end
 
 function love.update(dt)
-  alpha = love.mouse.getX()
   
-  if alpha < cell.width * 1 then
-    cursorColumn = 1
-  elseif alpha < cell.width * 2 then
-    cursorColumn = 2
-  elseif alpha < cell.width * 3 then
-    cursorColumn = 3
-  elseif alpha < cell.width * 4 then
-    cursorColumn = 4
-  elseif alpha < cell.width * 5 then
-    cursorColumn = 5
-  elseif alpha < cell.width * 6 then
-    cursorColumn = 6
-  elseif alpha < cell.width * 7 then
-    cursorColumn = 7
-  end
+  if winState == true then
+    if love.keyboard.isDown("space") then
+      love.event.quit()
+    end
   
-  cursorX = cell.width * cursorColumn - cell.width/2 - 5
+  else
   
-  beta = love.mouse.isDown(1) -- left click
-  delta = love.mouse.isDown(2) -- right click
-  
-  if grid.listTokens[cursorColumn].tokenType == "empty" then -- if there some space to put a token
-  
-    if beta == true and whosTurn == "yellow" then
-      if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 7 + cursorColumn].tokenType = "yellow"
-      elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 14 + cursorColumn].tokenType = "yellow"
-      elseif grid.listTokens[42 - 21 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 21 + cursorColumn].tokenType = "yellow"
-      elseif grid.listTokens[42 - 28 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 28 + cursorColumn].tokenType = "yellow"
-      elseif grid.listTokens[42 - 35 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 35 + cursorColumn].tokenType = "yellow"
-      elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 42 + cursorColumn].tokenType = "yellow"
-      end
-      checkWin("yellow")
-      whosTurn = "red"
+    alpha = love.mouse.getX()
+    
+    if alpha < cell.width * 1 then
+      cursorColumn = 1
+    elseif alpha < cell.width * 2 then
+      cursorColumn = 2
+    elseif alpha < cell.width * 3 then
+      cursorColumn = 3
+    elseif alpha < cell.width * 4 then
+      cursorColumn = 4
+    elseif alpha < cell.width * 5 then
+      cursorColumn = 5
+    elseif alpha < cell.width * 6 then
+      cursorColumn = 6
+    elseif alpha < cell.width * 7 then
+      cursorColumn = 7
     end
     
-    if delta == true and whosTurn == "red" then
-      if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 7 + cursorColumn].tokenType = "red"
-      elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 14 + cursorColumn].tokenType = "red"
-      elseif grid.listTokens[42 - 21 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 21 + cursorColumn].tokenType = "red"
-      elseif grid.listTokens[42 - 28 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 28 + cursorColumn].tokenType = "red"
-      elseif grid.listTokens[42 - 35 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 35 + cursorColumn].tokenType = "red"
-      elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then
-        grid.listTokens[42 - 42 + cursorColumn].tokenType = "red"
+    cursorX = cell.width * cursorColumn - cell.width/2 - 5
+    
+    beta = love.mouse.isDown(1) -- left click
+    delta = love.mouse.isDown(2) -- right click
+    
+    if grid.listTokens[cursorColumn].tokenType == "empty" then -- if there some space to put a token
+    
+      if beta == true and whosTurn == "yellow" then
+        if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 7 + cursorColumn].tokenType = "yellow"
+        elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 14 + cursorColumn].tokenType = "yellow"
+        elseif grid.listTokens[42 - 21 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 21 + cursorColumn].tokenType = "yellow"
+        elseif grid.listTokens[42 - 28 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 28 + cursorColumn].tokenType = "yellow"
+        elseif grid.listTokens[42 - 35 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 35 + cursorColumn].tokenType = "yellow"
+        elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 42 + cursorColumn].tokenType = "yellow"
+        end
+        winState = checkLineWin("yellow")
+        
+        if winState == true then
+          print("yellow win the game !")
+        else whosTurn = "red"
+        end
+        
       end
-      checkWin("red")
-      whosTurn = "yellow"
+      
+      if delta == true and whosTurn == "red" then
+        if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 7 + cursorColumn].tokenType = "red"
+        elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 14 + cursorColumn].tokenType = "red"
+        elseif grid.listTokens[42 - 21 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 21 + cursorColumn].tokenType = "red"
+        elseif grid.listTokens[42 - 28 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 28 + cursorColumn].tokenType = "red"
+        elseif grid.listTokens[42 - 35 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 35 + cursorColumn].tokenType = "red"
+        elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then
+          grid.listTokens[42 - 42 + cursorColumn].tokenType = "red"
+        end
+        winState = checkLineWin("red")
+        
+        if winState == true then
+          print("red win the game !")
+        else whosTurn = "yellow"
+        end
+        
+      end
+    
     end
-  
+
   end
   
 end
