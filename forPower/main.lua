@@ -17,18 +17,12 @@ cell = {}
 cell.height = 0
 cell.width = 0
 
-token = {}
-token.type = "empty"
-token.d = 0
-
 local myColors = {}
 myColors.blue = {0, 0, 190}
 myColors.red = {255, 0, 0}
 myColors.yellow = {255, 255, 0}
 myColors.black = {0, 0, 0}
 myColors.green = {0, 255, 0}
-
-local coordTokens = {}
 
 cursorX = 0
 cursorY = 0
@@ -88,17 +82,23 @@ function checkLineWin(player)
               return true -- win !!
             end
           else fourSucc = 0
-        end
-        
+          end
         end
       end
-    
     end
-
   end
-  
   return false -- no win
+end
+
+function checkColumnWin(player)
+  local middleToken2
   
+  for middleToken2 = 15, 21 do
+    if grid.listTokens[middleToken2].tokenType == player then -- possibility of win on column
+      --TODO
+    end
+  end
+    
 end
 
 function love.update(dt)
@@ -150,6 +150,7 @@ function love.update(dt)
           grid.listTokens[42 - 42 + cursorColumn].tokenType = "yellow"
         end
         winState = checkLineWin("yellow")
+        winState = checkColumnWin("yellow")
         
         if winState == true then
           print("yellow win the game !")
@@ -173,6 +174,7 @@ function love.update(dt)
           grid.listTokens[42 - 42 + cursorColumn].tokenType = "red"
         end
         winState = checkLineWin("red")
+        winState = checkColumnWin("red")
         
         if winState == true then
           print("red win the game !")
