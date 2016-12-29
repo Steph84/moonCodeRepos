@@ -121,6 +121,17 @@ function checkColumnWin(player)
   return false
 end
 
+function checkDiagWin(player)
+  local miniToken
+  
+  for miniToken = 15, 21 do
+    if grid.listTokens[middleToken2].tokenType == player then -- minimum possibility of win
+      
+  
+    end
+  end
+end
+
 function love.update(dt)
   
   if winState == true then
@@ -171,6 +182,7 @@ function love.update(dt)
         end
         winState = checkLineWin("yellow")
         winState = checkColumnWin("yellow")
+        winState = checkDiagWin("yellow")
         
         if winState == true then
           print("yellow win the game !")
@@ -195,6 +207,7 @@ function love.update(dt)
         end
         winState = checkLineWin("red")
         winState = checkColumnWin("red")
+        winState = checkDiagWin("red")
         
         if winState == true then
           print("red win the game !")
