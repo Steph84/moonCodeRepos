@@ -64,9 +64,7 @@ function checkLineWin(player)
   local middleToken
   
   for middleToken = 4, 39, 7 do
-    
     if grid.listTokens[middleToken].tokenType == player then -- possibility of win on line
-      
       for a = (middleToken - 3), (middleToken + 3) do -- check if there are 4 tokens in the line
         if grid.listTokens[a].tokenType == player then
           fourSum = fourSum + 1
@@ -122,14 +120,45 @@ function checkColumnWin(player)
 end
 
 function checkDiagWin(player)
-  local miniToken
+  local miniToken1, minToken2
+  local fourSum1, fourSum2 = 0, 0
   
-  for miniToken = 15, 21 do
-    if grid.listTokens[middleToken2].tokenType == player then -- minimum possibility of win
-      
-  
+  -- diag \ from 3rd row
+  for miniToken1 = 15, 18 do
+    if grid.listTokens[miniToken1].tokenType == player then -- minimum possibility of win
+      for a = miniToken1, (miniToken1 + 24), 8 do -- check if there are 4 tokens in the column
+        if grid.listTokens[a].tokenType == player then
+          fourSum1 = fourSum1 + 1
+        end
+      end
+      if fourSum1 >= 4 then -- if so, win
+        return true
+      end
     end
   end
+  
+  -- diag / from 3rd row
+  for miniToken2 = 18, 21 do
+    if grid.listTokens[miniToken2].tokenType == player then -- minimum possibility of win
+      for a = miniToken2, (miniToken2 + 18), 6 do -- check if there are 4 tokens in the column
+        if grid.listTokens[a].tokenType == player then
+          fourSum2 = fourSum2 + 1
+        end
+      end
+      if fourSum2 >= 4 then -- if so, win
+        return true
+      end
+    end
+  end
+  
+  
+  
+  
+  
+  
+  
+  
+  return false
 end
 
 function love.update(dt)
@@ -180,11 +209,9 @@ function love.update(dt)
         elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then
           grid.listTokens[42 - 42 + cursorColumn].tokenType = "yellow"
         end
-        winState = checkLineWin("yellow")
-        winState = checkColumnWin("yellow")
-        winState = checkDiagWin("yellow")
         
-        if winState == true then
+        if checkLineWin("yellow") or checkColumnWin("yellow") or checkDiagWin("yellow") then
+          winState = true
           print("yellow win the game !")
         else whosTurn = "red"
         end
@@ -205,11 +232,9 @@ function love.update(dt)
         elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then
           grid.listTokens[42 - 42 + cursorColumn].tokenType = "red"
         end
-        winState = checkLineWin("red")
-        winState = checkColumnWin("red")
-        winState = checkDiagWin("red")
         
-        if winState == true then
+        if checkLineWin("red") or checkColumnWin("red") or checkDiagWin("red") then
+          winState = true
           print("red win the game !")
         else whosTurn = "yellow"
         end
