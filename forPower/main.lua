@@ -42,6 +42,7 @@ function love.load()
   
   grid.tokenDiam = cell.width - 10
   
+  -- initialization of the grid
   local l, c
   local tokenId = 1
   local bx, by = 0, 0
@@ -49,6 +50,7 @@ function love.load()
   for l = 2, grid.line do
     bx = cell.width/2
     for c = 1, grid.column do
+      -- each token have an id, coordinate in the grid in row/column and in pyxel and a type (color)
       grid.listTokens[tokenId] = {id = tokenId, tabX = c, tabY = l, pixX = bx, pixY = by, tokenType = "empty"}
       bx = bx + cell.width
       tokenId = tokenId + 1
@@ -56,10 +58,11 @@ function love.load()
     by = by + cell.height
   end
   
-  cursorY = cell.height - 20
+  cursorY = cell.height - 20 -- y coordinate for the cursor
   
 end
 
+-- function to check if win by a line
 function checkLineWin(player)
   local a
   local fourSum, fourSucc = 0, 0
@@ -79,6 +82,7 @@ function checkLineWin(player)
           if grid.listTokens[middleToken + d].tokenType == player then
             fourSucc = fourSucc + 1
             if fourSucc >= 4 then
+              print("win by line")
               return true -- win !!
             end
           else fourSucc = 0
@@ -90,6 +94,7 @@ function checkLineWin(player)
   return false -- no win
 end
 
+-- function to check if win by a column
 function checkColumnWin(player)
   local middleToken2
   local a
@@ -109,6 +114,7 @@ function checkColumnWin(player)
           if grid.listTokens[middleToken2 + d].tokenType == player then
             fourSucc = fourSucc + 1
             if fourSucc >= 4 then
+              print("win by column")
               return true -- win !!
             end
           else fourSucc = 0
@@ -121,12 +127,14 @@ function checkColumnWin(player)
   return false
 end
 
+-- function to check if win by a diagonal
 function checkDiagWin(player)
-  local miniToken1, miniToken2, miniToken3, miniToken4, middleToken, miniToken5, miniToken6, otherTokens
+  local miniToken1, miniToken2, miniToken3, miniToken4, middleToken, miniToken5, miniToken6
   local fourSum1, fourSum2, fourSum3, fourSum4, fourSum5, fourSum6, fourSum7, fourSum8 = 0, 0, 0, 0, 0, 0, 0, 0
   
   -- diag \ from 3rd row
   for miniToken1 = 15, 18 do
+    fourSum1 = 0
     if grid.listTokens[miniToken1].tokenType == player then -- minimum possibility of win
       for a = miniToken1, (miniToken1 + 24), 8 do -- check if there are 4 tokens in the diagonal
         if grid.listTokens[a].tokenType == player then
@@ -134,6 +142,7 @@ function checkDiagWin(player)
         end
       end
       if fourSum1 >= 4 then -- if so, win
+        print("win by diag 1")
         return true
       end
     end
@@ -141,6 +150,7 @@ function checkDiagWin(player)
   
   -- diag / from 3rd row
   for miniToken2 = 18, 21 do
+    fourSum2 = 0
     if grid.listTokens[miniToken2].tokenType == player then -- minimum possibility of win
       for a = miniToken2, (miniToken2 + 18), 6 do -- check if there are 4 tokens in the diagonal
         if grid.listTokens[a].tokenType == player then
@@ -148,6 +158,7 @@ function checkDiagWin(player)
         end
       end
       if fourSum2 >= 4 then -- if so, win
+        print("win by diag 2")
         return true
       end
     end
@@ -155,6 +166,7 @@ function checkDiagWin(player)
   
   -- diag \ from 2nd row
   for miniToken3 = 8, 10 do
+    fourSum3 = 0
     if grid.listTokens[miniToken3].tokenType == player then -- minimum possibility of win
       for a = miniToken3, (miniToken3 + 32), 8 do -- check if there are 4 tokens in the diagonal
         if grid.listTokens[a].tokenType == player then
@@ -169,6 +181,7 @@ function checkDiagWin(player)
   
   -- diag / from 2nd row
   for miniToken4 = 12, 14 do
+    fourSum4 = 0
     if grid.listTokens[miniToken4].tokenType == player then -- minimum possibility of win
       for a = miniToken4, (miniToken4 + 24), 6 do -- check if there are 4 tokens in the diagonal
         if grid.listTokens[a].tokenType == player then
@@ -184,6 +197,7 @@ function checkDiagWin(player)
   
   -- diag from middle token
   for middleToken = 4, 11, 7 do
+    fourSum5 = 0
     if grid.listTokens[middleToken].tokenType == player then -- minimum possibility of win
       for a = middleToken, (middleToken + 18), 6 do -- check if there are 4 tokens in the diagonal
         if grid.listTokens[a].tokenType == player then
@@ -191,6 +205,7 @@ function checkDiagWin(player)
         end
       end
       if fourSum5 >= 4 then -- if so, win
+        print("win by diag 3")
         return true
       else
         fourSum5 = 0
@@ -201,6 +216,7 @@ function checkDiagWin(player)
         end
       end
       if fourSum5 >= 4 then -- if so, win
+        print("win by diag 4")
         return true
       end
     end
@@ -208,6 +224,7 @@ function checkDiagWin(player)
   
   -- diag \ from 1st row
   for miniToken5 = 1, 2 do
+    fourSum6 = 0
     if grid.listTokens[miniToken5].tokenType == player then -- minimum possibility of win
       for a = miniToken5, (miniToken5 + 40), 8 do -- check if there are 4 tokens in the diagonal
         if grid.listTokens[a].tokenType == player then
@@ -222,6 +239,7 @@ function checkDiagWin(player)
   
   -- diag / from 1st row
   for miniToken6 = 6, 7 do
+    fourSum7 = 0
     if grid.listTokens[miniToken6].tokenType == player then -- minimum possibility of win
       for a = miniToken6, (miniToken6 + 30), 6 do -- check if there are 4 tokens in the diagonal
         if grid.listTokens[a].tokenType == player then
@@ -236,7 +254,7 @@ function checkDiagWin(player)
   
   -- diag from tokens 3 and 5
   if grid.listTokens[3].tokenType == player then -- minimum possibility of win
-    for a = otherTokens, (otherTokens + 32), 8 do -- check if there are 4 tokens in the diagonal
+    for a = 3, (3 + 32), 8 do -- check if there are 4 tokens in the diagonal
       if grid.listTokens[a].tokenType == player then
         fourSum8 = fourSum8 + 1
       end
@@ -247,7 +265,7 @@ function checkDiagWin(player)
   end
   if grid.listTokens[5].tokenType == player then -- minimum possibility of win
     fourSum8 = 0
-    for a = otherTokens, (otherTokens + 24), 6 do -- check if there are 4 tokens in the diagonal
+    for a = 5, (5 + 24), 6 do -- check if there are 4 tokens in the diagonal
       if grid.listTokens[a].tokenType == player then
         fourSum8 = fourSum8 + 1
       end
@@ -265,15 +283,15 @@ end
 
 function love.update(dt)
   
-  if winState == true then
+  if winState == true then -- if win, we can quit
     if love.keyboard.isDown("space") then
       love.event.quit()
     end
   
   else
   
-    alpha = love.mouse.getX()
-    
+    alpha = love.mouse.getX() -- get the x coordinate of the mouse
+    -- to determinate in which column we are
     if alpha < cell.width * 1 then
       cursorColumn = 1
     elseif alpha < cell.width * 2 then
@@ -290,6 +308,7 @@ function love.update(dt)
       cursorColumn = 7
     end
     
+    -- update the x coordinate for the cursor
     cursorX = cell.width * cursorColumn - cell.width/2 - 5
     
     beta = love.mouse.isDown(1) -- left click
@@ -298,26 +317,28 @@ function love.update(dt)
     if grid.listTokens[cursorColumn].tokenType == "empty" then -- if there some space to put a token
     
       if beta == true and whosTurn == "yellow" then
-        if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then
+        if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then -- if the space is free in the 6th and last row
           grid.listTokens[42 - 7 + cursorColumn].tokenType = "yellow"
-        elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then
+        elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then -- if the space is free in the 5th row
           grid.listTokens[42 - 14 + cursorColumn].tokenType = "yellow"
-        elseif grid.listTokens[42 - 21 + cursorColumn].tokenType == "empty" then
+        elseif grid.listTokens[42 - 21 + cursorColumn].tokenType == "empty" then -- if the space is free in the 4th and last row
           grid.listTokens[42 - 21 + cursorColumn].tokenType = "yellow"
-        elseif grid.listTokens[42 - 28 + cursorColumn].tokenType == "empty" then
+        elseif grid.listTokens[42 - 28 + cursorColumn].tokenType == "empty" then -- if the space is free in the 3th and last row
           grid.listTokens[42 - 28 + cursorColumn].tokenType = "yellow"
-        elseif grid.listTokens[42 - 35 + cursorColumn].tokenType == "empty" then
+        elseif grid.listTokens[42 - 35 + cursorColumn].tokenType == "empty" then -- if the space is free in the 2nd and last row
           grid.listTokens[42 - 35 + cursorColumn].tokenType = "yellow"
-        elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then
+        elseif grid.listTokens[42 - 42 + cursorColumn].tokenType == "empty" then -- if the space is free in the 1st and last row
           grid.listTokens[42 - 42 + cursorColumn].tokenType = "yellow"
         end
         
-        tokensPlayed = tokensPlayed + 1
+        tokensPlayed = tokensPlayed + 1 -- count the number of tokens used
         
+        -- if number of tokens > 6, we can check for win
+        -- and if one of the check functions returns true
         if tokensPlayed >= 7 and ( checkLineWin("yellow") or checkColumnWin("yellow") or checkDiagWin("yellow") ) then
-          winState = true
+          winState = true -- win
           print("yellow win the game !")
-        else whosTurn = "red"
+        else whosTurn = "red" -- esle turn for the other player
         end
         
       end
@@ -355,14 +376,16 @@ end
 
 function love.draw()
 
+  -- frame of the game in blue
   love.graphics.setColor(myColors.blue)
   love.graphics.rectangle("fill", 0, cell.height, windowWidth, windowHeight - cell.height)
   
-  
+  -- coloring the tokens or the vacuum
   local l, c
   local tokenId = 1
   for l = 2, grid.line do
     for c = 1, grid.column do
+      -- define the right color for each tokens/vacuum
       if grid.listTokens[tokenId].tokenType == "empty" then
         love.graphics.setColor(myColors.black)
       elseif grid.listTokens[tokenId].tokenType == "yellow" then
@@ -370,6 +393,7 @@ function love.draw()
       elseif grid.listTokens[tokenId].tokenType == "red" then
         love.graphics.setColor(myColors.red)
       end
+      -- draw the tokens/vacuum
       love.graphics.circle("fill", grid.listTokens[tokenId].pixX, grid.listTokens[tokenId].pixY, grid.tokenDiam/2)
     tokenId = tokenId + 1
     end
@@ -377,12 +401,13 @@ function love.draw()
   
   
  
-
+  -- define which color is the cursor
   if whosTurn == "yellow" then
     love.graphics.setColor(myColors.yellow)
   elseif whosTurn == "red" then
     love.graphics.setColor(myColors.red)
   end
+  -- draw the cursor
   love.graphics.rectangle("fill", cursorX, cursorY, 10, 10)
 
 end
