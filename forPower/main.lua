@@ -92,13 +92,33 @@ end
 
 function checkColumnWin(player)
   local middleToken2
+  local a
+  local fourSum, fourSucc = 0, 0
   
   for middleToken2 = 15, 21 do
     if grid.listTokens[middleToken2].tokenType == player then -- possibility of win on column
-      --TODO
+      for a = (middleToken2 - 14), (middleToken2 + 21), 7 do -- check if there are 4 tokens in the column
+        if grid.listTokens[a].tokenType == player then
+          fourSum = fourSum + 1
+        end
+      end
+      
+      if fourSum >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = -14, 21, 7 do
+          if grid.listTokens[middleToken2 + d].tokenType == player then
+            fourSucc = fourSucc + 1
+            if fourSucc >= 4 then
+              return true -- win !!
+            end
+          else fourSucc = 0
+          end
+        end
+      end
+      
     end
   end
-    
+  return false
 end
 
 function love.update(dt)
