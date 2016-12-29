@@ -82,8 +82,9 @@ function checkLineWin(player)
           if grid.listTokens[middleToken + d].tokenType == player then
             fourSucc = fourSucc + 1
             if fourSucc >= 4 then
-              print("win by line")
-              return true -- win !!
+              print(player, "win by line through the token", middleToken)
+              --return true -- win !!
+              return middleToken
             end
           else fourSucc = 0
           end
@@ -114,7 +115,7 @@ function checkColumnWin(player)
           if grid.listTokens[middleToken2 + d].tokenType == player then
             fourSucc = fourSucc + 1
             if fourSucc >= 4 then
-              print("win by column")
+              print(player, "win by column through the token", middleToken2)
               return true -- win !!
             end
           else fourSucc = 0
@@ -131,7 +132,9 @@ end
 function checkDiagWin(player)
   local miniToken1, miniToken2, miniToken3, miniToken4, middleToken, miniToken5, miniToken6
   local fourSum1, fourSum2, fourSum3, fourSum4, fourSum5, fourSum6, fourSum7, fourSum8 = 0, 0, 0, 0, 0, 0, 0, 0
+  local fourSucc3, fourSucc4, fourSucc6, fourSucc7, fourSucc8 = 0, 0, 0, 0, 0
   
+-----------------------------------------------------diagonal from 3rd row-----------------------------------------------------
   -- diag \ from 3rd row
   for miniToken1 = 15, 18 do
     fourSum1 = 0
@@ -164,6 +167,7 @@ function checkDiagWin(player)
     end
   end
   
+-----------------------------------------------------diagonal from 2nd row-----------------------------------------------------
   -- diag \ from 2nd row
   for miniToken3 = 8, 10 do
     fourSum3 = 0
@@ -173,8 +177,19 @@ function checkDiagWin(player)
           fourSum3 = fourSum3 + 1
         end
       end
-      if fourSum3 >= 4 then -- if so, win
-        --return true
+      
+      if fourSum3 >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = 0, 32, 8 do
+          if grid.listTokens[miniToken3 + d].tokenType == player then
+            fourSucc3 = fourSucc3 + 1
+            if fourSucc3 >= 4 then
+              print("win by diag 3")
+              return true -- win !!
+            end
+          else fourSucc3 = 0
+          end
+        end
       end
     end
   end
@@ -188,13 +203,23 @@ function checkDiagWin(player)
           fourSum4 = fourSum4 + 1
         end
       end
-      if fourSum4 >= 4 then -- if so, win
-        --return true
+      if fourSum3 >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = 0, 24, 6 do
+          if grid.listTokens[miniToken4 + d].tokenType == player then
+            fourSucc4 = fourSucc4 + 1
+            if fourSucc4 >= 4 then
+              print("win by diag 4")
+              return true -- win !!
+            end
+          else fourSucc4 = 0
+          end
+        end
       end
     end
   end
   
-  
+------------------------------------------------diagonal from middle tokens 4 and 11------------------------------------------------
   -- diag from middle token
   for middleToken = 4, 11, 7 do
     fourSum5 = 0
@@ -205,7 +230,7 @@ function checkDiagWin(player)
         end
       end
       if fourSum5 >= 4 then -- if so, win
-        print("win by diag 3")
+        print("win by diag 5")
         return true
       else
         fourSum5 = 0
@@ -216,12 +241,13 @@ function checkDiagWin(player)
         end
       end
       if fourSum5 >= 4 then -- if so, win
-        print("win by diag 4")
+        print("win by diag 6")
         return true
       end
     end
   end
   
+-----------------------------------------------------diagonal from 1st row-----------------------------------------------------
   -- diag \ from 1st row
   for miniToken5 = 1, 2 do
     fourSum6 = 0
@@ -231,8 +257,18 @@ function checkDiagWin(player)
           fourSum6 = fourSum6 + 1
         end
       end
-      if fourSum6 >= 4 then -- if so, win
-        --return true
+      if fourSum6 >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = 0, 40, 8 do
+          if grid.listTokens[miniToken5 + d].tokenType == player then
+            fourSucc6 = fourSucc6 + 1
+            if fourSucc6 >= 4 then
+              print("win by diag 7")
+              return true -- win !!
+            end
+          else fourSucc6 = 0
+          end
+        end
       end
     end
   end
@@ -246,12 +282,23 @@ function checkDiagWin(player)
           fourSum7 = fourSum7 + 1
         end
       end
-      if fourSum7 >= 4 then -- if so, win
-        --return true
+      if fourSum7 >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = 0, 23, 8 do
+          if grid.listTokens[miniToken6 + d].tokenType == player then
+            fourSucc7 = fourSucc7 + 1
+            if fourSucc7 >= 4 then
+              print("win by diag 8")
+              return true -- win !!
+            end
+          else fourSucc7 = 0
+          end
+        end
       end
     end
   end
   
+--------------------------------------------------------diagonal from tokens 3 and 5------------------------------------------------
   -- diag from tokens 3 and 5
   if grid.listTokens[3].tokenType == player then -- minimum possibility of win
     for a = 3, (3 + 32), 8 do -- check if there are 4 tokens in the diagonal
@@ -259,20 +306,41 @@ function checkDiagWin(player)
         fourSum8 = fourSum8 + 1
       end
     end
-    if fourSum8 >= 4 then -- if so, win
-      --return true
-    end
+    if fourSum8 >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = 0, 32, 8 do
+          if grid.listTokens[3 + d].tokenType == player then
+            fourSucc8 = fourSucc8 + 1
+            if fourSucc8 >= 4 then
+              print("win by diag 9")
+              return true -- win !!
+            end
+          else fourSucc8 = 0
+          end
+        end
+      end
   end
   if grid.listTokens[5].tokenType == player then -- minimum possibility of win
     fourSum8 = 0
+    fourSucc8 = 0
     for a = 5, (5 + 24), 6 do -- check if there are 4 tokens in the diagonal
       if grid.listTokens[a].tokenType == player then
         fourSum8 = fourSum8 + 1
       end
     end
-    if fourSum8 >= 4 then -- if so, win
-      --return true
-    end
+    if fourSum8 >= 4 then -- if so, let's check it there are 4 in a row
+        local d
+        for d = 0, 24, 6 do
+          if grid.listTokens[5 + d].tokenType == player then
+            fourSucc8 = fourSucc8 + 1
+            if fourSucc8 >= 4 then
+              print("win by diag 8")
+              return true -- win !!
+            end
+          else fourSucc8 = 0
+          end
+        end
+      end
   end
   
   
@@ -338,7 +406,7 @@ function love.update(dt)
         if tokensPlayed >= 7 and ( checkLineWin("yellow") or checkColumnWin("yellow") or checkDiagWin("yellow") ) then
           winState = true -- win
           print("yellow win the game !")
-        else whosTurn = "red" -- esle turn for the other player
+        else whosTurn = "red" -- else turn for the other player
         end
         
       end
@@ -376,6 +444,11 @@ end
 
 function love.draw()
 
+  if winState == true then
+    love.graphics.setColor(myColors.blue)
+    love.graphics.print("test", 0, 0)
+  end
+
   -- frame of the game in blue
   love.graphics.setColor(myColors.blue)
   love.graphics.rectangle("fill", 0, cell.height, windowWidth, windowHeight - cell.height)
@@ -399,8 +472,6 @@ function love.draw()
     end
   end
   
-  
- 
   -- define which color is the cursor
   if whosTurn == "yellow" then
     love.graphics.setColor(myColors.yellow)
