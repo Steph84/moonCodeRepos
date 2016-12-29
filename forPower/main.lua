@@ -33,6 +33,9 @@ whosTurn = "yellow"
 winState = false
 
 tokensPlayed = 0
+winToken = 0
+winPlayer = nil
+
 
 function love.load()
   
@@ -82,9 +85,9 @@ function checkLineWin(player)
           if grid.listTokens[middleToken + d].tokenType == player then
             fourSucc = fourSucc + 1
             if fourSucc >= 4 then
-              print(player, "win by line through the token", middleToken)
-              --return true -- win !!
-              return middleToken
+              winPlayer = player
+              winToken = middleToken
+              return true -- win !!
             end
           else fourSucc = 0
           end
@@ -115,7 +118,8 @@ function checkColumnWin(player)
           if grid.listTokens[middleToken2 + d].tokenType == player then
             fourSucc = fourSucc + 1
             if fourSucc >= 4 then
-              print(player, "win by column through the token", middleToken2)
+              winPlayer = player
+              winToken = middleToken2
               return true -- win !!
             end
           else fourSucc = 0
@@ -145,7 +149,8 @@ function checkDiagWin(player)
         end
       end
       if fourSum1 >= 4 then -- if so, win
-        print("win by diag 1")
+        winPlayer = player
+        winToken = miniToken1
         return true
       end
     end
@@ -161,7 +166,8 @@ function checkDiagWin(player)
         end
       end
       if fourSum2 >= 4 then -- if so, win
-        print("win by diag 2")
+        winPlayer = player
+        winToken = miniToken2
         return true
       end
     end
@@ -184,7 +190,8 @@ function checkDiagWin(player)
           if grid.listTokens[miniToken3 + d].tokenType == player then
             fourSucc3 = fourSucc3 + 1
             if fourSucc3 >= 4 then
-              print("win by diag 3")
+              winPlayer = player
+              winToken = miniToken3
               return true -- win !!
             end
           else fourSucc3 = 0
@@ -209,7 +216,8 @@ function checkDiagWin(player)
           if grid.listTokens[miniToken4 + d].tokenType == player then
             fourSucc4 = fourSucc4 + 1
             if fourSucc4 >= 4 then
-              print("win by diag 4")
+              winPlayer = player
+              winToken = miniToken4
               return true -- win !!
             end
           else fourSucc4 = 0
@@ -230,7 +238,8 @@ function checkDiagWin(player)
         end
       end
       if fourSum5 >= 4 then -- if so, win
-        print("win by diag 5")
+        winPlayer = player
+        winToken = middleToken
         return true
       else
         fourSum5 = 0
@@ -241,7 +250,8 @@ function checkDiagWin(player)
         end
       end
       if fourSum5 >= 4 then -- if so, win
-        print("win by diag 6")
+        winPlayer = player
+        winToken = middleToken
         return true
       end
     end
@@ -263,7 +273,8 @@ function checkDiagWin(player)
           if grid.listTokens[miniToken5 + d].tokenType == player then
             fourSucc6 = fourSucc6 + 1
             if fourSucc6 >= 4 then
-              print("win by diag 7")
+              winPlayer = player
+              winToken = miniToken5
               return true -- win !!
             end
           else fourSucc6 = 0
@@ -288,7 +299,8 @@ function checkDiagWin(player)
           if grid.listTokens[miniToken6 + d].tokenType == player then
             fourSucc7 = fourSucc7 + 1
             if fourSucc7 >= 4 then
-              print("win by diag 8")
+              winPlayer = player
+              winToken = miniToken6
               return true -- win !!
             end
           else fourSucc7 = 0
@@ -312,7 +324,8 @@ function checkDiagWin(player)
           if grid.listTokens[3 + d].tokenType == player then
             fourSucc8 = fourSucc8 + 1
             if fourSucc8 >= 4 then
-              print("win by diag 9")
+              winPlayer = player
+              winToken = 3
               return true -- win !!
             end
           else fourSucc8 = 0
@@ -334,7 +347,8 @@ function checkDiagWin(player)
           if grid.listTokens[5 + d].tokenType == player then
             fourSucc8 = fourSucc8 + 1
             if fourSucc8 >= 4 then
-              print("win by diag 8")
+              winPlayer = player
+              winToken = 5
               return true -- win !!
             end
           else fourSucc8 = 0
@@ -405,7 +419,6 @@ function love.update(dt)
         -- and if one of the check functions returns true
         if tokensPlayed >= 7 and ( checkLineWin("yellow") or checkColumnWin("yellow") or checkDiagWin("yellow") ) then
           winState = true -- win
-          print("yellow win the game !")
         else whosTurn = "red" -- else turn for the other player
         end
         
@@ -430,7 +443,6 @@ function love.update(dt)
         
         if tokensPlayed >= 7 and ( checkLineWin("red") or checkColumnWin("red") or checkDiagWin("red") ) then
           winState = true
-          print("red win the game !")
         else whosTurn = "yellow"
         end
         
@@ -443,12 +455,6 @@ function love.update(dt)
 end
 
 function love.draw()
-
-  if winState == true then
-    love.graphics.setColor(myColors.blue)
-    love.graphics.print("test", 0, 0)
-  end
-
   -- frame of the game in blue
   love.graphics.setColor(myColors.blue)
   love.graphics.rectangle("fill", 0, cell.height, windowWidth, windowHeight - cell.height)
@@ -480,6 +486,21 @@ function love.draw()
   end
   -- draw the cursor
   love.graphics.rectangle("fill", cursorX, cursorY, 10, 10)
+
+  if winState == true then
+    if winPlayer == "yellow" then
+      love.graphics.setColor(myColors.yellow)
+    elseif winPlayer == "red" then
+      love.graphics.setColor(myColors.red)
+    end
+    love.graphics.print("The player "..winPlayer.." win with through the token #"..winToken, 0, 0)
+    
+    love.graphics.setColor(myColors.black)
+    love.graphics.print(winToken, grid.listTokens[winToken].pixX - 7, grid.listTokens[winToken].pixY - 7)
+
+  end
+
+
 
 end
 
