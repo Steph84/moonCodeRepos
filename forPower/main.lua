@@ -44,6 +44,8 @@ cross.offSet = 5
 
 listPics = {}
 
+loadAnimation = false
+
 
 function love.load()
   
@@ -417,6 +419,21 @@ function checkDiagWin(player)
   return false
 end
 
+function animeToken(dt, player, destination)
+  
+  if player == "yellow" then
+    love.graphics.setColor(myColors.yellow)
+  elseif player == "red" then
+    love.graphics.setColor(myColors.red)
+  end
+  
+  
+  love.graphics.circle("fill", grid.listTokens[destination].pixX, 10 * dt, grid.tokenDiam/2)
+  
+  love.timer.sleep(2)
+  loadAnimation = false
+end
+
 function love.update(dt)
   
   if winState == true then -- if win, we can quit
@@ -454,6 +471,7 @@ function love.update(dt)
     
       if beta == true and whosTurn == "yellow" then
         if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then -- if the space is free in the 6th and last row
+          loadAnimation = true
           grid.listTokens[42 - 7 + cursorColumn].tokenType = "yellow"
         elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then -- if the space is free in the 5th row
           grid.listTokens[42 - 14 + cursorColumn].tokenType = "yellow"
@@ -526,6 +544,10 @@ function love.draw()
   -- frame of the game in blue
   love.graphics.setColor(myColors.blue)
   love.graphics.rectangle("fill", 0, cell.height, windowWidth, windowHeight - cell.height)
+  
+  if loadAnimation == true then
+    animeToken(dt, "yellow", 42 - 7 + cursorColumn)
+  end
   
   -- coloring the tokens or the vacuum
   local l, c
