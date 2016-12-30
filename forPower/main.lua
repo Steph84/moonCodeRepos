@@ -41,6 +41,8 @@ cross = {}
 cross.scale = 2.5
 cross.offSet = 5
 
+listPics = {}
+
 
 function love.load()
   
@@ -50,6 +52,7 @@ function love.load()
   
   grid.tokenDiam = cell.width - 10
   
+  print(grid.tokenDiam)
   -- initialization of the grid
   local l, c
   local tokenId = 1
@@ -67,6 +70,10 @@ function love.load()
   end
   
   cursorY = cell.height - 20 -- y coordinate for the cursor
+  
+  listPics.crossLoad = love.graphics.newImage("pictures/cross_75x75.png")
+  listPics.crossWidth = listPics.crossLoad:getWidth()
+  listPics.crossHeight = listPics.crossLoad:getHeight()
   
 end
 
@@ -534,7 +541,7 @@ function love.draw()
     
     love.graphics.setColor(myColors.black)
     for numToken = 1, 4 do
-      love.graphics.print("X", grid.listTokens[winTokens[numToken]].pixX, grid.listTokens[winTokens[numToken]].pixY, 0, cross.scale, cross.scale, cross.offSet, cross.offSet)
+      love.graphics.draw(listPics.crossLoad, grid.listTokens[winTokens[numToken]].pixX, grid.listTokens[winTokens[numToken]].pixY, 0, 1, 1, listPics.crossWidth/2, listPics.crossHeight/2)
     end
     
     
