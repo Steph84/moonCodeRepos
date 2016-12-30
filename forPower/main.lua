@@ -18,6 +18,7 @@ cell.height = 0
 cell.width = 0
 
 local myColors = {}
+myColors.white = {255, 255, 255}
 myColors.blue = {0, 0, 190}
 myColors.red = {255, 0, 0}
 myColors.yellow = {255, 255, 0}
@@ -47,6 +48,7 @@ listPics = {}
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
+  --love.graphics.setBackgroundColor(myColors.white)
   cell.height = windowHeight/grid.line
   cell.width = windowWidth/grid.column
   
@@ -69,11 +71,19 @@ function love.load()
     by = by + cell.height
   end
   
-  cursorY = cell.height - 20 -- y coordinate for the cursor
+  cursorY = cell.height*3/4 -- y coordinate for the cursor
   
   listPics.crossLoad = love.graphics.newImage("pictures/cross_75x75.png")
   listPics.crossWidth = listPics.crossLoad:getWidth()
   listPics.crossHeight = listPics.crossLoad:getHeight()
+  
+  listPics.redCursorLoad = love.graphics.newImage("pictures/redCursor_15x15.png")
+  listPics.redCursorWidth = listPics.redCursorLoad:getWidth()
+  listPics.redCursorHeight = listPics.redCursorLoad:getHeight()
+  
+  listPics.yellowCursorLoad = love.graphics.newImage("pictures/yellowCursor_15x15.png")
+  listPics.yellowCursorWidth = listPics.yellowCursorLoad:getWidth()
+  listPics.yellowCursorHeight = listPics.yellowCursorLoad:getHeight()
   
 end
 
@@ -435,7 +445,7 @@ function love.update(dt)
     end
     
     -- update the x coordinate for the cursor
-    cursorX = cell.width * cursorColumn - cell.width/2 - 5
+    cursorX = cell.width * cursorColumn - cell.width/2
     
     beta = love.mouse.isDown(1) -- left click
     delta = love.mouse.isDown(2) -- right click
@@ -499,6 +509,20 @@ function love.update(dt)
 end
 
 function love.draw()
+  
+  -- header background
+  love.graphics.setColor(myColors.white)
+  love.graphics.rectangle("fill", 0, 0, windowWidth, cell.height)
+  
+  -- draw the cursors
+  if winState == false then
+    if whosTurn == "yellow" then
+      love.graphics.draw(listPics.yellowCursorLoad, cursorX, cursorY, 0, 1, 1, listPics.yellowCursorWidth/2, listPics.yellowCursorHeight/2)
+    elseif whosTurn == "red" then
+      love.graphics.draw(listPics.redCursorLoad, cursorX, cursorY, 0, 1, 1, listPics.redCursorWidth/2, listPics.redCursorHeight/2)
+    end
+  end
+  
   -- frame of the game in blue
   love.graphics.setColor(myColors.blue)
   love.graphics.rectangle("fill", 0, cell.height, windowWidth, windowHeight - cell.height)
@@ -522,15 +546,6 @@ function love.draw()
     end
   end
   
-  -- define which color is the cursor
-  if whosTurn == "yellow" then
-    love.graphics.setColor(myColors.yellow)
-  elseif whosTurn == "red" then
-    love.graphics.setColor(myColors.red)
-  end
-  -- draw the cursor
-  love.graphics.rectangle("fill", cursorX, cursorY, 10, 10)
-
   if winState == true then
     if winPlayer == "yellow" then
       love.graphics.setColor(myColors.yellow)
@@ -539,7 +554,6 @@ function love.draw()
     end
     love.graphics.print("The player "..winPlayer.." win with the tokens from "..winTokens[1].." to "..winTokens[4], cell.width*1.5, cell.height / 4, 0, 1.1, 1.1)
     
-    love.graphics.setColor(myColors.black)
     for numToken = 1, 4 do
       love.graphics.draw(listPics.crossLoad, grid.listTokens[winTokens[numToken]].pixX, grid.listTokens[winTokens[numToken]].pixY, 0, 1, 1, listPics.crossWidth/2, listPics.crossHeight/2)
     end
