@@ -471,7 +471,7 @@ function love.update(dt)
     
       if beta == true and whosTurn == "yellow" then
         if grid.listTokens[42 - 7 + cursorColumn].tokenType == "empty" then -- if the space is free in the 6th and last row
-          loadAnimation = true
+          --loadAnimation = true
           grid.listTokens[42 - 7 + cursorColumn].tokenType = "yellow"
         elseif grid.listTokens[42 - 14 + cursorColumn].tokenType == "empty" then -- if the space is free in the 5th row
           grid.listTokens[42 - 14 + cursorColumn].tokenType = "yellow"
