@@ -1,0 +1,7 @@
+the yellow player always begins
+
+Left click to play yellow
+
+Right click to play red
+
+Enjoy :-)
