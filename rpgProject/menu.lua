@@ -30,7 +30,11 @@ local gapWidth
 local gapHeight
 
 local coordY = 0
+local rotate = 0
 local timeElapsed = 0
+local offSet = 100
+
+local value = 0
 
 Menu.TypeFace = {}
 
@@ -41,47 +45,42 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   TILE_WIDTH = Menu.TypeFace[1]:getWidth()
   TILE_HEIGHT = Menu.TypeFace[1]:getHeight()
   
-  gapWidth = (pWindowWidth - (TITLE_WIDTH * TILE_WIDTH))/TITLE_WIDTH
+  gapWidth = ((pWindowWidth - offSet) - (TITLE_WIDTH * TILE_WIDTH))/TITLE_WIDTH
   gapHeight = ((pWindowHeight - 200) - (TITLE_HEIGHT * TILE_HEIGHT))/TITLE_HEIGHT
   
 end
 
 function Menu.Animation(dt)
   timeElapsed = timeElapsed + dt
-  coordY = coordY + 9.81 * timeElapsed * timeElapsed * 0.5
+  coordY = coordY + 9.81 * math.pow(timeElapsed, 2) * 0.5
+  print(timeElapsed)
+  rotate = rotate + timeElapsed*3.14/121
   if coordY > 800 then
     menuAnime = false
-  end
-  
+  end  
 end
 
-function Menu.AnimeDraw()
+function Menu.AnimeDraw(pWindowWidth, pWindowHeight)
   local i
-  for i = 1, 50 do
-    love.graphics.draw(Menu.TypeFace[1], 100 + i * 10, coordY - i * 10)
+  local bidule = 0
+  for i = 1, 121 do -- there are 121 tiles for title
+    bidule = coordY - (-math.pow(math.cos(i*3.14/121), 3) + math.pow(math.sin(i*3.14/121), 2)) * pWindowHeight/2 - pWindowHeight/2
+    love.graphics.draw(Menu.TypeFace[1], i * pWindowWidth/121, bidule, rotate)
   end
   
-  --love.graphics.draw(Menu.TypeFace[1], 100, coordY)
-  --love.graphics.draw(Menu.TypeFace[1], 150, coordY - 50)
 end
 
 function Menu.Draw()
-  
   local c, l
   for l = 1, TITLE_HEIGHT do 
     for c = 1, TITLE_WIDTH do
       local id = Menu.Title[l][c]
       local thisTypeFace = Menu.TypeFace[id]
       if thisTypeFace ~= nil then
-        --love.graphics.draw(thisTypeFace, (c-1)*(TILE_WIDTH + 10) + 60, (l-1)*(TILE_HEIGHT + 10) + 100)
-        love.graphics.draw(thisTypeFace, (c-1)*(TILE_WIDTH + gapWidth), (l-1)*(TILE_HEIGHT + gapHeight))
+        love.graphics.draw(thisTypeFace, (c-1)*(TILE_WIDTH + gapWidth) + offSet/2, (l-1)*(TILE_HEIGHT + gapHeight))
       end
     end
   end
-  
-  
-  
-  
 end
 
 

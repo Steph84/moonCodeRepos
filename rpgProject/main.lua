@@ -33,7 +33,7 @@ end
 
 function love.draw()
     if menuAnime == true then
-      myMenu.AnimeDraw()
+      myMenu.AnimeDraw(windowWidth, windowHeight)
     else myMenu.Draw()
     end
   
