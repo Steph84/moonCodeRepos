@@ -17,7 +17,7 @@ function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
   
-  myMenu.Load()
+  myMenu.Load(windowWidth, windowHeight)
   
   menuAnime = true
   
