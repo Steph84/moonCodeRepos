@@ -36,12 +36,16 @@ local offSet = 100
 
 local value = 0
 
+local mySpeed = 6
+local myCoord = 0
+
 Menu.TypeFace = {}
 
+-- to allow the loading of all the tiles
 function Menu.Load(pWindowWidth, pWindowHeight)
   Menu.TypeFace[0] = nil
   Menu.TypeFace[1] = love.graphics.newImage("pictures/titleTile8x8.png")
-  --Menu.TypeFace[1] = love.graphics.newImage("pictures/titleTile32x32.png")
+  Menu.TypeFace[2] = love.graphics.newImage("pictures/titleTile32x32.png")
   TILE_WIDTH = Menu.TypeFace[1]:getWidth()
   TILE_HEIGHT = Menu.TypeFace[1]:getHeight()
   
@@ -53,23 +57,31 @@ end
 function Menu.Animation(dt)
   timeElapsed = timeElapsed + dt
   coordY = coordY + 9.81 * math.pow(timeElapsed, 2) * 0.5
-  print(timeElapsed)
   rotate = rotate + timeElapsed*3.14/121
   if coordY > 800 then
     menuAnime = false
   end  
+  
+  myCoord = myCoord + mySpeed
+  if myCoord > 400 then
+    mySpeed = - mySpeed
+  end
+  
 end
 
 function Menu.AnimeDraw(pWindowWidth, pWindowHeight)
   local i
   local bidule = 0
   for i = 1, 121 do -- there are 121 tiles for title
-    bidule = coordY - (-math.pow(math.cos(i*3.14/121), 3) + math.pow(math.sin(i*3.14/121), 2)) * pWindowHeight/2 - pWindowHeight/2
-    love.graphics.draw(Menu.TypeFace[1], i * pWindowWidth/121, bidule, rotate)
+    -- bidule = coordY - (-math.pow(math.cos(i*3.14/121), 3) + math.pow(math.sin(i*3.14/121), 2)) * pWindowHeight/2 - pWindowHeight/2
+    love.graphics.draw(Menu.TypeFace[1], i * pWindowWidth/121, coordY, rotate)
   end
+  
+  love.graphics.draw(Menu.TypeFace[2], myCoord, myCoord, rotate)
   
 end
 
+-- draw the final menu
 function Menu.Draw()
   local c, l
   for l = 1, TITLE_HEIGHT do 
