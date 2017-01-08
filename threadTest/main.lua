@@ -4,11 +4,12 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 local myThread
 local mySecondThread
+local machin
 
 function love.load()
   -- create threads with the same lua file
   myThread = love.thread.newThread( "thread.lua" )
-  mySecondThread = love.thread.newThread( "thread.lua" )
+  --mySecondThread = love.thread.newThread( "thread.lua" )
   
   -- create channel with a name to be called in the thread easily
   myChannel = love.thread.getChannel("test")
@@ -21,16 +22,19 @@ function love.load()
   -- the channel name is not necessary
   myThread:start() -- arguments are used to send into the thread
   love.timer.sleep(1) -- tempo for the random seed
-  mySecondThread:start()
+  --mySecondThread:start()
 
 end
 
 function love.update(dt)
-
+  machin = myChannel:pop() -- retrieve the message from the channel
+  -- once it had been read, the message disapeared
+  print(machin)
 end
 
 function love.draw()
-    
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.rectangle("fill", 100, machin, 100, 100)
 end
 
 function love.keypressed(key)
