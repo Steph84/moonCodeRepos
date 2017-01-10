@@ -18,9 +18,13 @@ function createTile(pId, pSprite, pX, pY, pRotate)
   local tile = {}
   local tempRandVX = 0
   local tempRandVY = 0
+  local tempRand00 = 0
   
   tempRandVX = math.random(-3, 3)
   tempRandVY = math.random(-3, 3)
+  while tempRandVY == tempRandVX do
+    tempRandVY = math.random(-3, 3)
+  end
   
   tile.id = pId
   tile.sprite = pSprite
