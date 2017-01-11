@@ -25,13 +25,20 @@ function fox.Load(pWindowHeight, pWindowWidth, pRectDepth)
   fox.jump = false
   fox.jumpSpeed = initJumpSpeed
   
+  fox.rot = 0
+  
   sonJump = love.audio.newSource("sounds/jumpSound.wav", "static")
 
 end
 
-function fox.Update(dt, pWindowWidth, pWindowHeight)
+function fox.Update(dt, pWindowWidth, pWindowHeight, pCollisionState)
   -- animation of the fox
+  if pCollisionState == true then
+    fox.rot = 10*dt
+  end
+  
   fox.picCurrent = fox.picCurrent + (12 * dt) -- using the delta time
+  
   if math.floor(fox.picCurrent) > #fox.pictures then
     fox.picCurrent = 1
   end
@@ -84,7 +91,7 @@ function fox.Draw()
                       fox.pictures[math.floor(fox.picCurrent)],
                       fox.coorX,
                       fox.coorY,
-                      0,
+                      fox.rot,
                       fox.scX,
                       fox.scY,
                       fox.w/2,
