@@ -12,6 +12,7 @@ Dog = require("dog")
 local rectDepth = 50
 local ratio = 1
 local colState = false
+local currentScreen = "title"
 
 function animalCollision(pFox, pDog)
   local F = pFox
@@ -30,6 +31,7 @@ function animalCollision(pFox, pDog)
 end
 
 function love.load()
+  titScreen = love.graphics.newImage("pictures/titleScreen.png")
   bgPic = love.graphics.newImage("pictures/background.png")
   bgW = bgPic:getWidth()
   bgH = bgPic:getHeight()
@@ -44,16 +46,32 @@ function love.load()
 end
 
 function love.update(dt)
-  local timeElapsed
-  Fox.Update(dt, windowWidth, windowHeight)
-  Dog.Update(dt, windowWidth)
-  colState = animalCollision(Fox, Dog)
+  if currentScreen == "title" then
+    print("truc")
+    if love.keyboard.isDown("return") then
+      print("bidule")
+      currentScreen = "game"
+    end
+  end
+  
+  if currentScreen == "game" then
+    Fox.Update(dt, windowWidth, windowHeight)
+    Dog.Update(dt, windowWidth)
+    colState = animalCollision(Fox, Dog)
+  end
 end
 
 function love.draw()
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.draw(bgPic, 0, 0, 0, 1/ratio, 1/ratio)
-  Fox.Draw(colState)
-  Dog.Draw()
   
+  if currentScreen == "title" then
+    love.graphics.draw(titScreen, 0, 0, 0)
+  end
+  
+  if currentScreen == "game" then
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.draw(bgPic, 0, 0, 0, 1/ratio, 1/ratio)
+    Fox.Draw(colState)
+    Dog.Draw()
+  end
 end
+
