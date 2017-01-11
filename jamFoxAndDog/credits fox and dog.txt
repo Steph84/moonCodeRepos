@@ -1,6 +1,6 @@
 background picture : bevouliin.com
-
-fox animation : Karasuba
-fox jump : myself
-
-dog animation : Reemax
+background music : Botanic
+fox sprites: Karasuba
+fox jump sound : myself
+dog sprites: Reemax
+hit sound : myself
