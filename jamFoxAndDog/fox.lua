@@ -1,8 +1,10 @@
+math.randomseed(os.time()) --initialiser le random
 local fox = {}
 
-local initJumpSpeed = 8.5
+local initJumpSpeed = 7
+local foxRunSpeed = 200
 
-function fox.Load(pWindowHeight)
+function fox.Load(pWindowHeight, pWindowWidth, pRectDepth)
   fox.pictures = {}
   local n
   for n=1, 7 do
@@ -13,8 +15,8 @@ function fox.Load(pWindowHeight)
   fox.h = fox.pictures[1]:getHeight()
 
   fox.picCurrent = 1
-  fox.coorX = 0
-  fox.coorY = pWindowHeight - fox.h
+  fox.coorX = math.random(1, 9)*100
+  fox.coorY = pWindowHeight - pRectDepth - fox.h
 
   fox.scX = 0.5
   fox.scY = 0.5
@@ -22,6 +24,8 @@ function fox.Load(pWindowHeight)
   fox.move = "right"
   fox.jump = false
   fox.jumpSpeed = initJumpSpeed
+  
+  sonJump = love.audio.newSource("sounds/jumpSound.wav", "static")
 
 end
 
@@ -34,11 +38,11 @@ function fox.Update(dt, pWindowWidth, pWindowHeight)
   
   -- movement and postion of the fox
   if fox.move == "right" then
-    fox.coorX = fox.coorX + (150 * dt)
+    fox.coorX = fox.coorX + (foxRunSpeed * dt)
     fox.scX = 0.5
   end
   if fox.move == "left" then
-    fox.coorX = fox.coorX - (150 * dt)
+    fox.coorX = fox.coorX - (foxRunSpeed * dt)
     fox.scX = 0 - 0.5
   end
   
@@ -51,7 +55,7 @@ function fox.Update(dt, pWindowWidth, pWindowHeight)
   end
   
   -- manage the jump state of the fox
-  if love.keyboard.isDown("space") or fox.coorY < (pWindowHeight - fox.h - 10) then
+  if love.keyboard.isDown("space") or fox.coorY < (pWindowHeight - fox.h*2) then -- *2 is to avoid jump when the game start
     fox.jump = true
   end
   if fox.coorY > (pWindowHeight - fox.h) then
@@ -68,10 +72,14 @@ function fox.Update(dt, pWindowWidth, pWindowHeight)
     fox.jumpSpeed = fox.jumpSpeed - dt*9.81
   end
   
+  if love.keyboard.isDown("space") then
+    sonJump:setVolume(0.2)
+    sonJump:play()
+  end
   
 end
 
-function fox.Draw(pWindowHeight)
+function fox.Draw()
   love.graphics.draw(
                       fox.pictures[math.floor(fox.picCurrent)],
                       fox.coorX,
