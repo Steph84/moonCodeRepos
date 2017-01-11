@@ -7,9 +7,26 @@ local foxRunSpeed = 200
 function fox.Load(pWindowHeight, pWindowWidth, pRectDepth)
   fox.pictures = {}
   local n
-  for n=1, 7 do
+  for n = 1, 7 do
     fox.pictures[n] = love.graphics.newImage("pictures/fox_"..n..".png")
   end 
+  
+  fox.blink = {}
+  fox.blink[1] = love.graphics.newImage("pictures/fox_1.png")
+  fox.blink[2] = love.graphics.newImage("pictures/fox_0.png")
+  fox.blink[3] = love.graphics.newImage("pictures/fox_2.png")
+  fox.blink[4] = love.graphics.newImage("pictures/fox_0.png")
+  fox.blink[5] = love.graphics.newImage("pictures/fox_3.png")
+  fox.blink[6] = love.graphics.newImage("pictures/fox_0.png")
+  fox.blink[7] = love.graphics.newImage("pictures/fox_4.png")
+  fox.blink[8] = love.graphics.newImage("pictures/fox_0.png")
+  fox.blink[9] = love.graphics.newImage("pictures/fox_5.png")
+  fox.blink[10] = love.graphics.newImage("pictures/fox_0.png")
+  fox.blink[11] = love.graphics.newImage("pictures/fox_6.png")
+  fox.blink[12] = love.graphics.newImage("pictures/fox_0.png")
+  fox.blink[13] = love.graphics.newImage("pictures/fox_7.png")
+  fox.blink[14] = love.graphics.newImage("pictures/fox_0.png")
+  
 
   fox.w = fox.pictures[1]:getWidth()
   fox.h = fox.pictures[1]:getHeight()
@@ -25,18 +42,12 @@ function fox.Load(pWindowHeight, pWindowWidth, pRectDepth)
   fox.jump = false
   fox.jumpSpeed = initJumpSpeed
   
-  fox.rot = 0
-  
   sonJump = love.audio.newSource("sounds/jumpSound.wav", "static")
 
 end
 
-function fox.Update(dt, pWindowWidth, pWindowHeight, pCollisionState)
+function fox.Update(dt, pWindowWidth, pWindowHeight)
   -- animation of the fox
-  if pCollisionState == true then
-    fox.rot = 10*dt
-  end
-  
   fox.picCurrent = fox.picCurrent + (12 * dt) -- using the delta time
   
   if math.floor(fox.picCurrent) > #fox.pictures then
@@ -86,17 +97,33 @@ function fox.Update(dt, pWindowWidth, pWindowHeight, pCollisionState)
   
 end
 
-function fox.Draw()
-  love.graphics.draw(
+function fox.Draw(pCollisionState)
+  
+  if pCollisionState == false then
+    love.graphics.draw(
                       fox.pictures[math.floor(fox.picCurrent)],
                       fox.coorX,
                       fox.coorY,
-                      fox.rot,
+                      0,
                       fox.scX,
                       fox.scY,
                       fox.w/2,
                       fox.h/2
-                    )
+                      )
+  elseif pCollisionState == true then
+    love.graphics.draw(
+                      fox.blink[math.floor(fox.picCurrent)],
+                      fox.coorX,
+                      fox.coorY,
+                      0,
+                      fox.scX,
+                      fox.scY,
+                      fox.w/2,
+                      fox.h/2
+                      )
+    
+  end
+  
 end
 
 

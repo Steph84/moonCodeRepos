@@ -18,8 +18,10 @@ function animalCollision(pFox, pDog)
   local D = pDog
   local dx = F.coorX - D.coorX
   local dy = F.coorY - D.coorY
-  if (math.abs(dx) < F.w/2 + D.w/2) then
-    if (math.abs(dy) < F.h/2 + D.h/2) then
+  
+  -- absolu of scale because of the negative scale for the flip
+  if (math.abs(dx) < (F.w*math.abs(F.scX)/2 + D.w*math.abs(D.scX)/2)) then
+    if (math.abs(dy) < (F.h*math.abs(F.scY)/2 + D.h*math.abs(D.scY)/2)) then
     return true
     end
   end
@@ -42,7 +44,8 @@ function love.load()
 end
 
 function love.update(dt)
-  Fox.Update(dt, windowWidth, windowHeight, colState)
+  local timeElapsed
+  Fox.Update(dt, windowWidth, windowHeight)
   Dog.Update(dt, windowWidth)
   colState = animalCollision(Fox, Dog)
 end
@@ -50,7 +53,7 @@ end
 function love.draw()
   love.graphics.setColor(255, 255, 255)
   love.graphics.draw(bgPic, 0, 0, 0, 1/ratio, 1/ratio)
-  Fox.Draw()
+  Fox.Draw(colState)
   Dog.Draw()
   
 end
