@@ -30,12 +30,11 @@ function dogChangeMove()
   elseif dog.move == true then
     dog.move = false
   end
-  
 end
 
 function dog.Update(dt, pWindowWidth)
   
-  -- dog AI moving and standing
+  -- dog "AI" moving and standing
   if timeElapsed < 5 then
     timeElapsed = timeElapsed + dt
   elseif timeElapsed > 5 then

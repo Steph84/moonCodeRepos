@@ -33,6 +33,14 @@ end
 function love.load()
   titScreen = love.graphics.newImage("pictures/titleScreen.png")
   bgPic = love.graphics.newImage("pictures/background.png")
+    
+  bgMus = love.audio.newSource("sounds/bcgMusic.mp3", "stream")
+  sonHit = love.audio.newSource("sounds/hitSound.wav", "static")
+  
+  bgMus:setLooping(true)
+  bgMus:setVolume(0.25)
+  bgMus:play()
+    
   bgW = bgPic:getWidth()
   bgH = bgPic:getHeight()
   
@@ -40,16 +48,17 @@ function love.load()
   windowHeight = bgH/ratio
   
   love.window.setMode(windowWidth, windowHeight)
+  love.window.setTitle("Fox & Dog")
+  
   Fox.Load(windowHeight, windowWidth, rectDepth)
   Dog.Load(windowHeight, rectDepth)
   
 end
 
 function love.update(dt)
+  
   if currentScreen == "title" then
-    print("truc")
     if love.keyboard.isDown("return") then
-      print("bidule")
       currentScreen = "game"
     end
   end
@@ -58,6 +67,10 @@ function love.update(dt)
     Fox.Update(dt, windowWidth, windowHeight)
     Dog.Update(dt, windowWidth)
     colState = animalCollision(Fox, Dog)
+    if colState == true then
+      sonHit:setVolume(0.25)
+      sonHit:play()
+    end
   end
 end
 

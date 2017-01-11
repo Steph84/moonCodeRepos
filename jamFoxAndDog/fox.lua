@@ -11,6 +11,7 @@ function fox.Load(pWindowHeight, pWindowWidth, pRectDepth)
     fox.pictures[n] = love.graphics.newImage("pictures/fox_"..n..".png")
   end 
   
+  -- some blank pictures between the normal ones to create a blink
   fox.blink = {}
   fox.blink[1] = love.graphics.newImage("pictures/fox_1.png")
   fox.blink[2] = love.graphics.newImage("pictures/fox_0.png")
