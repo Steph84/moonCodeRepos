@@ -1,5 +1,6 @@
 local dog = {}
 local dogWalkSpeed = 75
+local timeElapsed = 0
 
 function dog.Load(pWindowHeight, pRectDepth)
   dog.pictures = {}
@@ -18,35 +19,71 @@ function dog.Load(pWindowHeight, pRectDepth)
   dog.scX = 2
   dog.scY = 2
 
-  dog.move = "right"
-  dog.move = "right"
+  dog.direction = "right"
+  dog.move = true
+  
+end
+
+function dogChangeMove()
+  if dog.move == false then
+    dog.move = true
+  elseif dog.move == true then
+    dog.move = false
+  end
   
 end
 
 function dog.Update(dt, pWindowWidth)
+  
+  -- dog AI moving and standing
+  if timeElapsed < 5 then
+    timeElapsed = timeElapsed + dt
+  elseif timeElapsed > 5 then
+    dogChangeMove()
+    timeElapsed = 0
+  end
+  
   -- animation of the dog
-  dog.picCurrent = dog.picCurrent + (4 * dt) -- using the delta time
-  if math.floor(dog.picCurrent) > #dog.pictures then
-    dog.picCurrent = 1
+  if dog.move == true then
+    dog.picCurrent = dog.picCurrent + (4 * dt) -- using the delta time
+    if math.floor(dog.picCurrent) > #dog.pictures then
+      dog.picCurrent = 1
+    end
+    
+    -- movement and postion of the dog
+    if dog.direction == "right" then
+      dog.coorX = dog.coorX + (dogWalkSpeed * dt)
+      dog.scX = 2
+    end
+    if dog.direction == "left" then
+      dog.coorX = dog.coorX - (dogWalkSpeed * dt)
+      dog.scX = 0 - 2
+    end
+    
+    -- change of the direction of the dog
+    if dog.coorX > (pWindowWidth - dog.w/4) then
+      dog.direction = "left"
+    end
+    if dog.coorX < (0 + dog.w/4) then
+      dog.direction = "right"
+    end
+    
   end
   
-  -- movement and postion of the dog
-  if dog.move == "right" then
-    dog.coorX = dog.coorX + (dogWalkSpeed * dt)
-    dog.scX = 2
-  end
-  if dog.move == "left" then
-    dog.coorX = dog.coorX - (dogWalkSpeed * dt)
-    dog.scX = 0 - 2
+  -- standing of the dog
+  if dog.move == false then
+    dog.picCurrent = 2
+    
+    -- postion of the dog
+    if dog.direction == "right" then
+      dog.scX = 2
+    end
+    if dog.direction == "left" then
+      dog.scX = 0 - 2
+    end
   end
   
-  -- change of the direction of the dog
-  if dog.coorX > (pWindowWidth - dog.w/4) then
-    dog.move = "left"
-  end
-  if dog.coorX < (0 + dog.w/4) then
-    dog.move = "right"
-  end
+  
   
   
 end
