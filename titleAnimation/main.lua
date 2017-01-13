@@ -10,29 +10,25 @@ local tile8 = love.graphics.newImage("pictures/titleTile8x8.png")
 local tile16 = love.graphics.newImage("pictures/coloredBall_16x16.png")
 local tile32 = love.graphics.newImage("pictures/titleTile32x32.png")
 
-
-
 local list_tiles = {}
 
-local numTiles = 200
-local sizeTile = 8
-local threshold = 4
+local numTiles = 2
+local freeThreshold = 4
+local agreThreshold = 1
 local agregate = false
-local agreRightBound
-local agreLeftBound
+local gloX = 0
+local gloY = 0
 
 function createTile(pId, pSprite, pX, pY, pRotate)
   local tile = {}
   local tempRandVX = 0
   local tempRandVY = 0
-  local tempRand00 = 0
   
-  tempRandVX = math.random(-threshold, threshold)
-  tempRandVY = math.random(-threshold, threshold)
+  tempRandVX = math.random(-freeThreshold, freeThreshold)
+  tempRandVY = math.random(-freeThreshold, freeThreshold)
   if tempRandVX == 0 and tempRandVY == 0 then
-    print("truc")
     while tempRandVY == tempRandVX do
-      tempRandVY = math.random(-threshold, threshold)
+      tempRandVY = math.random(-freeThreshold, freeThreshold)
     end
   end
   
@@ -61,9 +57,6 @@ function love.load()
     createTile(i, tile16, windowWidth/2, windowHeight/2, i * 20)
   end
   
-  agreRightBound = windowWidth - (windowWidth-400)/2
-  agreLeftBound = (windowWidth-400)/2
-  
 end
 
 function love.update(dt)
@@ -71,6 +64,8 @@ function love.update(dt)
   local tempRand = 0
   
   if agregate == false then
+    local sumX = 0
+    local sumY = 0
     -- behaviour of the tiles
     for i = 1, numTiles do
       -- movement through the screen
@@ -79,31 +74,36 @@ function love.update(dt)
       t.y = t.y + t.vy
       t.rota = t.rota + t.vr
       
+      sumX = sumX + t.x
+      sumY = sumY + t.y
+      gloX = sumX/i
+      gloY = sumY/i
+      
       -- sides bounce
       local upBound = 0 + t.w
       local downBound = windowHeight - t.h
       local rightBound = windowWidth - t.w
       local leftBound = 0 + t.h
       if t.y > downBound then
-        tempRand = math.random(-threshold, threshold)
+        tempRand = math.random(-freeThreshold, freeThreshold)
         t.y = windowHeight - t.h
         t.vy = 0 - t.vy
         t.vx = tempRand
       end
       if t.y < upBound then
-        tempRand = math.random(-threshold, threshold)
+        tempRand = math.random(-freeThreshold, freeThreshold)
         t.y = 0 + t.h
         t.vy = 0 - t.vy
         t.vx = tempRand
       end
       if t.x > rightBound then
-        tempRand = math.random(-threshold, threshold)
+        tempRand = math.random(-freeThreshold, freeThreshold)
         t.x = windowWidth - t.w
         t.vx = 0 - t.vx
         t.vy = tempRand
       end
       if t.x < leftBound then
-        tempRand = math.random(-threshold, threshold)
+        tempRand = math.random(-freeThreshold, freeThreshold)
         t.x = 0 + t.w
         t.vx = 0 - t.vx
         t.vy = tempRand
@@ -112,32 +112,73 @@ function love.update(dt)
   end
 
   if agregate == true then
+    local sumX = 0
+    local sumY = 0
     for i = 1, numTiles do
       -- movement through the screen
       local t = list_tiles[i]
       t.x = t.x + t.vx
       t.y = t.y + t.vy
+      t.rota = t.rota + t.vr
       
-      if t.x > agreRightBound then
-        tempRand = math.random(-threshold, threshold)
-        t.x = agreRightBound
-        t.vx = 0 - t.vx
+      sumX = sumX + t.x
+      sumY = sumY + t.y
+      gloX = sumX/i
+      gloY = sumY/i
+      
+      if t.x > gloX then
+        tempRand = math.random(-agreThreshold, -1)
+        t.vx = tempRand
+      end
+      if t.x < gloX then
+        tempRand = math.random(1, agreThreshold)
+        t.vx = tempRand
+      end
+      
+      if t.y > gloY then
+        tempRand = math.random(-agreThreshold, -1)
         t.vy = tempRand
       end
-      if t.x < agreLeftBound then
-        tempRand = math.random(-threshold, threshold)
-        t.x = agreLeftBound
-        t.vx = 0 - t.vx
+      if t.y < gloY then
+        tempRand = math.random(1, agreThreshold)
         t.vy = tempRand
-        t.y = windowWidth/2 + math.sqrt(math.pow(200, 2) - math.pow((t.x - windowHeight/2), 2))
-        print(t.y)
       end
+      
+      
+      -- sides bounce
+      local upBound = 0 + t.w
+      local downBound = windowHeight - t.h
+      local rightBound = windowWidth - t.w
+      local leftBound = 0 + t.h
+      if t.y > downBound then
+        tempRand = math.random(-agreThreshold, agreThreshold)
+        t.y = windowHeight - t.h
+        t.vy = 0 - t.vy
+        --t.vx = 0 - t.vx
+      end
+      if t.y < upBound then
+        tempRand = math.random(-agreThreshold, agreThreshold)
+        t.y = 0 + t.h
+        t.vy = 0 - t.vy
+        --t.vx = 0 - t.vx
+      end
+      if t.x > rightBound then
+        tempRand = math.random(-agreThreshold, agreThreshold)
+        t.x = windowWidth - t.w
+        t.vx = 0 - t.vx
+        --t.vy = 0 - t.vy
+      end
+      if t.x < leftBound then
+        tempRand = math.random(-agreThreshold, agreThreshold)
+        t.x = 0 + t.w
+        t.vx = 0 - t.vx
+        --t.vy = 0 - t.vy
+      end
+      
       
     end
     
   end
-
--- y = b +- sqrt(r² - (x - a)²)
 
   if love.keyboard.isDown("space") then
     agregate = true
@@ -162,6 +203,8 @@ function love.draw()
     love.graphics.draw(t.sprite, t.x, t.y, t.rota, 1, 1, t.w/2, t.h/2)
   end
   
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.circle("fill", gloX, gloY, 10, 6)
   
 end
 
