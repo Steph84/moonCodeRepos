@@ -16,8 +16,10 @@ local numTiles = 200
 local freeThreshold = 6
 local agreThreshold = 1
 local agregate = false
-local gloX = 0
-local gloY = 0
+local glo1X = 0
+local glo1Y = 0
+local glo2X = 0
+local glo2Y = 0
 
 function createTile(pId, pSprite, pX, pY, pRotate)
   local tile = {}
@@ -65,8 +67,11 @@ function love.update(dt)
   local tempRand = 0
   
   if agregate == false then
-    local sumX = 0
-    local sumY = 0
+    local sum1X = 0
+    local sum1Y = 0
+    local sum2X = 0
+    local sum2Y = 0
+    
     -- behaviour of the tiles
     for i = 1, numTiles do
       -- movement through the screen
@@ -75,10 +80,19 @@ function love.update(dt)
       t.y = t.y + t.vy
       t.rota = t.rota + t.vr
       
-      sumX = sumX + t.x
-      sumY = sumY + t.y
-      gloX = sumX/i
-      gloY = sumY/i
+      if t.sprite == tile8 then
+        sum1X = sum1X + t.x
+        sum1Y = sum1Y + t.y
+        glo1X = 2*sum1X/i
+        glo1Y = 2*sum1Y/i
+      end
+      if t.sprite == tile16 then
+        sum2X = sum2X + t.x
+        sum2Y = sum2Y + t.y
+        glo2X = 2*sum2X/i
+        glo2Y = 2*sum2Y/i
+      end
+      
       
       -- sides bounce
       local upBound = 0 + t.w
@@ -120,23 +134,23 @@ function love.update(dt)
       
       sumX = sumX + t.x
       sumY = sumY + t.y
-      gloX = sumX/i
-      gloY = sumY/i
+      glo1X = sumX/i
+      glo1Y = sumY/i
       
-      if t.x > gloX then
+      if t.x > glo1X then
         tempRand = math.random(-agreThreshold, -1)
         t.vx = tempRand
       end
-      if t.x < gloX then
+      if t.x < glo1X then
         tempRand = math.random(1, agreThreshold)
         t.vx = tempRand
       end
       
-      if t.y > gloY then
+      if t.y > glo1Y then
         tempRand = math.random(-agreThreshold, -1)
         t.vy = tempRand
       end
-      if t.y < gloY then
+      if t.y < glo1Y then
         tempRand = math.random(1, agreThreshold)
         t.vy = tempRand
       end
@@ -184,6 +198,7 @@ function love.update(dt)
 end
 
 function love.draw()
+  
   love.graphics.setBackgroundColor(150, 150, 200)
   
   local i
@@ -193,8 +208,12 @@ function love.draw()
   end
   
   love.graphics.setColor(255, 255, 255)
-  love.graphics.circle("fill", gloX, gloY, 10, 6)
+  love.graphics.circle("fill", glo1X, glo1Y, 10, 6)
   
+  love.graphics.setColor(0, 0, 255)
+  love.graphics.circle("fill", glo2X, glo2Y, 10, 6)
+  
+  love.graphics.setColor(255, 255, 255)
 end
 
 function love.keypressed(key)
