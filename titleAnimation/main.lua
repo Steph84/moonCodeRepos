@@ -12,8 +12,8 @@ local tile32 = love.graphics.newImage("pictures/titleTile32x32.png")
 
 local list_tiles = {}
 
-local numTiles = 2
-local freeThreshold = 4
+local numTiles = 200
+local freeThreshold = 6
 local agreThreshold = 1
 local agregate = false
 local gloX = 0
@@ -24,12 +24,11 @@ function createTile(pId, pSprite, pX, pY, pRotate)
   local tempRandVX = 0
   local tempRandVY = 0
   
-  tempRandVX = math.random(-freeThreshold, freeThreshold)
-  tempRandVY = math.random(-freeThreshold, freeThreshold)
-  if tempRandVX == 0 and tempRandVY == 0 then
-    while tempRandVY == tempRandVX do
-      tempRandVY = math.random(-freeThreshold, freeThreshold)
-    end
+  while tempRandVY == 0 do
+    tempRandVY = math.random(-freeThreshold, freeThreshold)
+  end
+  while tempRandVX == 0 do
+    tempRandVX = math.random(-freeThreshold, freeThreshold)
   end
   
   tile.id = pId
@@ -55,7 +54,9 @@ function love.load()
   
   for i = 1, numTiles do
     createTile(i, tile16, windowWidth/2, windowHeight/2, i * 20)
+    createTile(i, tile8, windowWidth/2, windowHeight/2, i * 20)
   end
+  
   
 end
 
@@ -85,28 +86,24 @@ function love.update(dt)
       local rightBound = windowWidth - t.w
       local leftBound = 0 + t.h
       if t.y > downBound then
-        tempRand = math.random(-freeThreshold, freeThreshold)
+        tempRand = math.random(-freeThreshold, -1)
         t.y = windowHeight - t.h
-        t.vy = 0 - t.vy
-        t.vx = tempRand
+        t.vy = tempRand
       end
       if t.y < upBound then
-        tempRand = math.random(-freeThreshold, freeThreshold)
+        tempRand = math.random(1, freeThreshold)
         t.y = 0 + t.h
-        t.vy = 0 - t.vy
-        t.vx = tempRand
+        t.vy = tempRand
       end
       if t.x > rightBound then
-        tempRand = math.random(-freeThreshold, freeThreshold)
+        tempRand = math.random(-freeThreshold, -1)
         t.x = windowWidth - t.w
-        t.vx = 0 - t.vx
-        t.vy = tempRand
+        t.vx = tempRand
       end
       if t.x < leftBound then
-        tempRand = math.random(-freeThreshold, freeThreshold)
+        tempRand = math.random(1, freeThreshold)
         t.x = 0 + t.w
-        t.vx = 0 - t.vx
-        t.vy = tempRand
+        t.vx = tempRand
       end
     end
   end
@@ -144,40 +141,32 @@ function love.update(dt)
         t.vy = tempRand
       end
       
-      
       -- sides bounce
       local upBound = 0 + t.w
       local downBound = windowHeight - t.h
       local rightBound = windowWidth - t.w
       local leftBound = 0 + t.h
       if t.y > downBound then
-        tempRand = math.random(-agreThreshold, agreThreshold)
+        tempRand = math.random(-agreThreshold, -1)
         t.y = windowHeight - t.h
-        t.vy = 0 - t.vy
-        --t.vx = 0 - t.vx
+        t.vy = tempRand
       end
       if t.y < upBound then
-        tempRand = math.random(-agreThreshold, agreThreshold)
+        tempRand = math.random(1, agreThreshold)
         t.y = 0 + t.h
-        t.vy = 0 - t.vy
-        --t.vx = 0 - t.vx
+        t.vy = tempRand
       end
       if t.x > rightBound then
-        tempRand = math.random(-agreThreshold, agreThreshold)
+        tempRand = math.random(-agreThreshold, -1)
         t.x = windowWidth - t.w
-        t.vx = 0 - t.vx
-        --t.vy = 0 - t.vy
+        t.vx = tempRand
       end
       if t.x < leftBound then
-        tempRand = math.random(-agreThreshold, agreThreshold)
+        tempRand = math.random(1, agreThreshold)
         t.x = 0 + t.w
-        t.vx = 0 - t.vx
-        --t.vy = 0 - t.vy
+        t.vx = tempRand
       end
-      
-      
     end
-    
   end
 
   if love.keyboard.isDown("space") then
