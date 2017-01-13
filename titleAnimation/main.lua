@@ -6,7 +6,6 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth = 1100
 local windowHeight = 600
 
-local myMenu = require("menu")
 local myLetter = require("letter")
 
 local titleDrawing = false

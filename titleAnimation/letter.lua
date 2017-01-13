@@ -1,3 +1,5 @@
+local myMenu = require("menu")
+
 local Letter = {}
 
 local tile8 = love.graphics.newImage("pictures/titleTile8x8.png")
@@ -12,8 +14,8 @@ local letterSpeed = 2
 local gloX = 0
 local gloY = 0
 
-function createTile(pId, pSprite, pX, pY, pRotate)
-  local tile = {}
+function createPiece(pId, pSprite, pX, pY, pRotate)
+  local piece = {}
   local tempRandVX = 0
   local tempRandVY = 0
   
@@ -24,18 +26,20 @@ function createTile(pId, pSprite, pX, pY, pRotate)
     tempRandVX = math.random(-freeThreshold, freeThreshold)
   end
   
-  tile.id = pId
-  tile.sprite = pSprite
-  tile.x = pX
-  tile.y = pY
-  tile.rota = pRotate
-  tile.vx = tempRandVX
-  tile.vy = tempRandVY
-  tile.vr = 0.1
-  tile.h = pSprite:getHeight()
-  tile.w = pSprite:getWidth()
-  table.insert(list_pieces, tile)
-  return tile
+  piece.id = pId
+  piece.sprite = pSprite
+  piece.x = pX
+  piece.y = pY
+  piece.rota = pRotate
+  piece.vx = tempRandVX
+  piece.vy = tempRandVY
+  piece.vr = 0.1
+  piece.h = pSprite:getHeight()
+  piece.w = pSprite:getWidth()
+  piece.targetX = nil
+  piece.targetY = nil
+  table.insert(list_pieces, piece)
+  return piece
 end
 
 function Letter.Load(pWindowWidth, pWindowHeight)
@@ -44,13 +48,17 @@ function Letter.Load(pWindowWidth, pWindowHeight)
   local tempRandH = 0
   
   for i = 1, numPieces do
-    createTile(i, tile16, pWindowWidth/2, pWindowHeight/2, i * 20)
+    createPiece(i, tile16, pWindowWidth/2, pWindowHeight/2, i * 20)
   end
   
+  myMenu.Load(pWindowWidth, pWindowHeight, tile16, list_pieces)
+  
+  --[[
   list_pieces[1].targetX = 100
   list_pieces[1].targetY = 100
   list_pieces[2].targetX = 400
   list_pieces[2].targetY = 400
+  --]]
 end
 
 function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
