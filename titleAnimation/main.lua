@@ -21,6 +21,9 @@ function love.load()
 end
 
 function love.update(dt)
+  if love.keyboard.isDown("space") then
+    titleDrawing = true
+  end
   myLetter.Update(dt, windowWidth, windowHeight, titleDrawing)
 end
 
@@ -33,6 +36,12 @@ function love.draw()
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("fill", windowWidth/2, windowHeight/2, 5)
   end
+  
+  
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.circle("fill", 100, 100, 5)
+  love.graphics.circle("fill", 400, 400, 5)
+  
   love.graphics.setColor(255, 255, 255)
 end
 

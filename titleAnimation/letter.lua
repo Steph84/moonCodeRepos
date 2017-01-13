@@ -6,9 +6,9 @@ local tile32 = love.graphics.newImage("pictures/titleTile32x32.png")
 
 local list_pieces = {}
 
-local numPieces = 200
+local numPieces = 2
 local freeThreshold = 5
-local letterThreshold = 2
+local letterSpeed = 2
 local gloX = 0
 local gloY = 0
 
@@ -113,17 +113,28 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
       t.y = t.y + t.vy
       t.rota = t.rota + t.vr
       
-      if t.x > t.targetX then t.vx = -letterThreshold end
-      if t.x < t.targetX then t.vx = letterThreshold end
-      if t.y > t.targetY then t.vy = -letterThreshold end
-      if t.y < t.targetY then t.vy = letterThreshold end
+      -- ratio to move the particule directly to the target
+      local tempRatio = math.abs((t.targetY - t.y)/(t.targetX - t.x))
+      print(tempRatio)
+      
+      if t.x > (t.targetX + t.w) then t.vx = -letterSpeed end
+      if t.x < (t.targetX - t.w) then t.vx = letterSpeed end
+      if t.y > (t.targetY + t.h) then t.vy = -letterSpeed*tempRatio end
+      if t.y < (t.targetY - t.h) then t.vy = letterSpeed*tempRatio end
+      
+      if t.x < (t.targetX + 3) and t.x > (t.targetX - 3) then
+        t.vx = 0
+        t.x = t.targetX
+      end
+      if t.y < (t.targetY + 3) and t.y > (t.targetY - 3) then
+        t.vy = 0
+        t.y = t.targetY
+      end
       
     end
   end
 
-  if love.keyboard.isDown("space") then
-    pTitleDrawing = true
-  end
+  
   
 end
 
