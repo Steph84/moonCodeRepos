@@ -12,8 +12,8 @@ local tile32 = love.graphics.newImage("pictures/titleTile32x32.png")
 
 local list_tiles = {}
 
-local numTiles = 200
-local freeThreshold = 6
+local numTiles = 2
+local freeThreshold = 5
 local agreThreshold = 1
 local agregate = false
 local glo1X = 0
@@ -56,9 +56,13 @@ function love.load()
   
   for i = 1, numTiles do
     createTile(i, tile16, windowWidth/2, windowHeight/2, i * 20)
-    createTile(i, tile8, windowWidth/2, windowHeight/2, i * 20)
+    --createTile(i, tile8, windowWidth/2, windowHeight/2, i * 20)
   end
   
+  list_tiles[1].targetX = 100
+  list_tiles[1].targetY = 100
+  list_tiles[2].targetX = 400
+  list_tiles[2].targetY = 400
   
 end
 
@@ -80,6 +84,12 @@ function love.update(dt)
       t.y = t.y + t.vy
       t.rota = t.rota + t.vr
       
+      sum1X = sum1X + t.x
+      sum1Y = sum1Y + t.y
+      glo1X = sum1X/i
+      glo1Y = sum1Y/i
+      
+      --[[
       if t.sprite == tile8 then
         sum1X = sum1X + t.x
         sum1Y = sum1Y + t.y
@@ -92,7 +102,7 @@ function love.update(dt)
         glo2X = 2*sum2X/i
         glo2Y = 2*sum2Y/i
       end
-      
+      --]]
       
       -- sides bounce
       local upBound = 0 + t.w
@@ -132,6 +142,25 @@ function love.update(dt)
       t.y = t.y + t.vy
       t.rota = t.rota + t.vr
       
+      --if i == 1 then
+        
+        if t.x > t.targetX then
+          t.vx = -2
+        end
+        if t.x < t.targetX then
+          t.vx = 2
+        end
+        
+        if t.y > t.targetY then
+          t.vy = -2
+        end
+        if t.y < t.targetY then
+          t.vy = 2
+        end
+      
+      --end
+      
+      --[[
       sumX = sumX + t.x
       sumY = sumY + t.y
       glo1X = sumX/i
@@ -179,7 +208,8 @@ function love.update(dt)
         tempRand = math.random(1, agreThreshold)
         t.x = 0 + t.w
         t.vx = tempRand
-      end
+      end--]]
+      
     end
   end
 
@@ -212,6 +242,9 @@ function love.draw()
   
   love.graphics.setColor(0, 0, 255)
   love.graphics.circle("fill", glo2X, glo2Y, 10, 6)
+  
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.circle("fill", windowWidth/2, windowHeight/2, 5)
   
   love.graphics.setColor(255, 255, 255)
 end
