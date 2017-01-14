@@ -13,6 +13,7 @@ local freeThreshold = 5
 local letterSpeed = 2
 local gloX = 0
 local gloY = 0
+local a, b, c, d = 0, 0, 0, 0
 
 function createPiece(pId, pSprite, pX, pY, pRotate)
   local piece = {}
@@ -148,10 +149,12 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
       -- for the extra particules, I just remove them
       if i > 121 then
         if t.x < 0 then table.remove(list_pieces, i) end
-        if t.x > pWindowHeight then table.remove(list_pieces, i) end
+        if t.x > pWindowWidth then table.remove(list_pieces, i) end
         if t.y < 0 then table.remove(list_pieces, i) end
-        if t.y > pWindowWidth then table.remove(list_pieces, i) end
+        if t.y > pWindowHeight then table.remove(list_pieces, i) end
       end
+      
+      
     end
   end
 
@@ -167,7 +170,7 @@ function Letter.Draw(pTitleDrawing)
     --love.graphics.print(i, t.x + 5, t.y + 5)
   end
   
-  --love.graphics.print("number of pieces "..#list_pieces, 5, 5)
+  love.graphics.print("number of pieces "..#list_pieces, 5, 5)
   
   -- draw the global center in white
   if pTitleDrawing == false then
