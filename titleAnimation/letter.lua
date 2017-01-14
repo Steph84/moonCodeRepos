@@ -108,7 +108,7 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
   if pTitleDrawing == true then
     local sumX = 0
     local sumY = 0
-    for i = 1, numPieces do
+    for i = #list_pieces, 1, -1 do
       -- movement through the screen
       local t = list_pieces[i]
       t.x = t.x + t.vx
@@ -134,12 +134,16 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
         end
       end
       
-      if t.x < 0 then
-        love.graphics.print("particule number "..i, 100, 5)
-        print(i)
-        table.remove(list_pieces, i)
+      if i > 121 then
+        if t.x < 0 then table.remove(list_pieces, i) end
+        if t.x > pWindowHeight then table.remove(list_pieces, i) end
+        if t.y < 0 then table.remove(list_pieces, i) end
+        if t.y > pWindowWidth then table.remove(list_pieces, i) end
       end
       
+      if #list_pieces == 121 then
+        print("particule ", i, " x = ", t.x, " , y = ", t.y)
+      end
     end
   end
 
@@ -149,7 +153,7 @@ end
 
 function Letter.Draw(pTitleDrawing)
   local i
-  for i = 1, numPieces do
+  for i = 1, #list_pieces do
     local t = list_pieces[i]
     love.graphics.draw(t.sprite, t.x, t.y, t.rota, 1, 1, t.w/2, t.h/2)
     love.graphics.print(i, t.x + 5, t.y + 5)
