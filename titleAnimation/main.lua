@@ -37,10 +37,6 @@ function love.draw()
   end
   
   
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.circle("fill", 100, 100, 5)
-  love.graphics.circle("fill", 400, 400, 5)
-  
   love.graphics.setColor(255, 255, 255)
 end
 

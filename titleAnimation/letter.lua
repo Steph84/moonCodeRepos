@@ -8,7 +8,7 @@ local tile32 = love.graphics.newImage("pictures/titleTile32x32.png")
 
 local list_pieces = {}
 
-local numPieces = 2
+local numPieces = 500
 local freeThreshold = 5
 local letterSpeed = 2
 local gloX = 0
@@ -53,12 +53,6 @@ function Letter.Load(pWindowWidth, pWindowHeight)
   
   myMenu.Load(pWindowWidth, pWindowHeight, tile16, list_pieces)
   
-  --[[
-  list_pieces[1].targetX = 100
-  list_pieces[1].targetY = 100
-  list_pieces[2].targetX = 400
-  list_pieces[2].targetY = 400
-  --]]
 end
 
 function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
@@ -121,22 +115,29 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
       t.y = t.y + t.vy
       t.rota = t.rota + t.vr
       
-      -- ratio to move the particule directly to the target
-      local tempRatio = math.abs((t.targetY - t.y)/(t.targetX - t.x))
-      print(tempRatio)
-      
-      if t.x > (t.targetX + t.w) then t.vx = -letterSpeed end
-      if t.x < (t.targetX - t.w) then t.vx = letterSpeed end
-      if t.y > (t.targetY + t.h) then t.vy = -letterSpeed*tempRatio end
-      if t.y < (t.targetY - t.h) then t.vy = letterSpeed*tempRatio end
-      
-      if t.x < (t.targetX + 3) and t.x > (t.targetX - 3) then
-        t.vx = 0
-        t.x = t.targetX
+      if i <= 121 then -- the extra particules is for the effect
+        -- ratio to move the particule directly to the target
+        local tempRatio = math.abs((t.targetY - t.y)/(t.targetX - t.x))
+        
+        if t.x > (t.targetX + t.w) then t.vx = -letterSpeed end
+        if t.x < (t.targetX - t.w) then t.vx = letterSpeed end
+        if t.y > (t.targetY + t.h) then t.vy = -letterSpeed*tempRatio end
+        if t.y < (t.targetY - t.h) then t.vy = letterSpeed*tempRatio end
+        
+        if t.x < (t.targetX + 3) and t.x > (t.targetX - 3) then
+          t.vx = 0
+          t.x = t.targetX
+        end
+        if t.y < (t.targetY + 3) and t.y > (t.targetY - 3) then
+          t.vy = 0
+          t.y = t.targetY
+        end
       end
-      if t.y < (t.targetY + 3) and t.y > (t.targetY - 3) then
-        t.vy = 0
-        t.y = t.targetY
+      
+      if t.x < 0 then
+        love.graphics.print("particule number "..i, 100, 5)
+        print(i)
+        table.remove(list_pieces, i)
       end
       
     end
@@ -151,7 +152,10 @@ function Letter.Draw(pTitleDrawing)
   for i = 1, numPieces do
     local t = list_pieces[i]
     love.graphics.draw(t.sprite, t.x, t.y, t.rota, 1, 1, t.w/2, t.h/2)
+    love.graphics.print(i, t.x + 5, t.y + 5)
   end
+  
+  love.graphics.print("number of pieces "..#list_pieces, 5, 5)
   
   if pTitleDrawing == false then
     love.graphics.setColor(255, 255, 255)

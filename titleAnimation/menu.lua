@@ -48,9 +48,7 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTheTile, pListPiece)
     for c = 1, TITLE_WIDTH do
       local id = Menu.Title[l][c]
       if id == 1 then
-        print(n, pListPiece[n].targetX)
-        pListPiece[n].targetX = (c-1)*(TILE_WIDTH + gapWidth) + offSet/2 -- nil value
-        print("truc", pListPiece[n].targetX)
+        pListPiece[n].targetX = (c-1)*(TILE_WIDTH + gapWidth) + offSet/2
         pListPiece[n].targetY = (l-1)*(TILE_HEIGHT + gapHeight)
         n = n + 1
       end
