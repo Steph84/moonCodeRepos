@@ -10,7 +10,6 @@ local myLetter = require("letter")
 
 local titleDrawing = false
 
-
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
@@ -31,11 +30,11 @@ function love.draw()
   
   myLetter.Draw(titleDrawing)
   
+  -- draw a black circle for the true center of the screen
   if titleDrawing == false then
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("fill", windowWidth/2, windowHeight/2, 5)
   end
-  
   
   love.graphics.setColor(255, 255, 255)
 end
