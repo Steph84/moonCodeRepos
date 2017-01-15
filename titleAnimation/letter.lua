@@ -61,9 +61,11 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
   local i
   local tempRand = 0
   
+  
   -- freestyle mode
   if pTitleDrawing == false then
-    myMenu.Update(dt, pTitleDrawing)
+    
+    pTitleDrawing = myMenu.Update(dt, pTitleDrawing)
     
     local sumX = 0
     local sumY = 0
@@ -115,6 +117,8 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
     local sumX = 0
     local sumY = 0
     
+    myMenu.Update(dt, pTitleDrawing)
+    
     for i = #list_pieces, 1, -1 do -- parse list backward for the removing
       -- movement through the screen
       local t = list_pieces[i]
@@ -161,6 +165,7 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
     end
   end
 
+  return pTitleDrawing
   
   
 end
@@ -175,7 +180,7 @@ function Letter.Draw(pTitleDrawing)
   
   --love.graphics.print("number of pieces "..#list_pieces, 5, 5)
   
-  myMenu.Draw(pTitleDrawing, gloX, gloY)
+  myMenu.Draw(pTitleDrawing, gloX, gloY, list_pieces)
 end
 
 return Letter

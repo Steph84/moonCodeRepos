@@ -65,38 +65,47 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTheTile, pListPiece)
 end
 
 function Menu.Update(dt, pTitleDrawing)
-  timeElapsed = timeElapsed + dt
   
-  if scene == "one" then
-    if timeElapsed > 3 then
-      scene = "two"
+  if pTitleDrawing == false then
+    
+    timeElapsed = timeElapsed + dt
+    
+    if scene == "one" then
+      if timeElapsed > 3 then
+        scene = "two"
+      end
     end
+    
+    if scene == "two" then
+      if alpha1 <= 255 and alpha1 >= 0 then
+        alpha1 = alpha1 + alphaSpeed
+      end
+      if alpha1 == 255 then
+        alphaSpeed = 0 - alphaSpeed
+      end
+      if alpha1 < 0 then
+        scene = "three"
+        timeElapsed = 0
+      end
+    end
+    
+    if scene == "three" then
+      if timeElapsed > 3 then
+        scene = "four"
+        pTitleDrawing = true
+        timeElapsed = 0
+      end
+    end
+    return pTitleDrawing
   end
   
-  if scene == "two" then
-    if alpha1 <= 300 and alpha1 >= 0 then
-      alpha1 = alpha1 + alphaSpeed
-    end
-    if alpha1 == 300 then
-      alphaSpeed = 0 - alphaSpeed
-    end
-    if alpha1 < 0 then
-      scene = "three"
-      timeElapsed = 0
-    end
+  if pTitleDrawing == true then
+    -- nothing TODO
   end
-  
-  if scene == "three" then
-    if timeElapsed > 3 then
-      scene = "four"
-      pTitleDrawing = true -- doesn't work...
-    end
-  end
-  
   
 end
 
-function Menu.Draw(pTitleDrawing, pGloX, pGloY)
+function Menu.Draw(pTitleDrawing, pGloX, pGloY, pList_pieces)
   -- draw a prompt following the global center
   if pTitleDrawing == false then
     love.graphics.setColor(255, 255, 255, alpha1)
@@ -106,6 +115,18 @@ function Menu.Draw(pTitleDrawing, pGloX, pGloY)
     -- offset and shearing
     love.graphics.printf("BE PREPARED ...", pGloX, pGloY, 200, "center", 0, 3, 3, 200/2, 10, -0.2, 0)
   end
+  
+  if pTitleDrawing == true then
+    if #pList_pieces == 121 then
+      -- TODO following animation
+    -- draw picture with rainbow effects
+    
+  --love.graphics.setColor(255, 255, 255)
+    
+    end
+  end
+
+
   love.graphics.setColor(255, 255, 255)
 end
 
