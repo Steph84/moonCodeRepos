@@ -63,7 +63,7 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
   
   -- freestyle mode
   if pTitleDrawing == false then
-    myMenu.Update(dt)
+    myMenu.Update(dt, pTitleDrawing)
     
     local sumX = 0
     local sumY = 0

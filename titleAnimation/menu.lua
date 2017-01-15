@@ -32,10 +32,13 @@ local gapHeight
 local offSet = 50
 local alpha1 = 0
 local alphaSpeed = 1
+local scene = nil
+local timeElapsed = 0
 
 Menu.TypeFace = {}
 
 function Menu.Load(pWindowWidth, pWindowHeight, pTheTile, pListPiece)
+  scene = "one"
   Menu.TypeFace[0] = nil
   Menu.TypeFace[1] = pTheTile -- I just have 1 kind of tile for this one
   
@@ -61,16 +64,36 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTheTile, pListPiece)
   end
 end
 
-function Menu.Update(dt)
-  if scene = "one" then
-    
+function Menu.Update(dt, pTitleDrawing)
+  timeElapsed = timeElapsed + dt
+  
+  if scene == "one" then
+    if timeElapsed > 3 then
+      scene = "two"
+    end
   end
-  if alpha1 <= 300 and alpha1 >= 0 then
-    alpha1 = alpha1 + alphaSpeed
+  
+  if scene == "two" then
+    if alpha1 <= 300 and alpha1 >= 0 then
+      alpha1 = alpha1 + alphaSpeed
+    end
+    if alpha1 == 300 then
+      alphaSpeed = 0 - alphaSpeed
+    end
+    if alpha1 < 0 then
+      scene = "three"
+      timeElapsed = 0
+    end
   end
-  if alpha1 == 300 then
-    alphaSpeed = 0 - alphaSpeed
+  
+  if scene == "three" then
+    if timeElapsed > 3 then
+      scene = "four"
+      pTitleDrawing = true -- doesn't work...
+    end
   end
+  
+  
 end
 
 function Menu.Draw(pTitleDrawing, pGloX, pGloY)
