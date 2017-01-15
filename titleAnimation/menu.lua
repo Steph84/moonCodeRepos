@@ -29,7 +29,9 @@ local TILE_HEIGHT
 
 local gapWidth
 local gapHeight
-local offSet = 100
+local offSet = 50
+local alpha1 = 0
+local alphaSpeed = 1
 
 Menu.TypeFace = {}
 
@@ -42,7 +44,7 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTheTile, pListPiece)
   
   -- calculate the gap between 2 tiles
   gapWidth = ((pWindowWidth - offSet) - (TITLE_WIDTH * TILE_WIDTH))/TITLE_WIDTH
-  gapHeight = ((pWindowHeight - 200) - (TITLE_HEIGHT * TILE_HEIGHT))/TITLE_HEIGHT
+  gapHeight = ((pWindowHeight - pWindowHeight/2) - (TITLE_HEIGHT * TILE_HEIGHT))/TITLE_HEIGHT
   
   local c, l
   local n = 1
@@ -52,11 +54,38 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTheTile, pListPiece)
       if id == 1 then
         -- determinate the target coordinates of all the pieces
         pListPiece[n].targetX = (c-1)*(TILE_WIDTH + gapWidth) + offSet/2
-        pListPiece[n].targetY = (l-1)*(TILE_HEIGHT + gapHeight)
+        pListPiece[n].targetY = (l-1)*(TILE_HEIGHT + gapHeight) + offSet
         n = n + 1
       end
     end
   end
 end
+
+function Menu.Update(dt)
+  if scene = "one" then
+    
+  end
+  if alpha1 <= 300 and alpha1 >= 0 then
+    alpha1 = alpha1 + alphaSpeed
+  end
+  if alpha1 == 300 then
+    alphaSpeed = 0 - alphaSpeed
+  end
+end
+
+function Menu.Draw(pTitleDrawing, pGloX, pGloY)
+  -- draw a prompt following the global center
+  if pTitleDrawing == false then
+    love.graphics.setColor(255, 255, 255, alpha1)
+    -- draw prompt "be prepared..." at the global center
+    -- wrapped in 200 pixels, centered
+    -- scale of 3 times
+    -- offset and shearing
+    love.graphics.printf("BE PREPARED ...", pGloX, pGloY, 200, "center", 0, 3, 3, 200/2, 10, -0.2, 0)
+  end
+  love.graphics.setColor(255, 255, 255)
+end
+
+
 
 return Menu

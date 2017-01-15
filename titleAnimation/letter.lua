@@ -1,3 +1,4 @@
+math.randomseed(os.time()) --initialiser le random
 local myMenu = require("menu")
 
 local Letter = {}
@@ -8,7 +9,7 @@ local tile32 = love.graphics.newImage("pictures/titleTile32x32.png")
 
 local list_pieces = {}
 
-local numPieces = 500
+local numPieces = 400
 local freeThreshold = 5
 local letterSpeed = 2
 local gloX = 0
@@ -62,6 +63,8 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
   
   -- freestyle mode
   if pTitleDrawing == false then
+    myMenu.Update(dt)
+    
     local sumX = 0
     local sumY = 0
     
@@ -170,13 +173,9 @@ function Letter.Draw(pTitleDrawing)
     --love.graphics.print(i, t.x + 5, t.y + 5)
   end
   
-  love.graphics.print("number of pieces "..#list_pieces, 5, 5)
+  --love.graphics.print("number of pieces "..#list_pieces, 5, 5)
   
-  -- draw the global center in white
-  if pTitleDrawing == false then
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.circle("fill", gloX, gloY, 10, 6)
-  end
+  myMenu.Draw(pTitleDrawing, gloX, gloY)
 end
 
 return Letter
