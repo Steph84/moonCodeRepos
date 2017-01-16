@@ -34,6 +34,9 @@ local alpha1 = 0
 local alphaSpeed = 1
 local scene = nil
 local timeElapsed = 0
+local storyR = 255
+local storyG = 0
+local storyB = 0
 
 Menu.TypeFace = {}
 
@@ -64,7 +67,7 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTheTile, pListPiece)
   end
 end
 
-function Menu.Update(dt, pTitleDrawing)
+function Menu.Update(dt, pTitleDrawing, pList_pieces)
   
   if pTitleDrawing == false then
     
@@ -100,7 +103,16 @@ function Menu.Update(dt, pTitleDrawing)
   end
   
   if pTitleDrawing == true then
-    -- nothing TODO
+    local colorSpeed = 1.2
+    if #pList_pieces == 121 then
+      timeElapsed = timeElapsed + dt
+      storyR = (255/2) * (math.cos(timeElapsed/colorSpeed) + 1)
+      storyG = (255/2) * (math.cos(timeElapsed/colorSpeed + (2*3.14/3)) + 1) -- offset of 2/3 PI
+      storyB = (255/2) * (math.cos(timeElapsed/colorSpeed + (4*3.14/3)) + 1) -- offset of 2 * 2/3 PI
+      if alpha1 < 255 then
+        alpha1 = alpha1 + 1
+      end
+    end
   end
   
 end
@@ -121,11 +133,15 @@ function Menu.Draw(pTitleDrawing, pGloX, pGloY, pList_pieces)
       -- TODO following animation
     -- draw picture with rainbow effects
     
-  --love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(storyR, storyG, storyB, alpha1)
+    love.graphics.print("S", 250, 475, 0, 5, 5, 0, 0, 0.5, 0)
+    love.graphics.print("T", 300, 450, 0, 5, 5, 0, 0, 0.5, 0)
+    love.graphics.print("O", 350, 425, 0, 5, 5, 0, 0, 0.5, 0)
+    love.graphics.print("R", 400, 400, 0, 5, 5, 0, 0, 0.5, 0)
+    love.graphics.print("Y", 450, 375, 0, 5, 5, 0, 0, 0.5, 0)
     
     end
   end
-
 
   love.graphics.setColor(255, 255, 255)
 end

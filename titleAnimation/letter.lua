@@ -117,7 +117,7 @@ function Letter.Update(dt, pWindowWidth, pWindowHeight, pTitleDrawing)
     local sumX = 0
     local sumY = 0
     
-    myMenu.Update(dt, pTitleDrawing)
+    myMenu.Update(dt, pTitleDrawing, list_pieces)
     
     for i = #list_pieces, 1, -1 do -- parse list backward for the removing
       -- movement through the screen
