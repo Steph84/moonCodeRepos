@@ -16,7 +16,7 @@ end
 
 function love.update(dt)
   if love.keyboard.isDown("space") then
-    titleDrawing = true
+    --titleDrawing = true
   end
   titleDrawing = myLetter.Update(dt, windowWidth, windowHeight, titleDrawing)
 end

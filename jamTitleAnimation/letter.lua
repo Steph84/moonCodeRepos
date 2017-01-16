@@ -9,7 +9,7 @@ local tile32 = love.graphics.newImage("pictures/titleTile32x32.png")
 
 local list_pieces = {}
 
-local numPieces = 400
+local numPieces = 500
 local freeThreshold = 5
 local letterSpeed = 2
 local gloX = 0
