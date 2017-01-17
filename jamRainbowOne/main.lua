@@ -7,12 +7,13 @@ local windowHeight = 650
 local screenScale = 3
 
 myPanel = require("panel")
+myLand = require("land")
 
 function love.load()
   standardWidth = myPanel.Load()
-  
   love.window.setMode(screenScale * standardWidth, windowHeight)
   
+  myLand.Load()
   
 end
 
@@ -22,7 +23,7 @@ end
 
 function love.draw()
   myPanel.Draw(windowWidth, windowHeight, screenScale)
-    
+  myLand.Draw()
 end
 
 function love.keypressed(key)
