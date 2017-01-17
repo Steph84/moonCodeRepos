@@ -3,7 +3,7 @@ love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 local windowWidth
-local windowHeight = 650
+local windowHeight = 640
 local screenScale = 3
 
 myPanel = require("panel")
@@ -11,9 +11,8 @@ myLand = require("land")
 
 function love.load()
   standardWidth = myPanel.Load()
-  love.window.setMode(screenScale * standardWidth, windowHeight)
-  
-  myLand.Load()
+  windowWidth = screenScale * standardWidth -- 960
+  love.window.setMode(windowWidth, windowHeight)
   
 end
 
