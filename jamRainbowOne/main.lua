@@ -13,6 +13,7 @@ function love.load()
   standardWidth = myPanel.Load()
   windowWidth = screenScale * standardWidth -- 960
   love.window.setMode(windowWidth, windowHeight)
+  myLand.Load()
   
 end
 
