@@ -20,11 +20,17 @@ function love.load()
 end
 
 function love.update(dt)
-
+  myCharacter.Update(dt)
 end
 
 function love.draw()
   myPanel.Draw(windowWidth, windowHeight, screenScale)
   myLand.Draw()
   myCharacter.Draw()
+end
+
+function love.keypressed(key)
+  
+  print(key)
+  
 end
