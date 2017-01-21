@@ -3,6 +3,7 @@ local Character = {}
 Character.stand = {}
 Character.walkR = {}
 Character.walkL = {}
+Character.action = "stand"
 Character.dir = "right"
 Character.drawable = nil
 Character.picCurrent = 2
@@ -29,28 +30,32 @@ end
 
 function Character.Update(dt)
   
+  -- condition for right orientation
   if love.keyboard.isDown("right") and Character.dir == "left" then
     Character.dir = "right"
   elseif love.keyboard.isDown("left") and Character.dir == "right" then
     Character.dir = "left"
   end
   
+  -- condition for walking
   if love.keyboard.isDown("right") and Character.dir == "right" then
+    Character.action = "walk"
     Character.picCurrent = Character.picCurrent + (12 * dt) -- using the delta time
     Character.coorX = Character.coorX + 2
     if math.floor(Character.picCurrent) > 5 then
       Character.picCurrent = 2
     end
   elseif love.keyboard.isDown("left") and Character.dir == "left" then
+    Character.action = "walk"
     Character.picCurrent = Character.picCurrent + (12 * dt) -- using the delta time
     Character.coorX = Character.coorX - 2
     if math.floor(Character.picCurrent) > 5 then
       Character.picCurrent = 2
     end
-  elseif Character.dir == "right" then
-    Character.drawable = Character.stand[1]
-  elseif Character.dir == "left" then
-    Character.drawable = Character.stand[2]
+    
+  -- condition for standing
+  elseif Character.dir == "right" or Character.dir == "left" then
+    Character.action = "stand"
   end
   
   
@@ -58,12 +63,22 @@ function Character.Update(dt)
 end
 
 function Character.Draw()
-  if Character.dir == "right" then
-    love.graphics.draw(Character.walkR[1], Character.walkR[math.floor(Character.picCurrent)], Character.coorX, 640-6*32)
-  elseif Character.dir == "left" then
-    love.graphics.draw(Character.walkL[1], Character.walkL[math.floor(Character.picCurrent)], Character.coorX, 640-6*32)
+  
+  if Character.action == "stand" then  
+    if Character.dir == "right" then
+      love.graphics.draw(Character.stand[1], Character.coorX, 640-6*32)
+    elseif Character.dir == "left" then
+      love.graphics.draw(Character.stand[2], Character.coorX, 640-6*32)
+    end
   end
   
+  if Character.action == "walk" then
+    if Character.dir == "right" then
+      love.graphics.draw(Character.walkR[1], Character.walkR[math.floor(Character.picCurrent)], Character.coorX, 640-6*32)
+    elseif Character.dir == "left" then
+      love.graphics.draw(Character.walkL[1], Character.walkL[math.floor(Character.picCurrent)], Character.coorX, 640-6*32)
+    end
+  end
 end
 
 
