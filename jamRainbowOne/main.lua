@@ -20,7 +20,7 @@ function love.load()
 end
 
 function love.update(dt)
-  myCharacter.Update(dt)
+  myCharacter.Update(dt, windowWidth)
 end
 
 function love.draw()

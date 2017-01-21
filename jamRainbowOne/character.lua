@@ -15,9 +15,10 @@ Character.drawable = nil
 Character.picCurrent = 2
 Character.coorX = 0
 Character.coorY = 0
-Character.initJumSpe = 10
+Character.initJumSpe = 7
 Character.jumSpe = 0
 Character.jumLim = -10
+Character.walkS = 5
 
 function Character.Load(pWindowHeight)
   Character.coorX = 100
@@ -47,7 +48,7 @@ function Character.Load(pWindowHeight)
 
 end
 
-function Character.Update(dt)
+function Character.Update(dt, pWindowWidth)
   
   -- condition for right orientation
   if love.keyboard.isDown("right") and Character.dir == "left" then
@@ -60,14 +61,14 @@ function Character.Update(dt)
   if love.keyboard.isDown("right") and Character.dir == "right" then
     Character.action = "walk"
     Character.picCurrent = Character.picCurrent + (12 * dt) -- using the delta time
-    Character.coorX = Character.coorX + 2
+    Character.coorX = Character.coorX + Character.walkS
     if math.floor(Character.picCurrent) > 5 then
       Character.picCurrent = 2
     end
   elseif love.keyboard.isDown("left") and Character.dir == "left" then
     Character.action = "walk"
     Character.picCurrent = Character.picCurrent + (12 * dt) -- using the delta time
-    Character.coorX = Character.coorX - 2
+    Character.coorX = Character.coorX - Character.walkS
     if math.floor(Character.picCurrent) > 5 then
       Character.picCurrent = 2
     end
@@ -95,6 +96,15 @@ function Character.Update(dt)
   if Character.coorY > Character.jumLim then
     Character.jumSpe = Character.initJumSpe
   end
+  
+  -- manage the side boundaries
+  if Character.coorX > (pWindowWidth - 32) then
+    Character.coorX = pWindowWidth - 32
+  end
+  if Character.coorX < 0 then
+    Character.coorX = 0
+  end
+  
   
 end
 
