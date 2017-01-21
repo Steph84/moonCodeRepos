@@ -15,7 +15,7 @@ function love.load()
   windowWidth = screenScale * standardWidth -- 960
   love.window.setMode(windowWidth, windowHeight)
   myLand.Load()
-  myCharacter.Load()
+  myCharacter.Load(windowHeight)
   
 end
 

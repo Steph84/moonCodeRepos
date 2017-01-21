@@ -1,15 +1,25 @@
 local Character = {}
 
+-- lists of pictures
 Character.stand = {}
 Character.walkR = {}
 Character.walkL = {}
+Character.imp = {}
+Character.jum = {}
+Character.wei = {}
+Character.fal = {}
+
 Character.action = "stand"
 Character.dir = "right"
 Character.drawable = nil
 Character.picCurrent = 2
-Character.coorX = 100
+Character.coorX = 0
+Character.coorY = 0
 
-function Character.Load()
+function Character.Load(pWindowHeight)
+  Character.coorX = 100
+  Character.coorY = pWindowHeight-6*32 -- tile size 32
+  
   Character.stand[1] = love.graphics.newImage("pictures/Rosette_Stand_R.png")
   Character.stand[2] = love.graphics.newImage("pictures/Rosette_Stand_L.png")
   
@@ -25,7 +35,11 @@ function Character.Load()
   Character.walkL[4] = love.graphics.newQuad(64, 0, 32, 32, Character.walkL[1]:getDimensions())
   Character.walkL[5] = love.graphics.newQuad(96, 0, 32, 32, Character.walkL[1]:getDimensions())
 
-  Character.drawable = Character.stand[1]
+  Character.jum[1] = love.graphics.newImage("pictures/Rosette_Jump2_R.png")
+  Character.jum[2] = love.graphics.newImage("pictures/Rosette_Jump2_L.png")
+  Character.fal[1] = love.graphics.newImage("pictures/Rosette_Fall2_R.png")
+  Character.fal[2] = love.graphics.newImage("pictures/Rosette_Fall2_L.png")
+
 end
 
 function Character.Update(dt)
@@ -52,12 +66,21 @@ function Character.Update(dt)
     if math.floor(Character.picCurrent) > 5 then
       Character.picCurrent = 2
     end
-    
+  
   -- condition for standing
   elseif Character.dir == "right" or Character.dir == "left" then
     Character.action = "stand"
   end
   
+  -- condition for jumping
+  if love.keyboard.isDown("space") then
+    Character.action = "jump"
+  end
+  
+  -- manage coorY
+  if Character.action == "jump" then
+    Character.coorY = 200
+  end
   
   
 end
@@ -79,6 +102,25 @@ function Character.Draw()
       love.graphics.draw(Character.walkL[1], Character.walkL[math.floor(Character.picCurrent)], Character.coorX, 640-6*32)
     end
   end
+  
+  if Character.action == "jump" then
+    if Character.dir == "right" then
+      love.graphics.draw(Character.jum[1], Character.coorX, Character.coorY)
+    elseif Character.dir == "left" then
+      love.graphics.draw(Character.jum[2], Character.coorX, Character.coorY)
+    end
+  end
+  
+  if Character.action == "fall" then
+    if Character.dir == "right" then
+      love.graphics.draw(Character.fal[1], Character.coorX, Character.coorY)
+    elseif Character.dir == "left" then
+      love.graphics.draw(Character.fal[2], Character.coorX, Character.coorY)
+    end
+  end
+  
+  
+  
 end
 
 
