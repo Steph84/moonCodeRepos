@@ -15,10 +15,15 @@ Character.drawable = nil
 Character.picCurrent = 2
 Character.coorX = 0
 Character.coorY = 0
+Character.initJumSpe = 10
+Character.jumSpe = 0
+Character.jumLim = -10
 
 function Character.Load(pWindowHeight)
   Character.coorX = 100
   Character.coorY = pWindowHeight-6*32 -- tile size 32
+  Character.jumLim = Character.jumLim + Character.coorY
+  Character.jumSpe = Character.initJumSpe
   
   Character.stand[1] = love.graphics.newImage("pictures/Rosette_Stand_R.png")
   Character.stand[2] = love.graphics.newImage("pictures/Rosette_Stand_L.png")
@@ -73,17 +78,26 @@ function Character.Update(dt)
   end
   
   -- condition for jumping
-  if love.keyboard.isDown("space") then
+  if love.keyboard.isDown("space") or Character.coorY < Character.jumLim then
     Character.action = "jump"
   end
   
-  -- manage coorY
-  if Character.action == "jump" then
-    Character.coorY = 200
+  -- manage coorY and the 2 phases of the jump
+  if Character.action == "jump" or Character.action == "fall" then
+    Character.coorY = Character.coorY - Character.jumSpe
+    Character.jumSpe = Character.jumSpe - dt*9.81
+    if Character.jumSpe < 0 then
+      Character.action = "fall"
+    end
   end
   
+  -- manage landing
+  if Character.coorY > Character.jumLim then
+    Character.jumSpe = Character.initJumSpe
+  end
   
 end
+
 
 function Character.Draw()
   
