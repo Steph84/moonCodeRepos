@@ -1,6 +1,6 @@
 local Land = {}
 
-Land.pic = {}
+Land.TileSheet = nil
 Land.wid = {}
 Land.hei = {}
 
@@ -36,16 +36,25 @@ Land.TileTextures = {}
 function Land.Load()
   
   Land.font = love.graphics.newImage("pictures/tmMap01.png")
-  Land.pic[1] = love.graphics.newImage("pictures/LandTiles_32_32.png")
+  Land.TileSheet = love.graphics.newImage("pictures/LandTiles_32_32.png")
+  local nbColumns = Land.TileSheet:getWidth() / TILE_SIZE
+  local nbLines = Land.TileSheet:getHeight() / TILE_SIZE
   
+  local l, c
+  local id = 1
   Land.TileTextures[0] = nil
-  Land.TileTextures[1] = love.graphics.newQuad(0, 0, TILE_SIZE, TILE_SIZE, Land.pic[1]:getDimensions()) -- edge left
-  Land.TileTextures[2] = love.graphics.newQuad(32, 0, TILE_SIZE, TILE_SIZE, Land.pic[1]:getDimensions()) -- edge middle
-  Land.TileTextures[3] = love.graphics.newQuad(64, 0, TILE_SIZE, TILE_SIZE, Land.pic[1]:getDimensions()) -- edge right
-  Land.TileTextures[4] = love.graphics.newQuad(0, 32, TILE_SIZE, TILE_SIZE, Land.pic[1]:getDimensions()) -- interior left
-  Land.TileTextures[5] = love.graphics.newQuad(32, 32, TILE_SIZE, TILE_SIZE, Land.pic[1]:getDimensions()) -- interior middle
-  Land.TileTextures[6] = love.graphics.newQuad(64, 32, TILE_SIZE, TILE_SIZE, Land.pic[1]:getDimensions()) -- interior right
-  Land.TileTextures[7] = love.graphics.newQuad(6*32, 0, TILE_SIZE, TILE_SIZE, Land.pic[1]:getDimensions()) -- sky
+  for l = 1, nbLines do
+    for c = 1, nbColumns do
+    Land.TileTextures[id] = love.graphics.newQuad(
+                              (c-1)*TILE_SIZE,
+                              (l-1)*TILE_SIZE,
+                              TILE_SIZE,
+                              TILE_SIZE,
+                              Land.TileSheet:getDimensions()
+                              )
+    id = id + 1
+    end
+  end
   
 end
 
@@ -55,12 +64,25 @@ function Land.Draw()
   for l = 1, MAP_HEIGHT do
     for c = 1, MAP_WIDTH do
       local id = Land.Map[l][c] -- gather the id in the map table
-      local tex = Land.TileTextures[id] -- gather the texture of this id
-      if tex ~= nil then
-        love.graphics.draw(Land.pic[1], tex, (c-1)*TILE_SIZE, (l-1)*TILE_SIZE)
+      local texQuad = Land.TileTextures[id] -- gather the texture of this id
+      if texQuad ~= nil then
+        love.graphics.draw(Land.TileSheet, texQuad, (c-1)*TILE_SIZE, (l-1)*TILE_SIZE)
       end
     end
   end
+
+  -- show the id tile on the map with the mouse
+  local x = love.mouse.getX()
+  local y = love.mouse.getY()
+  local col = math.floor(x/TILE_SIZE) + 1
+  local lin = math.floor(y/TILE_SIZE) + 1
+  if col > 0 and col <= MAP_WIDTH and lin > 0 and lin <= MAP_HEIGHT then
+    local id = Land.Map[lin][col]
+    love.graphics.print("ID: "..tostring(id), 1, 1)
+  else
+    love.graphics.print("Out of boundary", 1, 1)
+  end
+
 
 
 end
