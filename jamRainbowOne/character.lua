@@ -1,5 +1,7 @@
 local Character = {}
 
+local TILE_SIZE = 32
+
 -- lists of pictures
 Character.stand = {}
 Character.walkR = {}
@@ -30,16 +32,16 @@ function Character.Load(pWindowHeight)
   Character.stand[2] = love.graphics.newImage("pictures/Rosette_Stand_L.png")
   
   Character.walkR[1] = love.graphics.newImage("pictures/Rosette_walk_32x32_Anim_R.png")
-  Character.walkR[2] = love.graphics.newQuad(0, 0, 32, 32, Character.walkR[1]:getDimensions())
-  Character.walkR[3] = love.graphics.newQuad(32, 0, 32, 32, Character.walkR[1]:getDimensions())
-  Character.walkR[4] = love.graphics.newQuad(64, 0, 32, 32, Character.walkR[1]:getDimensions())
-  Character.walkR[5] = love.graphics.newQuad(96, 0, 32, 32, Character.walkR[1]:getDimensions())
+  Character.walkR[2] = love.graphics.newQuad(0, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
+  Character.walkR[3] = love.graphics.newQuad(32, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
+  Character.walkR[4] = love.graphics.newQuad(64, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
+  Character.walkR[5] = love.graphics.newQuad(96, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
 
   Character.walkL[1] = love.graphics.newImage("pictures/Rosette_walk_32x32_Anim_L.png")
-  Character.walkL[2] = love.graphics.newQuad(0, 0, 32, 32, Character.walkL[1]:getDimensions())
-  Character.walkL[3] = love.graphics.newQuad(32, 0, 32, 32, Character.walkL[1]:getDimensions())
-  Character.walkL[4] = love.graphics.newQuad(64, 0, 32, 32, Character.walkL[1]:getDimensions())
-  Character.walkL[5] = love.graphics.newQuad(96, 0, 32, 32, Character.walkL[1]:getDimensions())
+  Character.walkL[2] = love.graphics.newQuad(0, 0, TILE_SIZE, TILE_SIZE, Character.walkL[1]:getDimensions())
+  Character.walkL[3] = love.graphics.newQuad(32, 0, TILE_SIZE, TILE_SIZE, Character.walkL[1]:getDimensions())
+  Character.walkL[4] = love.graphics.newQuad(64, 0, TILE_SIZE, TILE_SIZE, Character.walkL[1]:getDimensions())
+  Character.walkL[5] = love.graphics.newQuad(96, 0, TILE_SIZE, TILE_SIZE, Character.walkL[1]:getDimensions())
 
   Character.jum[1] = love.graphics.newImage("pictures/Rosette_Jump2_R.png")
   Character.jum[2] = love.graphics.newImage("pictures/Rosette_Jump2_L.png")
@@ -98,8 +100,8 @@ function Character.Update(dt, pWindowWidth)
   end
   
   -- manage the side boundaries
-  if Character.coorX > (pWindowWidth - 32) then
-    Character.coorX = pWindowWidth - 32
+  if Character.coorX > (pWindowWidth - TILE_SIZE) then
+    Character.coorX = pWindowWidth - TILE_SIZE
   end
   if Character.coorX < 0 then
     Character.coorX = 0
@@ -113,17 +115,17 @@ function Character.Draw()
   
   if Character.action == "stand" then  
     if Character.dir == "right" then
-      love.graphics.draw(Character.stand[1], Character.coorX, 640-6*32)
+      love.graphics.draw(Character.stand[1], Character.coorX, 640-6*TILE_SIZE)
     elseif Character.dir == "left" then
-      love.graphics.draw(Character.stand[2], Character.coorX, 640-6*32)
+      love.graphics.draw(Character.stand[2], Character.coorX, 640-6*TILE_SIZE)
     end
   end
   
   if Character.action == "walk" then
     if Character.dir == "right" then
-      love.graphics.draw(Character.walkR[1], Character.walkR[math.floor(Character.picCurrent)], Character.coorX, 640-6*32)
+      love.graphics.draw(Character.walkR[1], Character.walkR[math.floor(Character.picCurrent)], Character.coorX, 640-6*TILE_SIZE)
     elseif Character.dir == "left" then
-      love.graphics.draw(Character.walkL[1], Character.walkL[math.floor(Character.picCurrent)], Character.coorX, 640-6*32)
+      love.graphics.draw(Character.walkL[1], Character.walkL[math.floor(Character.picCurrent)], Character.coorX, 640-6*TILE_SIZE)
     end
   end
   
