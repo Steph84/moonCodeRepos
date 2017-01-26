@@ -15,7 +15,7 @@ local animeRate = 1
 bigStar.rot = 0
 smallStar1.rot = 0
 smallStar2.rot = 0
-local timeElpased = 30
+local timeElpased = 0
 
 myPanel = require("panel")
 myLand = require("land")
@@ -86,6 +86,7 @@ function love.draw()
   
   love.graphics.setColor(255, 255, 255)
   
+  --[[
   if timeElpased > 3 and timeElpased < 8 then
     love.graphics.print("In my darkest hours, I want to feel a new beginning...", 100, 200)
   end
@@ -103,8 +104,8 @@ function love.draw()
   end
   if timeElpased > 23 and timeElpased < 28 then
     love.graphics.print("...I want a new life...", 600, 150)
-  end
-  if timeElpased > 28 and trigger == false then
+  end--]]
+  if timeElpased > 3 and trigger == false then
     love.graphics.print("...let's see with the arrow keys -->", 600, 400)
   end
   
@@ -119,8 +120,10 @@ function love.draw()
     love.graphics.draw(bigStar.pic, bigStar.x, bigStar.y, bigStar.rot, 1, 1, bigStar.pic:getWidth()/2, bigStar.pic:getHeight()/2)
     love.graphics.draw(smallStar1.pic, smallStar1.x, smallStar1.y, smallStar1.rot, 1, 1, smallStar1.pic:getWidth()/2, smallStar1.pic:getHeight()/2)
     love.graphics.draw(smallStar2.pic, smallStar2.x, smallStar2.y, smallStar2.rot, 1, 1, smallStar2.pic:getWidth()/2, smallStar2.pic:getHeight()/2)
+    --[[
     love.graphics.print("I can have all of this...", 200, 200, 0, 3, 3)
     love.graphics.print("...if I really want it...", 300, 400, 0, 3, 3)
+    --]]
   end
   
 end

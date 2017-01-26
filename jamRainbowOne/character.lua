@@ -31,12 +31,13 @@ function Character.Load(pWindowHeight)
   Character.stand[1] = love.graphics.newImage("pictures/Rosette_Stand_R.png")
   Character.stand[2] = love.graphics.newImage("pictures/Rosette_Stand_L.png")
   
+  
   Character.walkR[1] = love.graphics.newImage("pictures/Rosette_walk_32x32_Anim_R.png")
   Character.walkR[2] = love.graphics.newQuad(0, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
   Character.walkR[3] = love.graphics.newQuad(32, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
   Character.walkR[4] = love.graphics.newQuad(64, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
   Character.walkR[5] = love.graphics.newQuad(96, 0, TILE_SIZE, TILE_SIZE, Character.walkR[1]:getDimensions())
-
+  
   Character.walkL[1] = love.graphics.newImage("pictures/Rosette_walk_32x32_Anim_L.png")
   Character.walkL[2] = love.graphics.newQuad(0, 0, TILE_SIZE, TILE_SIZE, Character.walkL[1]:getDimensions())
   Character.walkL[3] = love.graphics.newQuad(32, 0, TILE_SIZE, TILE_SIZE, Character.walkL[1]:getDimensions())

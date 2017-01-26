@@ -28,7 +28,6 @@ Land.Map = {
 
 local MAP_WIDTH = #Land.Map[1] 
 local MAP_HEIGHT = #Land.Map
-print(MAP_WIDTH)
 local TILE_SIZE = 32
 
 Land.TileTextures = {}
