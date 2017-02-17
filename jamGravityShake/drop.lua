@@ -1,11 +1,14 @@
 math.randomseed(os.time()) --initialiser le random
 local Drop = {}
 
+local Splash = require("splash")
+
 local listDrops = {}
 local dropPic = {}
 dropPic.src = love.graphics.newImage("pictures/singleDrop.png")
 dropPic.scale = 3
 local dropQty = 10
+Drop.splash = false
 
 function createDrop(pId, pSprite, ppWindowWidth)
   local thisDrop = {}
@@ -33,6 +36,7 @@ function Drop.Load(pWindowWidth, pWindowHeight)
   for i = 1, dropQty do
     createDrop(i, dropPic.src, pWindowWidth) -- create pieces at the center Big Bang
   end
+  Splash.Load()
 end
 
 function Drop.Update(dt, pWindowWidth, pWindowHeight)
@@ -40,12 +44,23 @@ function Drop.Update(dt, pWindowWidth, pWindowHeight)
     -- movement through the screen
     local t = listDrops[i]
     t.y = t.y + t.vy*dt
-    if t.y > pWindowHeight then table.remove(listDrops, i) end
+    
+    if t.y > pWindowHeight then
+      table.remove(listDrops, i)
+      Drop.splash = true
+    end
+    
     if t.y > pWindowHeight/3 and t.y < pWindowHeight/2 and #listDrops < (dropQty*2) then createDrop(i + 10, dropPic.src, pWindowWidth) end
+    
+    if Drop.splash == true then
+      Splash.Update(dt, t.x)
+      Drop.splash = false
+    end
   end
+  
 end
 
-function Drop.Draw()
+function Drop.Draw(pWindowHeight)
   local i
   for i = 1, #listDrops do
     local t = listDrops[i]
@@ -53,7 +68,12 @@ function Drop.Draw()
   end
   
   love.graphics.print("number of drops "..#listDrops, 5, 5)
+  if Drop.splash == true then
+    Splash.Draw(pWindowHeight)
+    Drop.splash = false
+  end
   
+    Splash.Draw(pWindowHeight)
 end
 
   

@@ -2,6 +2,7 @@ local Splash = {}
 
 local TILE_WIDTH = 62
 local TILE_HEIGHT = 33
+Splash.coorX = 0
 
 function Splash.Load()
   Splash.TileSheet = love.graphics.newImage("pictures/splash.png")
@@ -27,18 +28,16 @@ function Splash.Load()
   Splash.picCurrent = 1
 end
 
-function Splash.Update(dt)
-  Splash.picCurrent = Splash.picCurrent + (12 * dt)
+function Splash.Update(dt, pDropX)
+  Splash.picCurrent = Splash.picCurrent + (10 * dt)
   if math.floor(Splash.picCurrent) > #Splash.pictures then
     Splash.picCurrent = 1
   end
+  Splash.coorX = pDropX
 end
 
-function Splash.Draw()
-  
-                    
-  love.graphics.draw(Splash.TileSheet, Splash.pictures[math.floor(Splash.picCurrent)], 100, 200)
-      
+function Splash.Draw(ppWindowHeight)
+  love.graphics.draw(Splash.TileSheet, Splash.pictures[math.floor(Splash.picCurrent)], Splash.coorX, ppWindowHeight - TILE_HEIGHT)
 end
 
 return Splash
