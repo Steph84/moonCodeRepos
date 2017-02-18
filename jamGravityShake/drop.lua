@@ -4,11 +4,13 @@ local Drop = {}
 local Splash = require("splash")
 
 local listDrops = {}
+local listSplashes = {}
 local dropPic = {}
 dropPic.src = love.graphics.newImage("pictures/singleDrop.png")
 dropPic.scale = 3
-local dropQty = 10
+local dropQty = 1
 Drop.splash = false
+local dropSplashUpadte = false
 
 function createDrop(pId, pSprite, ppWindowWidth)
   local thisDrop = {}
@@ -34,27 +36,33 @@ end
 function Drop.Load(pWindowWidth, pWindowHeight)
   local i
   for i = 1, dropQty do
-    createDrop(i, dropPic.src, pWindowWidth) -- create pieces at the center Big Bang
+    createDrop(i, dropPic.src, pWindowWidth)
   end
   Splash.Load()
 end
 
 function Drop.Update(dt, pWindowWidth, pWindowHeight)
+  
   for i = #listDrops, 1, -1 do -- parse list backward for the removing
     -- movement through the screen
     local t = listDrops[i]
     t.y = t.y + t.vy*dt
     
     if t.y > pWindowHeight then
+      table.insert(listSplashes, t.x)
       table.remove(listDrops, i)
-      Drop.splash = true
     end
     
     if t.y > pWindowHeight/3 and t.y < pWindowHeight/2 and #listDrops < (dropQty*2) then createDrop(i + 10, dropPic.src, pWindowWidth) end
-    
-    if Drop.splash == true then
-      Splash.Update(dt, t.x)
-      Drop.splash = false
+  
+    if #listSplashes > 0 then
+      local b
+      b = Splash.Update(dt, listSplashes[1])
+      print(b)
+      if b == true then
+        table.remove(listSplashes, 1)
+        print("machin")
+      end
     end
   end
   
@@ -65,9 +73,11 @@ function Drop.Draw(pWindowHeight)
   for i = 1, #listDrops do
     local t = listDrops[i]
     love.graphics.draw(dropPic.src, t.x, t.y, 0, 1/dropPic.scale, 1/dropPic.scale, t.w/2, t.h/2)
+    love.graphics.print(i, t.x + 5, t.y + 5)
   end
   
   love.graphics.print("number of drops "..#listDrops, 5, 5)
+  love.graphics.print("number of splashes "..#listSplashes, 5, 15)
   if Drop.splash == true then
     Splash.Draw(pWindowHeight)
     Drop.splash = false

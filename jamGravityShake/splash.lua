@@ -29,15 +29,18 @@ function Splash.Load()
 end
 
 function Splash.Update(dt, pDropX)
-  Splash.picCurrent = Splash.picCurrent + (10 * dt)
-  if math.floor(Splash.picCurrent) > #Splash.pictures then
+  local a = false
+  Splash.picCurrent = Splash.picCurrent + (8 * dt)
+  if math.floor(Splash.picCurrent) >= #Splash.pictures then
     Splash.picCurrent = 1
+    a = true
   end
   Splash.coorX = pDropX
+  return a
 end
 
 function Splash.Draw(ppWindowHeight)
-  love.graphics.draw(Splash.TileSheet, Splash.pictures[math.floor(Splash.picCurrent)], Splash.coorX, ppWindowHeight - TILE_HEIGHT)
+  love.graphics.draw(Splash.TileSheet, Splash.pictures[math.floor(Splash.picCurrent)], Splash.coorX - TILE_WIDTH/2, ppWindowHeight - TILE_HEIGHT)
 end
 
 return Splash
