@@ -11,6 +11,7 @@ dropPic.scale = 3
 local dropQty = 10
 Drop.splash = false
 local dropSplashUpadte = false
+local coorRange = 50
 
 function createDrop(pId, pSprite, ppWindowWidth)
   local thisDrop = {}
@@ -41,12 +42,27 @@ function Drop.Load(pWindowWidth, pWindowHeight)
   Splash.Load()
 end
 
-function Drop.Update(dt, pWindowWidth, pWindowHeight)
+function Drop.Update(dt, pWindowWidth, pWindowHeight, pAlpha, pBeta)
+  
+  local xMin = pAlpha - coorRange
+  local xMax = pAlpha + coorRange
+  local yMin = pBeta - coorRange
+  local yMax = pBeta + coorRange
   
   for i = #listDrops, 1, -1 do -- parse list backward for the removing
     -- movement through the screen
     local t = listDrops[i]
+    local oldVY = t.vy
     t.y = t.y + t.vy*dt
+    
+    if t.x > xMin and
+       t.x < xMax and
+       t.y > yMin and
+       t.y < yMax then
+          t.vy = 0
+    else
+      t.vy = t.vy + 100*dt
+    end
     
     if t.y > pWindowHeight then
       table.insert(listSplashes, t.x)
@@ -60,6 +76,14 @@ function Drop.Update(dt, pWindowWidth, pWindowHeight)
       b = Splash.Update(dt, listSplashes[1])
       if b == true then table.remove(listSplashes, 1) end
     end
+    
+    if #listSplashes > 10 then
+      local d
+      for d = 1, #listSplashes do
+        table.remove(listSplashes, d)
+      end
+    end
+    
   end
   
 end
