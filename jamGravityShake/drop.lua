@@ -8,7 +8,7 @@ local listSplashes = {}
 local dropPic = {}
 dropPic.src = love.graphics.newImage("pictures/singleDrop.png")
 dropPic.scale = 3
-local dropQty = 1
+local dropQty = 10
 Drop.splash = false
 local dropSplashUpadte = false
 
@@ -58,11 +58,7 @@ function Drop.Update(dt, pWindowWidth, pWindowHeight)
     if #listSplashes > 0 then
       local b
       b = Splash.Update(dt, listSplashes[1])
-      print(b)
-      if b == true then
-        table.remove(listSplashes, 1)
-        print("machin")
-      end
+      if b == true then table.remove(listSplashes, 1) end
     end
   end
   
@@ -77,7 +73,8 @@ function Drop.Draw(pWindowHeight)
   end
   
   love.graphics.print("number of drops "..#listDrops, 5, 5)
-  love.graphics.print("number of splashes "..#listSplashes, 5, 15)
+  love.graphics.print("number of splashes "..#listSplashes, 5, 20)
+  
   if Drop.splash == true then
     Splash.Draw(pWindowHeight)
     Drop.splash = false

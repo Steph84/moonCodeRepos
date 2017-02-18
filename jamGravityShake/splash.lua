@@ -30,7 +30,7 @@ end
 
 function Splash.Update(dt, pDropX)
   local a = false
-  Splash.picCurrent = Splash.picCurrent + (8 * dt)
+  Splash.picCurrent = Splash.picCurrent + (0.5 * dt)
   if math.floor(Splash.picCurrent) >= #Splash.pictures then
     Splash.picCurrent = 1
     a = true
