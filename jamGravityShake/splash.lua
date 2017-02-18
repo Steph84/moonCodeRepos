@@ -5,6 +5,7 @@ local TILE_HEIGHT = 33
 Splash.coorX = 0
 
 function Splash.Load()
+  
   Splash.TileSheet = love.graphics.newImage("pictures/splash.png")
   Splash.pictures = {}
   local nbColumns = Splash.TileSheet:getWidth() / TILE_WIDTH
