@@ -12,6 +12,9 @@ pics.leaf = {}
 pics.emCu = {}
 pics.fuCu = {}
 pics.tePo = {}
+pics.waBo = {}
+
+local cooker = {}
 
 local button = 0
 local mouseHoldX = 0
@@ -69,6 +72,20 @@ function love.load()
   pics.tePo.coorX = 875
   pics.tePo.coorY = 200
   
+  -- water bottle
+  pics.waBo.src = love.graphics.newImage("pictures/bottle.png")
+  pics.waBo.w = pics.waBo.src:getWidth()
+  pics.waBo.h = pics.waBo.src:getHeight()
+  pics.waBo.scale = 0.6
+  pics.waBo.coorX = 350
+  pics.waBo.coorY = 375
+  
+  -- cooker area
+  cooker.xMin = 435
+  cooker.xMax = 435 + 150
+  cooker.yMin = 195
+  cooker.yMax = 195 + 50
+  --love.graphics.rectangle("line", 435, 195, 150, 50)
   
   
 end
@@ -118,6 +135,16 @@ function love.update(dt)
         mouseHoldX = 0
         mouseHoldY = 0
     end
+    
+    if mouseHoldX > pics.waBo.coorX - range and
+       mouseHoldX < pics.waBo.coorX + range and
+       mouseHoldY > pics.waBo.coorY - range and
+       mouseHoldY < pics.waBo.coorY + range then
+        print("you've got the water bottle")
+        holding = "bottle"
+        mouseHoldX = 0
+        mouseHoldY = 0
+    end
   else
     cursorX, cursorY = love.mouse.getPosition()
     if holding == "leaves" then
@@ -128,10 +155,23 @@ function love.update(dt)
          mouseReleaseX < pics.tePo.coorX + range and
          mouseReleaseY > pics.tePo.coorY - range and
          mouseReleaseY < pics.tePo.coorY + range then
-        print("the tea in in the teapot")
+        print("the tea leaves are in the teapot")
         holding = "nothing"
         pics.leaf.coorX = -100
         pics.leaf.coorY = -100
+      end
+    elseif holding == "bottle" then
+      pics.waBo.coorX = cursorX
+      pics.waBo.coorY = cursorY
+      if mouseReleaseX == cursorX and
+         mouseReleaseX > pics.tePo.coorX - range and
+         mouseReleaseX < pics.tePo.coorX + range and
+         mouseReleaseY > pics.tePo.coorY - range and
+         mouseReleaseY < pics.tePo.coorY + range then
+        print("the water is in the teapot")
+        holding = "nothing"
+        pics.waBo.coorX = -100
+        pics.waBo.coorY = -100
       end
     elseif holding == "cup" then
       pics.emCu.coorX = cursorX
@@ -142,8 +182,16 @@ function love.update(dt)
     end
   end
   
-  print(holding)
-
+  -- to modify
+  if mouseHoldX > cooker.xMin and
+       mouseHoldX < cooker.xMax and
+       mouseHoldY > cooker.yMin and
+       mouseHoldY < cooker.yMax then
+        print("HOT !!")
+        mouseHoldX = 0
+        mouseHoldY = 0
+    end
+    
 end
 
 function love.draw()
@@ -154,8 +202,7 @@ function love.draw()
   --love.graphics.draw(pics.fuCu.src, pics.leaf.coorX, pics.fuCu.coorY, 0, 1/pics.fuCu.scale, 1/pics.fuCu.scale, pics.fuCu.w/2, pics.fuCu.h/2)
   love.graphics.draw(pics.tePo.src, pics.tePo.coorX, pics.tePo.coorY, 0, -1/pics.tePo.scale, 1/pics.tePo.scale, pics.tePo.w/2, pics.tePo.h/2)
   love.graphics.draw(pics.leaf.src, pics.leaf.coorX, pics.leaf.coorY, 0, 1/pics.leaf.scale, 1/pics.leaf.scale, pics.leaf.w/2, pics.leaf.h/2)
-  
-  --TODO draw the cup and teapot for the lefties ;-)
+  love.graphics.draw(pics.waBo.src, pics.waBo.coorX, pics.waBo.coorY, 0, 1/pics.waBo.scale, 1/pics.waBo.scale, pics.waBo.w/2, pics.waBo.h/2)
   
 end
 
