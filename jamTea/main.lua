@@ -15,6 +15,10 @@ pics.tePo = {}
 pics.waBo = {}
 
 local cooker = {}
+local table = {}
+
+local sequence = {leaves = false, water = false, hot = false, cup = false, served = false}
+local teaPotOnCooker = false
 
 local button = 0
 local mouseHoldX = 0
@@ -22,6 +26,7 @@ local mouseHoldY = 0
 local mouseReleaseX = 0
 local mouseReleaseY = 0
 local holding = "nothing"
+local timeElapsed = 0
 
 function love.load()
   -- background and window
@@ -63,6 +68,8 @@ function love.load()
   pics.fuCu.w = pics.fuCu.src:getWidth()
   pics.fuCu.h = pics.fuCu.src:getHeight()
   pics.fuCu.scale = 6
+  pics.fuCu.coorX = -100
+  pics.fuCu.coorY = -100
   
   -- teapot
   pics.tePo.src = love.graphics.newImage("pictures/teaPot.png")
@@ -87,6 +94,13 @@ function love.load()
   cooker.yMax = 195 + 50
   --love.graphics.rectangle("line", 435, 195, 150, 50)
   
+  -- table area
+  table.xMin = 180
+  table.xMax = 180 + 500
+  table.yMin = 335
+  table.yMax = 335 + 100
+  --love.graphics.rectangle("line", 180, 335, 500, 100)
+  
   
 end
 
@@ -104,46 +118,48 @@ end
 function love.update(dt)
   local range = 50
   local cursorX, cursorY
+  timeElapsed = timeElapsed + dt
 
   if holding == "nothing" then
     if mouseHoldX > pics.sack.coorX - range and
      mouseHoldX < pics.sack.coorX + range and
      mouseHoldY > pics.sack.coorY - range and
      mouseHoldY < pics.sack.coorY + range then
-      print("you've got the tea leaves")
-      holding = "leaves"
-      mouseHoldX = 0
-      mouseHoldY = 0
+        print("you've got the tea leaves")
+        holding = "leaves"
+        mouseHoldX = 0
+        mouseHoldY = 0
     end
     
     if mouseHoldX > pics.tePo.coorX - range and
        mouseHoldX < pics.tePo.coorX + range and
        mouseHoldY > pics.tePo.coorY - range and
        mouseHoldY < pics.tePo.coorY + range then
-        print("you've got the teapot")
-        holding = "teapot"
-        mouseHoldX = 0
-        mouseHoldY = 0
+          print("you've got the teapot")
+          holding = "teapot"
+          mouseHoldX = 0
+          mouseHoldY = 0
+          teaPotOnCooker = false
     end
     
     if mouseHoldX > pics.emCu.coorX - range and
        mouseHoldX < pics.emCu.coorX + range and
        mouseHoldY > pics.emCu.coorY - range and
        mouseHoldY < pics.emCu.coorY + range then
-        print("you've got the cup")
-        holding = "cup"
-        mouseHoldX = 0
-        mouseHoldY = 0
+          print("you've got the cup")
+          holding = "cup"
+          mouseHoldX = 0
+          mouseHoldY = 0
     end
     
     if mouseHoldX > pics.waBo.coorX - range and
        mouseHoldX < pics.waBo.coorX + range and
        mouseHoldY > pics.waBo.coorY - range and
        mouseHoldY < pics.waBo.coorY + range then
-        print("you've got the water bottle")
-        holding = "bottle"
-        mouseHoldX = 0
-        mouseHoldY = 0
+          print("you've got the water bottle")
+          holding = "bottle"
+          mouseHoldX = 0
+          mouseHoldY = 0
     end
   else
     cursorX, cursorY = love.mouse.getPosition()
@@ -159,6 +175,7 @@ function love.update(dt)
         holding = "nothing"
         pics.leaf.coorX = -100
         pics.leaf.coorY = -100
+        sequence.leaves = true
       end
     elseif holding == "bottle" then
       pics.waBo.coorX = cursorX
@@ -168,29 +185,87 @@ function love.update(dt)
          mouseReleaseX < pics.tePo.coorX + range and
          mouseReleaseY > pics.tePo.coorY - range and
          mouseReleaseY < pics.tePo.coorY + range then
-        print("the water is in the teapot")
-        holding = "nothing"
-        pics.waBo.coorX = -100
-        pics.waBo.coorY = -100
+              print("the water is in the teapot")
+              holding = "nothing"
+              mouseReleaseX = 0
+              mouseReleaseY = 0
+              pics.waBo.coorX = -100
+              pics.waBo.coorY = -100
+              sequence.water = true
       end
     elseif holding == "cup" then
       pics.emCu.coorX = cursorX
       pics.emCu.coorY = cursorY
+      if mouseReleaseX > table.xMin and
+         mouseReleaseX < table.xMax and
+         mouseReleaseY > table.yMin and
+         mouseReleaseY < table.yMax then
+              print("The cup is on the table")
+              pics.emCu.coorX = mouseReleaseX
+              pics.emCu.coorY = mouseReleaseY
+              holding = "nothing"
+              mouseReleaseX = 0
+              mouseReleaseY = 0
+              sequence.cup = true
+      end
     elseif holding == "teapot" then
       pics.tePo.coorX = cursorX
       pics.tePo.coorY = cursorY
+      
+      if sequence.hot == false and 
+         mouseReleaseX > cooker.xMin and
+         mouseReleaseX < cooker.xMax and
+         mouseReleaseY > cooker.yMin and
+         mouseReleaseY < cooker.yMax then
+              print("The teapot is on the cooker")
+              pics.tePo.coorX = mouseReleaseX
+              pics.tePo.coorY = mouseReleaseY
+              holding = "nothing"
+              mouseReleaseX = 0
+              mouseReleaseY = 0
+              teaPotOnCooker = true
+              timeElapsed = 0
+      end
+      if sequence.hot == true then
+        if sequence.cup == true and
+           mouseReleaseX > pics.emCu.coorX - range and
+           mouseReleaseX < pics.emCu.coorX + range and
+           mouseReleaseY > pics.emCu.coorY - range and
+           mouseReleaseY < pics.emCu.coorY + range then
+                print("The cup is full")
+                sequence.served = true
+                pics.emCu.coorX = -100
+                pics.emCu.coorY = -100
+                pics.fuCu.coorX = mouseReleaseX
+                pics.fuCu.coorY = mouseReleaseY
+                print(mouseReleaseX, mouseReleaseY)
+                mouseReleaseX = 0
+                mouseReleaseY = 0
+        elseif mouseReleaseX > table.xMin and
+               mouseReleaseX < table.xMax and
+               mouseReleaseY > table.yMin and
+               mouseReleaseY < table.yMax then
+                    print("The hot teapot is on the table")
+                    pics.tePo.coorX = mouseReleaseX
+                    pics.tePo.coorY = mouseReleaseY
+                    holding = "nothing"
+                    mouseReleaseX = 0
+                    mouseReleaseY = 0
+        end
+        
+      end
+      
     end
+    
   end
   
-  -- to modify
-  if mouseHoldX > cooker.xMin and
-       mouseHoldX < cooker.xMax and
-       mouseHoldY > cooker.yMin and
-       mouseHoldY < cooker.yMax then
-        print("HOT !!")
-        mouseHoldX = 0
-        mouseHoldY = 0
-    end
+  if sequence.water == true and sequence.hot == false and teaPotOnCooker == true and timeElapsed > 5 then
+    print("It's hot")
+    sequence.hot = true
+  elseif sequence.water == false and sequence.hot == false and teaPotOnCooker == true then
+    print("That's not right")
+  end
+    
     
 end
 
@@ -199,8 +274,10 @@ function love.draw()
   love.graphics.draw(pics.sack.src, pics.sack.coorX, pics.sack.coorY, 0, 1/pics.sack.scale, 1/pics.sack.scale, pics.sack.w/2, pics.sack.h/2)
   
   love.graphics.draw(pics.emCu.src, pics.emCu.coorX, pics.emCu.coorY, 0, -1/pics.emCu.scale, 1/pics.emCu.scale, pics.emCu.w/2, pics.emCu.h/2)
-  --love.graphics.draw(pics.fuCu.src, pics.leaf.coorX, pics.fuCu.coorY, 0, 1/pics.fuCu.scale, 1/pics.fuCu.scale, pics.fuCu.w/2, pics.fuCu.h/2)
+  love.graphics.draw(pics.fuCu.src, pics.fuCu.coorX, pics.fuCu.coorY, 0, 1/pics.fuCu.scale, 1/pics.fuCu.scale, pics.fuCu.w/2, pics.fuCu.h/2)
+  
   love.graphics.draw(pics.tePo.src, pics.tePo.coorX, pics.tePo.coorY, 0, -1/pics.tePo.scale, 1/pics.tePo.scale, pics.tePo.w/2, pics.tePo.h/2)
+  
   love.graphics.draw(pics.leaf.src, pics.leaf.coorX, pics.leaf.coorY, 0, 1/pics.leaf.scale, 1/pics.leaf.scale, pics.leaf.w/2, pics.leaf.h/2)
   love.graphics.draw(pics.waBo.src, pics.waBo.coorX, pics.waBo.coorY, 0, 1/pics.waBo.scale, 1/pics.waBo.scale, pics.waBo.w/2, pics.waBo.h/2)
   
