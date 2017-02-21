@@ -176,6 +176,8 @@ function love.update(dt)
         pics.leaf.coorX = -100
         pics.leaf.coorY = -100
         sequence.leaves = true
+        mouseReleaseX = 0
+        mouseReleaseY = 0
       end
     elseif holding == "bottle" then
       pics.waBo.coorX = cursorX
@@ -280,6 +282,14 @@ function love.draw()
   
   love.graphics.draw(pics.leaf.src, pics.leaf.coorX, pics.leaf.coorY, 0, 1/pics.leaf.scale, 1/pics.leaf.scale, pics.leaf.w/2, pics.leaf.h/2)
   love.graphics.draw(pics.waBo.src, pics.waBo.coorX, pics.waBo.coorY, 0, 1/pics.waBo.scale, 1/pics.waBo.scale, pics.waBo.w/2, pics.waBo.h/2)
+  
+  if sequence.leaves == true and
+     sequence.water == true and
+     sequence.hot == true and
+     sequence.cup == true and
+     sequence.served == true then
+          print("You've done it")
+  end
   
 end
 
