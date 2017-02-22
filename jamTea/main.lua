@@ -214,7 +214,8 @@ function love.update(dt)
       pics.tePo.coorX = cursorX
       pics.tePo.coorY = cursorY
       
-      if sequence.hot == false and 
+      if sequence.hot == false and
+         sequence.water == true and
          mouseReleaseX > cooker.xMin and
          mouseReleaseX < cooker.xMax and
          mouseReleaseY > cooker.yMin and
@@ -227,6 +228,18 @@ function love.update(dt)
               mouseReleaseY = 0
               teaPotOnCooker = true
               timeElapsed = 0
+      elseif sequence.hot == false and
+             sequence.water == true and
+             mouseReleaseX > table.xMin and
+             mouseReleaseX < table.xMax and
+             mouseReleaseY > table.yMin and
+             mouseReleaseY < table.yMax then
+                    print("The teapot is on the table")
+                    pics.tePo.coorX = mouseReleaseX
+                    pics.tePo.coorY = mouseReleaseY
+                    holding = "nothing"
+                    mouseReleaseX = 0
+                    mouseReleaseY = 0
       end
       if sequence.hot == true then
         if sequence.cup == true and
@@ -240,7 +253,6 @@ function love.update(dt)
                 pics.emCu.coorY = -100
                 pics.fuCu.coorX = mouseReleaseX
                 pics.fuCu.coorY = mouseReleaseY
-                print(mouseReleaseX, mouseReleaseY)
                 mouseReleaseX = 0
                 mouseReleaseY = 0
         elseif mouseReleaseX > table.xMin and
@@ -274,22 +286,36 @@ end
 function love.draw()
   love.graphics.draw(pics.bg.src, 0, 0, 0, 1/pics.bg.scale, 1/pics.bg.scale)
   love.graphics.draw(pics.sack.src, pics.sack.coorX, pics.sack.coorY, 0, 1/pics.sack.scale, 1/pics.sack.scale, pics.sack.w/2, pics.sack.h/2)
-  
   love.graphics.draw(pics.emCu.src, pics.emCu.coorX, pics.emCu.coorY, 0, -1/pics.emCu.scale, 1/pics.emCu.scale, pics.emCu.w/2, pics.emCu.h/2)
   love.graphics.draw(pics.fuCu.src, pics.fuCu.coorX, pics.fuCu.coorY, 0, 1/pics.fuCu.scale, 1/pics.fuCu.scale, pics.fuCu.w/2, pics.fuCu.h/2)
-  
   love.graphics.draw(pics.tePo.src, pics.tePo.coorX, pics.tePo.coorY, 0, -1/pics.tePo.scale, 1/pics.tePo.scale, pics.tePo.w/2, pics.tePo.h/2)
-  
   love.graphics.draw(pics.leaf.src, pics.leaf.coorX, pics.leaf.coorY, 0, 1/pics.leaf.scale, 1/pics.leaf.scale, pics.leaf.w/2, pics.leaf.h/2)
   love.graphics.draw(pics.waBo.src, pics.waBo.coorX, pics.waBo.coorY, 0, 1/pics.waBo.scale, 1/pics.waBo.scale, pics.waBo.w/2, pics.waBo.h/2)
   
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.print("Let's make us some jasmine tea.", windowWidth/3, windowHeight - 60, 0, 1.5, 1.5)
   if sequence.leaves == true and
      sequence.water == true and
      sequence.hot == true and
      sequence.cup == true and
      sequence.served == true then
-          print("You've done it")
+          love.graphics.print("You've done it. Take a sip.", 30, 30, 0, 1.5, 1.5)
+  elseif sequence.served == true then love.graphics.print("Something is not right. Do it again please.", 30, 30, 0, 1.5, 1.5)
+  else
+    love.graphics.setColor(0, 0, 0)
+    if holding == "leaves" then love.graphics.print("You have the tea leaves.", 30, 30, 0, 1.5, 1.5) end
+    if holding == "cup" then love.graphics.print("You have the cup.", 30, 30, 0, 1.5, 1.5) end
+    if holding == "teapot" then love.graphics.print("You have the teapot.", 30, 30, 0, 1.5, 1.5) end
+    if holding == "bottle" then love.graphics.print("You have the bottle.", 30, 30, 0, 1.5, 1.5) end
+    if teaPotOnCooker == true then love.graphics.print("The teapot is on the cooker.", 600, 200, 0, 1.5, 1.5) end
+    
+    if sequence.leaves == true then love.graphics.print("The tea leaves are in the teapot.", 30, 60, 0, 1.5, 1.5) end
+    if sequence.water == true then love.graphics.print("The water is in the teapot.", 30, 90, 0, 1.5, 1.5) end
+    if sequence.hot == true then love.graphics.print("The teapot is now hot enough.", 30, 120, 0, 1.5, 1.5) end
+    if sequence.cup == true then love.graphics.print("The cup is on the table.", 30, 150, 0, 1.5, 1.5) end
   end
+  love.graphics.setColor(255, 255, 255)
+  
   
 end
 
