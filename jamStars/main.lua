@@ -2,8 +2,8 @@ io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
-local windowWidth = 800 -- default value
-local windowHeight = 600 -- default value
+local windowWidth = 1300 -- default value
+local windowHeight = 675 -- default value
 
 local myGiant = require("giant")
 local myStar = require("star")
