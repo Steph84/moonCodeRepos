@@ -9,8 +9,7 @@ local giantPick = math.random(1, 3)
 local giantSpeAnim = 8
 local spriteToDraw = nil
 
-local listStars = {}
-local numStars = 1
+local listGiant = {}
 local giantWidth = 1024
 local giantHeight = 1024
 
@@ -24,7 +23,7 @@ function createGiant(pId, pSprite, pX, pY)
   item.scX = 0.08
   item.scY = 0.08
   
-  table.insert(listStars, item)
+  table.insert(listGiant, item)
   return item
 end
 
@@ -88,14 +87,14 @@ function Giant.Draw()
   end
   
   local i
-  for i = 1, #listStars do
+  for i = 1, #listGiant do
     love.graphics.draw(
                         spriteToDraw,
-                        listStars[i].x,
-                        listStars[i].y,
+                        listGiant[i].x,
+                        listGiant[i].y,
                         0,
-                        listStars[i].scX,
-                        listStars[i].scY,
+                        listGiant[i].scX,
+                        listGiant[i].scY,
                         giantWidth/2,
                         giantHeight/2
                       )
