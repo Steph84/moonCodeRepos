@@ -1,7 +1,9 @@
+math.randomseed(os.time()) --initialiser le random
 local Field = {}
 
 Field.TileTextures = {}
 Field.Map = {}
+Field.Wall = {}
 
 local mapWidth = 0
 local mapHeight = 0
@@ -11,9 +13,22 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.TileSheet = love.graphics.newImage("pictures/walls1SLE.png")
   local nbColumns = Field.TileSheet:getWidth() / TILE_SIZE -- width 448
   local nbLines = Field.TileSheet:getHeight() / TILE_SIZE -- height 256
-  
   mapWidth = pWindowWidth/32
   mapHeight = pWindowHeight/32
+  
+  local colorPickA = math.random(0, 1)
+  math.randomseed(os.time())
+  local colorPickB = math.random(0, 1)
+  
+  Field.Wall.up = 4 + colorPickA * 7 + colorPickB*56
+  Field.Wall.down = 18 + colorPickA * 7 + colorPickB*56
+  Field.Wall.left = 15 + colorPickA * 7 + colorPickB*56
+  Field.Wall.right = 16 + colorPickA * 7 + colorPickB*56
+  Field.Wall.ulCorner = 31 + colorPickA * 7 + colorPickB*56
+  Field.Wall.urCorner = 32 + colorPickA * 7 + colorPickB*56
+  Field.Wall.dlCorner = 45 + colorPickA * 7 + colorPickB*56
+  Field.Wall.drCorner = 46 + colorPickA * 7 + colorPickB*56
+  Field.Wall.Floor = 7 + colorPickA * 7 + colorPickB*56
   
   local l, c
   local id = 1
@@ -31,19 +46,19 @@ function Field.Load(pWindowWidth, pWindowHeight)
     end
   end
   
-  local i, j
-  for i = 1, mapHeight do
-    Field.Map[i] = {}
-    for j = 1, mapWidth do
-      if i == 1 then Field.Map[i][j] = 4
-      elseif j == 1 then Field.Map[i][j] = 15
-      elseif j == mapWidth then Field.Map[i][j] = 16
-      elseif i == mapHeight then Field.Map[i][j] = 18 else
-      Field.Map[i][j] = 7 end
-      if i == 1 and j == 1 then Field.Map[i][j] = 31 end
-      if i == 1 and j == mapWidth then Field.Map[i][j] = 32 end
-      if i == mapHeight and j == 1 then Field.Map[i][j] = 45 end
-      if i == mapHeight and j == mapWidth then Field.Map[i][j] = 46 end
+  local li, co
+  for li = 1, mapHeight do
+    Field.Map[li] = {}
+    for co = 1, mapWidth do
+      if li == 1 then Field.Map[li][co] = Field.Wall.up
+      elseif co == 1 then Field.Map[li][co] = Field.Wall.left
+      elseif co == mapWidth then Field.Map[li][co] = Field.Wall.right
+      elseif li == mapHeight then Field.Map[li][co] = Field.Wall.down else
+      Field.Map[li][co] = Field.Wall.Floor end -- floor id
+      if li == 1 and co == 1 then Field.Map[li][co] = Field.Wall.ulCorner end
+      if li == 1 and co == mapWidth then Field.Map[li][co] = Field.Wall.urCorner end
+      if li == mapHeight and co == 1 then Field.Map[li][co] = Field.Wall.dlCorner end
+      if li == mapHeight and co == mapWidth then Field.Map[li][co] = Field.Wall.drCorner end
     end
   end
   
