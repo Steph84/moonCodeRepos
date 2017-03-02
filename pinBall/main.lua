@@ -15,7 +15,7 @@ function love.load()
 end
 
 function love.update(dt)
-
+  myField.Update(dt, windowWidth, windowHeight)
 end
 
 function love.draw()

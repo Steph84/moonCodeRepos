@@ -3,11 +3,21 @@ local Field = {}
 
 Field.TileTextures = {}
 Field.Map = {}
+Field.Map.Grid = {}
 Field.Wall = {}
+Field.TileType = {}
 
 local mapWidth = 0
 local mapHeight = 0
 local TILE_SIZE = 32
+
+local myBall = require("ball")
+
+function Field.Map.IsSolid(pID)
+  local tileType = Field.TileType[pID]
+  if tileType == "wall" then return true end
+  return false
+end
 
 function Field.Load(pWindowWidth, pWindowHeight)
   Field.TileSheet = love.graphics.newImage("pictures/walls1SLE.png")
@@ -30,6 +40,16 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.Wall.drCorner = 46 + colorPickA * 7 + colorPickB*56
   Field.Wall.Floor = 7 + colorPickA * 7 + colorPickB*56
   
+  Field.TileType[Field.Wall.up] = "wall"
+  Field.TileType[Field.Wall.down] = "wall"
+  Field.TileType[Field.Wall.left] = "wall"
+  Field.TileType[Field.Wall.right] = "wall"
+  Field.TileType[Field.Wall.ulCorner] = "wall"
+  Field.TileType[Field.Wall.urCorner] = "wall"
+  Field.TileType[Field.Wall.dlCorner] = "wall"
+  Field.TileType[Field.Wall.drCorner] = "wall"
+  
+  
   local l, c
   local id = 1
   Field.TileTextures[0] = nil
@@ -48,20 +68,24 @@ function Field.Load(pWindowWidth, pWindowHeight)
   
   local li, co
   for li = 1, mapHeight do
-    Field.Map[li] = {}
+    Field.Map.Grid[li] = {}
     for co = 1, mapWidth do
-      if li == 1 then Field.Map[li][co] = Field.Wall.up
-      elseif co == 1 then Field.Map[li][co] = Field.Wall.left
-      elseif co == mapWidth then Field.Map[li][co] = Field.Wall.right
-      elseif li == mapHeight then Field.Map[li][co] = Field.Wall.down else
-      Field.Map[li][co] = Field.Wall.Floor end -- floor id
-      if li == 1 and co == 1 then Field.Map[li][co] = Field.Wall.ulCorner end
-      if li == 1 and co == mapWidth then Field.Map[li][co] = Field.Wall.urCorner end
-      if li == mapHeight and co == 1 then Field.Map[li][co] = Field.Wall.dlCorner end
-      if li == mapHeight and co == mapWidth then Field.Map[li][co] = Field.Wall.drCorner end
+      if li == 1 then Field.Map.Grid[li][co] = Field.Wall.up
+      elseif co == 1 then Field.Map.Grid[li][co] = Field.Wall.left
+      elseif co == mapWidth then Field.Map.Grid[li][co] = Field.Wall.right
+      elseif li == mapHeight then Field.Map.Grid[li][co] = Field.Wall.down else
+      Field.Map.Grid[li][co] = Field.Wall.Floor end -- floor id
+      if li == 1 and co == 1 then Field.Map.Grid[li][co] = Field.Wall.ulCorner end
+      if li == 1 and co == mapWidth then Field.Map.Grid[li][co] = Field.Wall.urCorner end
+      if li == mapHeight and co == 1 then Field.Map.Grid[li][co] = Field.Wall.dlCorner end
+      if li == mapHeight and co == mapWidth then Field.Map.Grid[li][co] = Field.Wall.drCorner end
     end
   end
-  
+  myBall.Load()
+end
+
+function Field.Update(dt, pWindowWidth, pWindowHeight)
+  myBall.Update(dt, Field, pWindowWidth, pWindowHeight, TILE_SIZE)
 end
 
 function Field.Draw()
@@ -69,13 +93,15 @@ function Field.Draw()
   local c, l
   for l = 1, mapHeight do
     for c = 1, mapWidth do
-      local id = Field.Map[l][c] -- gather the id in the map table
+      local id = Field.Map.Grid[l][c] -- gather the id in the map table
       local texQuad = Field.TileTextures[id] -- gather the texture of this id
       if texQuad ~= nil then
         love.graphics.draw(Field.TileSheet, texQuad, (c-1)*TILE_SIZE, (l-1)*TILE_SIZE)
       end
     end
   end
+  
+  myBall.Draw()
   
 end
 
