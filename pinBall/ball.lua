@@ -13,24 +13,27 @@ function Ball.Load()
   
 end
 
-function Ball.Update(dt, pField, ppWindowWidth, ppWindowHeight, pTileSize)
-  Ball.param.y = Ball.param.y + 3
-  Ball.position.column = math.floor((Ball.param.x/ppWindowWidth)*pTileSize)
-  Ball.position.line = math.floor((Ball.param.y/ppWindowHeight)*pTileSize)
-  print(Ball.position.column, Ball.position.line)
+function Ball.Update(dt, pField, ppWindowWidth, ppWindowHeight, pMapWidth, pMapHeight)
+  Ball.position.column = math.ceil((Ball.param.x/ppWindowWidth)*pMapWidth)
+  Ball.position.line = math.ceil((Ball.param.y/ppWindowHeight)*pMapHeight)
+  
+  local id = pField.Map.Grid[Ball.position.line][Ball.position.column]
+  if not pField.Map.IsSolid(id) then
+    Ball.param.y = Ball.param.y + 3
+  end
+  
+  --print(Ball.position.column, Ball.position.line)
   
   
-  
-  --[[
-  local id = pField.Map.Grid[Ball.param.x][Ball.param.y]
-    if pField.isSolid(id) then
-      print("collision avec une tuile solide !!")
-    end
-  --]]
 end
 
 function Ball.Draw()
-  love.graphics.draw(Ball.src, Ball.param.x, Ball.param.y, 0, Ball.param.scale, Ball.param.scale)
+  love.graphics.draw(Ball.src,
+                     Ball.param.x, Ball.param.y,
+                     0,
+                     Ball.param.scale, Ball.param.scale,
+                     Ball.param.w/2, Ball.param.h/2)
+  
 end
 
 

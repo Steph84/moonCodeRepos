@@ -2,8 +2,8 @@ io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
-local windowHeight = 640 -- 32 * 20
 local windowWidth = 480 -- 32 * 15
+local windowHeight = 640 -- 32 * 20
 
 local myField = require("field")
 

@@ -21,8 +21,8 @@ end
 
 function Field.Load(pWindowWidth, pWindowHeight)
   Field.TileSheet = love.graphics.newImage("pictures/walls1SLE.png")
-  local nbColumns = Field.TileSheet:getWidth() / TILE_SIZE -- width 448
-  local nbLines = Field.TileSheet:getHeight() / TILE_SIZE -- height 256
+  local nbColumns = Field.TileSheet:getWidth() / TILE_SIZE -- width 448 14
+  local nbLines = Field.TileSheet:getHeight() / TILE_SIZE -- height 256 8
   mapWidth = pWindowWidth/32
   mapHeight = pWindowHeight/32
   
@@ -40,6 +40,11 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.Wall.drCorner = 46 + colorPickA * 7 + colorPickB*56
   Field.Wall.Floor = 7 + colorPickA * 7 + colorPickB*56
   
+  print(Field.Wall.up, Field.Wall.down)
+  print(Field.Wall.left, Field.Wall.right)
+  print(Field.Wall.ulCorner, Field.Wall.urCorner)
+  print(Field.Wall.dlCorner, Field.Wall.drCorner)
+  
   Field.TileType[Field.Wall.up] = "wall"
   Field.TileType[Field.Wall.down] = "wall"
   Field.TileType[Field.Wall.left] = "wall"
@@ -48,8 +53,8 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.TileType[Field.Wall.urCorner] = "wall"
   Field.TileType[Field.Wall.dlCorner] = "wall"
   Field.TileType[Field.Wall.drCorner] = "wall"
-  
-  
+  Field.TileType[Field.Wall.Floor] = "ground"
+    
   local l, c
   local id = 1
   Field.TileTextures[0] = nil
@@ -74,7 +79,7 @@ function Field.Load(pWindowWidth, pWindowHeight)
       elseif co == 1 then Field.Map.Grid[li][co] = Field.Wall.left
       elseif co == mapWidth then Field.Map.Grid[li][co] = Field.Wall.right
       elseif li == mapHeight then Field.Map.Grid[li][co] = Field.Wall.down else
-      Field.Map.Grid[li][co] = Field.Wall.Floor end -- floor id
+      Field.Map.Grid[li][co] = Field.Wall.Floor end
       if li == 1 and co == 1 then Field.Map.Grid[li][co] = Field.Wall.ulCorner end
       if li == 1 and co == mapWidth then Field.Map.Grid[li][co] = Field.Wall.urCorner end
       if li == mapHeight and co == 1 then Field.Map.Grid[li][co] = Field.Wall.dlCorner end
@@ -85,7 +90,8 @@ function Field.Load(pWindowWidth, pWindowHeight)
 end
 
 function Field.Update(dt, pWindowWidth, pWindowHeight)
-  myBall.Update(dt, Field, pWindowWidth, pWindowHeight, TILE_SIZE)
+  myBall.Update(dt, Field, pWindowWidth, pWindowHeight, mapWidth, mapHeight)
+  
 end
 
 function Field.Draw()
