@@ -90,7 +90,7 @@ function Field.Load(pWindowWidth, pWindowHeight)
 end
 
 function Field.Update(dt, pWindowWidth, pWindowHeight)
-  myBall.Update(dt, Field, pWindowWidth, pWindowHeight, mapWidth, mapHeight)
+  myBall.Update(dt, Field, pWindowWidth, pWindowHeight, mapWidth, mapHeight, TILE_SIZE)
   
 end
 

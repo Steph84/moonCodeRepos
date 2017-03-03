@@ -22,8 +22,3 @@ function love.draw()
   myField.Draw()
 end
 
-function love.keypressed(key)
-  
-  print(key)
-  
-end
