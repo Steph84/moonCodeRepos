@@ -44,6 +44,7 @@ function Ball.Update(dt, pField, ppWindowWidth, ppWindowHeight, pMapWidth, pMapH
        Ball.param.vy = 0 - Ball.param.vy
   end
   
+  Ball.param.vy = Ball.param.vy + 9.81*dt
   
   
 end

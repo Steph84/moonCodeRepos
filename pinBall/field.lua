@@ -6,6 +6,7 @@ Field.Map = {}
 Field.Map.Grid = {}
 Field.Wall = {}
 Field.TileType = {}
+Field.Flipper = {}
 
 local mapWidth = 0
 local mapHeight = 0
@@ -39,11 +40,6 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.Wall.dlCorner = 45 + colorPickA * 7 + colorPickB*56
   Field.Wall.drCorner = 46 + colorPickA * 7 + colorPickB*56
   Field.Wall.Floor = 7 + colorPickA * 7 + colorPickB*56
-  
-  print(Field.Wall.up, Field.Wall.down)
-  print(Field.Wall.left, Field.Wall.right)
-  print(Field.Wall.ulCorner, Field.Wall.urCorner)
-  print(Field.Wall.dlCorner, Field.Wall.drCorner)
   
   Field.TileType[Field.Wall.up] = "wall"
   Field.TileType[Field.Wall.down] = "wall"
@@ -86,12 +82,25 @@ function Field.Load(pWindowWidth, pWindowHeight)
       if li == mapHeight and co == mapWidth then Field.Map.Grid[li][co] = Field.Wall.drCorner end
     end
   end
+  
+  Field.Flipper.src = love.graphics.newImage("pictures/flipper.png")
+  Field.Flipper.w = Field.Flipper.src:getWidth()
+  Field.Flipper.h = Field.Flipper.src:getHeight()
+  Field.Flipper.scale = 1
+  Field.Flipper.leftX = 100
+  Field.Flipper.leftY = 600
+  Field.Flipper.leftRotation = 0
+  Field.Flipper.rightX = 300
+  Field.Flipper.rightY = 600
+  Field.Flipper.rightRotation = 0
+  
   myBall.Load()
 end
 
 function Field.Update(dt, pWindowWidth, pWindowHeight)
   myBall.Update(dt, Field, pWindowWidth, pWindowHeight, mapWidth, mapHeight, TILE_SIZE)
-  
+  Field.Flipper.leftRotation = Field.Flipper.leftRotation + 0.01
+  Field.Flipper.rightRotation = Field.Flipper.rightRotation + 0.01
 end
 
 function Field.Draw()
@@ -106,6 +115,23 @@ function Field.Draw()
       end
     end
   end
+  
+  
+  love.graphics.push()
+  love.graphics.draw(Field.Flipper.src,
+                     Field.Flipper.leftX, Field.Flipper.leftY,
+                     Field.Flipper.leftRotation,
+                     Field.Flipper.scale, Field.Flipper.scale,
+                     Field.Flipper.w/10, Field.Flipper.h/2)
+  love.graphics.pop()
+  
+  love.graphics.push()
+  love.graphics.draw(Field.Flipper.src,
+                     Field.Flipper.rightX, Field.Flipper.rightY,
+                     Field.Flipper.rightRotation,
+                     Field.Flipper.scale, Field.Flipper.scale,
+                     Field.Flipper.w*9/10, Field.Flipper.h/2)
+  love.graphics.pop()
   
   myBall.Draw()
   
