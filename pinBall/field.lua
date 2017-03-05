@@ -89,26 +89,32 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.Flipper.scale = 1
   Field.Flipper.leftX = 110
   Field.Flipper.leftY = 550
-  Field.Flipper.leftRotation = 0.5
+  Field.Flipper.leftRotation = math.pi/4
   Field.Flipper.rightX = 380
   Field.Flipper.rightY = 550
-  Field.Flipper.rightRotation = - 0.5
+  Field.Flipper.rightRotation = - math.pi/4
   
   myBall.Load()
 end
 
 function Field.Update(dt, pWindowWidth, pWindowHeight)
-  myBall.Update(dt, Field, pWindowWidth, pWindowHeight, mapWidth, mapHeight, TILE_SIZE)
-  --Field.Flipper.leftRotation = Field.Flipper.leftRotation + 0.01
-  --Field.Flipper.rightRotation = Field.Flipper.rightRotation + 0.01
+  
   if love.keyboard.isDown("left") then
     Field.Flipper.leftRotation = 0
   elseif love.keyboard.isDown("right") then
     Field.Flipper.rightRotation = 0
   else 
-    Field.Flipper.leftRotation = 0.5
-    Field.Flipper.rightRotation = -0.5
+    Field.Flipper.leftRotation = math.pi/4
+    Field.Flipper.rightRotation = - math.pi/4
   end
+  
+  Field.Flipper.leftEndX = Field.Flipper.w * math.cos(Field.Flipper.leftRotation) + Field.Flipper.leftX - 1.5*Field.Flipper.w/10
+  Field.Flipper.leftEndY = Field.Flipper.w * math.sin(Field.Flipper.leftRotation) * (0.8) + Field.Flipper.leftY
+  Field.Flipper.rightEndX = - Field.Flipper.w * math.cos(Field.Flipper.rightRotation) + Field.Flipper.rightX + 1.5*Field.Flipper.w/10
+  Field.Flipper.rightEndY = - Field.Flipper.w * math.sin(Field.Flipper.rightRotation) * (0.8) + Field.Flipper.rightY
+  
+  myBall.Update(dt, Field, pWindowWidth, pWindowHeight, mapWidth, mapHeight, TILE_SIZE, Field)
+  
 end
 
 function Field.Draw()
@@ -140,6 +146,11 @@ function Field.Draw()
                      Field.Flipper.scale, Field.Flipper.scale,
                      Field.Flipper.w*9/10, Field.Flipper.h/2)
   love.graphics.pop()
+  
+  love.graphics.circle("fill", Field.Flipper.leftX, Field.Flipper.leftY, 10)
+  love.graphics.circle("fill", Field.Flipper.leftEndX, Field.Flipper.leftEndY, 10)
+  love.graphics.circle("fill", Field.Flipper.rightX, Field.Flipper.rightY, 10)
+  love.graphics.circle("fill", Field.Flipper.rightEndX, Field.Flipper.rightEndY, 10)
   
   myBall.Draw()
   
