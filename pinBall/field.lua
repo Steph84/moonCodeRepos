@@ -87,20 +87,28 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.Flipper.w = Field.Flipper.src:getWidth()
   Field.Flipper.h = Field.Flipper.src:getHeight()
   Field.Flipper.scale = 1
-  Field.Flipper.leftX = 100
-  Field.Flipper.leftY = 600
-  Field.Flipper.leftRotation = 0
-  Field.Flipper.rightX = 300
-  Field.Flipper.rightY = 600
-  Field.Flipper.rightRotation = 0
+  Field.Flipper.leftX = 110
+  Field.Flipper.leftY = 550
+  Field.Flipper.leftRotation = 0.5
+  Field.Flipper.rightX = 380
+  Field.Flipper.rightY = 550
+  Field.Flipper.rightRotation = - 0.5
   
   myBall.Load()
 end
 
 function Field.Update(dt, pWindowWidth, pWindowHeight)
   myBall.Update(dt, Field, pWindowWidth, pWindowHeight, mapWidth, mapHeight, TILE_SIZE)
-  Field.Flipper.leftRotation = Field.Flipper.leftRotation + 0.01
-  Field.Flipper.rightRotation = Field.Flipper.rightRotation + 0.01
+  --Field.Flipper.leftRotation = Field.Flipper.leftRotation + 0.01
+  --Field.Flipper.rightRotation = Field.Flipper.rightRotation + 0.01
+  if love.keyboard.isDown("left") then
+    Field.Flipper.leftRotation = 0
+  elseif love.keyboard.isDown("right") then
+    Field.Flipper.rightRotation = 0
+  else 
+    Field.Flipper.leftRotation = 0.5
+    Field.Flipper.rightRotation = -0.5
+  end
 end
 
 function Field.Draw()
