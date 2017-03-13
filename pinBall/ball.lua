@@ -5,28 +5,14 @@ Ball.position = {}
 local leftCollision = false
 local rightCollision = false
 
-function Ball.Collide(a1X, a1Y, a1W, a1H, a2X, a2Y, a2W, a2H)
-  -- calcul du delta selon x et y
-  local dx = a1X - a2X
-  local dy = a1Y - a2Y
-  --si le delta < la somme des dimensions de l image de chaque objet
-  if (math.abs(dx) < a1W+a2W) then
-    if (math.abs(dy) < a1H+a2H) then
-      -- si les 2 condition sont verifiees --> collision
-      return true
-    end
-  end
-  -- si uniquement la premiere condition est verifiee --> pas de collision
-  return false
-end
-
+--                  flip left part X1Y1; flip right part X2/Y2
 function Ball.Bounce(flipX1, flipX2, flipY1, flipY2, ballX, ballY)
-  if ballX < flipX2 and ballX > flipX1 then
-    local coeffDir = (flipY2 - flipY1)/(flipX2 - flipX1)
-    local ordOrig = flipY1/(coeffDir*flipX1)
-    
-    local ballYTheoric = coeffDir * ballX + ordOrig
-    if ballYTheoric - ballY > 0 then return true end
+  if ballX < flipX2 and ballX > flipX1 then -- if the ball is in the good range along x
+    local coeffDir = (flipY2 - flipY1)/(flipX2 - flipX1) -- calculate the gradient
+    local ordOrig = flipY1 - (coeffDir*flipX1) -- calculate the y-intercept
+    if ordOrig == math.huge then ordOrig = flipY1 end -- to manage infinite result
+    local ballYTheoric = coeffDir * ballX + ordOrig -- with x calculate the y on the line
+    if ballY > ballYTheoric then return true end -- if the ball is under the line then collision
   end
   return false
 end
@@ -40,7 +26,6 @@ function Ball.Load()
   Ball.param.y = 300
   Ball.param.vx = 0
   Ball.param.vy = 0
-  
 end
 
 function Ball.Update(dt, pField, ppWindowWidth, ppWindowHeight, pMapWidth, pMapHeight, pTILE_SIZE, myField)
@@ -50,17 +35,10 @@ function Ball.Update(dt, pField, ppWindowWidth, ppWindowHeight, pMapWidth, pMapH
   Ball.param.x = Ball.param.x + Ball.param.vx
   Ball.param.y = Ball.param.y + Ball.param.vy
   
-  
   if love.keyboard.isDown("space") then
     Ball.param.vx = -2
     Ball.param.vy = -5
   end
-  
-  --[[
-  local id = pField.Map.Grid[Ball.position.line][Ball.position.column]
-  if pField.Map.IsSolid(id) then
-  end
---]]
   
   if Ball.param.x < (0 + pTILE_SIZE + (Ball.param.w*Ball.param.scale)/2) or
      Ball.param.x > (ppWindowWidth - pTILE_SIZE - (Ball.param.w*Ball.param.scale)/2) then
@@ -74,21 +52,17 @@ function Ball.Update(dt, pField, ppWindowWidth, ppWindowHeight, pMapWidth, pMapH
   
   Ball.param.vy = Ball.param.vy + 9.81*dt
   
-  --[[
-  leftCollision = Ball.Collide(myField.Flipper.leftX, myField.Flipper.leftY, myField.Flipper.w, myField.Flipper.h,
-                               Ball.param.x, Ball.param.y, (Ball.param.w*Ball.param.scale)/2, (Ball.param.h*Ball.param.scale)/2)
-  if leftCollision == true then Ball.param.vy = 0 - Ball.param.vy end
-  --]]
-  
-  local truc = Ball.Bounce(myField.Flipper.leftX, myField.Flipper.leftEndX,
-              myField.Flipper.leftY, myField.Flipper.leftEndY,
-              Ball.param.x, Ball.param.y)
+  local isLeftFlipCollision = Ball.Bounce(myField.Flipper.leftX, myField.Flipper.leftEndX,
+                                          myField.Flipper.leftY, myField.Flipper.leftEndY,
+                                          Ball.param.x, Ball.param.y)
             
-  local machin = Ball.Bounce(myField.Flipper.rightEndX, myField.Flipper.rightX,
-              myField.Flipper.rightEndY, myField.Flipper.rightY,
-              Ball.param.x, Ball.param.y)
+  local isRightFlipCollision = Ball.Bounce(myField.Flipper.rightEndX, myField.Flipper.rightX,
+                                           myField.Flipper.rightEndY, myField.Flipper.rightY,
+                                           Ball.param.x, Ball.param.y)
   
-  print(truc, machin)
+  
+  if isLeftFlipCollision == true then Ball.param.vy = 0 - Ball.param.vy end
+  if isRightFlipCollision == true then Ball.param.vy = 0 - Ball.param.vy end
   
 end
 
@@ -98,7 +72,6 @@ function Ball.Draw()
                      0,
                      Ball.param.scale, Ball.param.scale,
                      Ball.param.w/2, Ball.param.h/2)
-  
 end
 
 return Ball
