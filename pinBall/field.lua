@@ -27,10 +27,14 @@ function Field.Load(pWindowWidth, pWindowHeight)
   mapWidth = pWindowWidth/32
   mapHeight = pWindowHeight/32
   
+  -- randomly choose the color in the tile sheet
   local colorPickA = math.random(0, 1)
   math.randomseed(os.time())
   local colorPickB = math.random(0, 1)
   
+  -- there are 4 colors so : 
+  -- 0, 0        1, 0
+  -- 0, 1        1, 1
   Field.Wall.up = 4 + colorPickA * 7 + colorPickB*56
   Field.Wall.down = 18 + colorPickA * 7 + colorPickB*56
   Field.Wall.left = 15 + colorPickA * 7 + colorPickB*56
@@ -41,6 +45,7 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.Wall.drCorner = 46 + colorPickA * 7 + colorPickB*56
   Field.Wall.Floor = 7 + colorPickA * 7 + colorPickB*56
   
+  -- to manage the ball rebound
   Field.TileType[Field.Wall.up] = "wall"
   Field.TileType[Field.Wall.down] = "wall"
   Field.TileType[Field.Wall.left] = "wall"
@@ -51,6 +56,7 @@ function Field.Load(pWindowWidth, pWindowHeight)
   Field.TileType[Field.Wall.drCorner] = "wall"
   Field.TileType[Field.Wall.Floor] = "ground"
     
+  -- get all the tiles in the tile sheet
   local l, c
   local id = 1
   Field.TileTextures[0] = nil
@@ -67,6 +73,7 @@ function Field.Load(pWindowWidth, pWindowHeight)
     end
   end
   
+  -- build the map
   local li, co
   for li = 1, mapHeight do
     Field.Map.Grid[li] = {}
@@ -83,6 +90,7 @@ function Field.Load(pWindowWidth, pWindowHeight)
     end
   end
   
+  -- load and place the flippers
   Field.Flipper.src = love.graphics.newImage("pictures/flipper.png")
   Field.Flipper.w = Field.Flipper.src:getWidth()
   Field.Flipper.h = Field.Flipper.src:getHeight()
@@ -99,6 +107,7 @@ end
 
 function Field.Update(dt, pWindowWidth, pWindowHeight)
   
+  -- moving the flippers
   if love.keyboard.isDown("left") then
     Field.Flipper.leftRotation = 0
   elseif love.keyboard.isDown("right") then
@@ -108,6 +117,7 @@ function Field.Update(dt, pWindowWidth, pWindowHeight)
     Field.Flipper.rightRotation = - math.pi/4
   end
   
+  -- calculate the coordonates of the end of each flipper
   Field.Flipper.leftEndX = Field.Flipper.w * math.cos(Field.Flipper.leftRotation) + Field.Flipper.leftX - 1.5*Field.Flipper.w/10
   Field.Flipper.leftEndY = Field.Flipper.w * math.sin(Field.Flipper.leftRotation) * (0.8) + Field.Flipper.leftY
   Field.Flipper.rightEndX = - Field.Flipper.w * math.cos(Field.Flipper.rightRotation) + Field.Flipper.rightX + 1.5*Field.Flipper.w/10
@@ -119,6 +129,7 @@ end
 
 function Field.Draw()
   
+  -- draw the map
   local c, l
   for l = 1, mapHeight do
     for c = 1, mapWidth do
@@ -130,7 +141,7 @@ function Field.Draw()
     end
   end
   
-  
+  -- draw the flippers and manage their movement
   love.graphics.push()
   love.graphics.draw(Field.Flipper.src,
                      Field.Flipper.leftX, Field.Flipper.leftY,
@@ -147,14 +158,13 @@ function Field.Draw()
                      Field.Flipper.w*9/10, Field.Flipper.h/2)
   love.graphics.pop()
   
-  love.graphics.circle("fill", Field.Flipper.leftX, Field.Flipper.leftY, 10)
-  love.graphics.circle("fill", Field.Flipper.leftEndX, Field.Flipper.leftEndY, 10)
-  love.graphics.circle("fill", Field.Flipper.rightX, Field.Flipper.rightY, 10)
-  love.graphics.circle("fill", Field.Flipper.rightEndX, Field.Flipper.rightEndY, 10)
+  --love.graphics.circle("fill", Field.Flipper.leftX, Field.Flipper.leftY, 10)
+  --love.graphics.circle("fill", Field.Flipper.leftEndX, Field.Flipper.leftEndY, 10)
+  --love.graphics.circle("fill", Field.Flipper.rightX, Field.Flipper.rightY, 10)
+  --love.graphics.circle("fill", Field.Flipper.rightEndX, Field.Flipper.rightEndY, 10)
   
   myBall.Draw()
   
 end
-
 
 return Field
