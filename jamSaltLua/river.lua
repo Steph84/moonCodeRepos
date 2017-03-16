@@ -1,7 +1,5 @@
 local River = {}
 
-local myColor = require("color")
-
 local riverSize = {}
 local riverCoord = {}
 

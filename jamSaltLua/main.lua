@@ -16,7 +16,7 @@ local redColor = {255, 0, 0}
 local blanket = {}
 
 local myRiver = require("river")
-local myColor = require("color")
+local mySalt = require("salt")
 
 function love.load()
   love.window.setMode(windowWidth, windowHeight)
@@ -28,11 +28,13 @@ function love.load()
   blanket.y = 0
   
   myRiver.Load(windowWidth, windowHeight)
+  mySalt.Load()
   
 end
 
 function love.update(dt)
   myRiver.Update(dt, windowWidth, windowHeight)
+  mySalt.Update(dt)
 end
 
 function love.draw()
@@ -45,7 +47,8 @@ function love.draw()
   love.graphics.rectangle("fill", blanket.x + 5, blanket.y + 5, blanket.w - 10, blanket.h - 10)
   
   myRiver.Draw()
-    
+  mySalt.Draw()
+  
 end
 
 function love.keypressed(key)
