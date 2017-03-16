@@ -1,5 +1,7 @@
 local River = {}
 
+local myColor = require("color")
+
 local riverSize = {}
 local riverCoord = {}
 
@@ -76,7 +78,7 @@ end
 
 function River.Load(pWindowWidth, pWindowHeight)
   riverSize.w = pWindowWidth
-  riverSize.h = pWindowHeight * 0.2
+  riverSize.h = pWindowHeight * 0.3
   
   riverCoord.x = 0
   riverCoord.y = pWindowHeight/2 - riverSize.h/2
@@ -107,15 +109,15 @@ function River.Update(pDt, pWindowWidth, pWindowHeight)
     end
   end
   
-  local i
-  for i = #listLeaves, 1, -1 do
-    local b = listLeaves[i]
+  local j
+  for j = #listLeaves, 1, -1 do
+    local b = listLeaves[j]
     b.x = b.x + b.vx
     b.alpha = b.alpha + b.alphaSpeed * pDt
     
     
     if b.x > pWindowWidth then
-      table.remove(listLeaves, i)
+      table.remove(listLeaves, j)
     end
     
     if #listLeaves < listLeaves.maxNb then
@@ -153,7 +155,7 @@ function River.Draw()
   end
   love.graphics.setColor(whiteColor)
   
-  love.graphics.print("number of tides "..#listTides, 5, 5)
+  --love.graphics.print("number of tides "..#listTides, 5, 5)
 end
 
 
