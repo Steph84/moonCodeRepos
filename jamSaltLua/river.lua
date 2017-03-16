@@ -8,6 +8,13 @@ listTides.initNb = 100
 listTides.maxNb = 100
 listTides.maxSpeed = 3
 
+local listLeaves = {}
+listLeaves.initNb = 50
+listLeaves.maxNb = 50
+listLeaves.maxSpeed = 2
+listLeaves.alpha = 255
+listLeaves.alphaSpeed = 1
+
 local tideSize = {}
 local tideCoord = {}
 
@@ -15,6 +22,7 @@ local whiteColor = {255, 255, 255}
 local blue1Color = {0, 255, 255} -- cyan
 local blue2Color = {0, 128, 255} -- medium blue
 local blue3Color = {0, 0, 255} -- royal blue
+local green2Color = {0, 255, 0}
 
 function createTide(pId, pRiverY, pRiverWidth, pRiverHeight)
   local item = {}
@@ -41,6 +49,32 @@ function createTide(pId, pRiverY, pRiverWidth, pRiverHeight)
   return item
 end
 
+function createLeaf(pId, pRiverY, pRiverWidth, pRiverHeight)
+  local item = {}
+  
+  item.id = pId
+  item.radX = 7
+  item.radY = 3
+  item.x = math.random(0, pRiverWidth)
+  item.y = math.random(pRiverY + item.radX, pRiverY + pRiverHeight - item.radY)
+  item.vy = 0
+  item.alpha = math.random(150, 255)
+  
+  if item.y < (pRiverY + pRiverHeight/2) then
+    local b = item.y/pRiverY
+    item.vx = b * listLeaves.maxSpeed
+  end
+  
+  if item.y > (pRiverY + pRiverHeight/2) then
+    local c = item.y/(pRiverY + pRiverHeight)
+    item.vx = 1/c * listLeaves.maxSpeed
+  end
+  
+  table.insert(listLeaves, item)
+  
+  return item
+end
+
 function River.Load(pWindowWidth, pWindowHeight)
   riverSize.w = pWindowWidth
   riverSize.h = pWindowHeight * 0.2
@@ -52,9 +86,14 @@ function River.Load(pWindowWidth, pWindowHeight)
   for i = 1, listTides.initNb do
     createTide(i, riverCoord.y, riverSize.w, riverSize.h)
   end
+  
+  local j
+  for j = 1, listLeaves.initNb do
+    createLeaf(i, riverCoord.y, riverSize.w, riverSize.h)
+  end
 end
 
-function River.Update(pWindowWidth, pWindowHeight)
+function River.Update(pDt, pWindowWidth, pWindowHeight)
   local i
   for i = #listTides, 1, -1 do
     local a = listTides[i]
@@ -67,8 +106,30 @@ function River.Update(pWindowWidth, pWindowHeight)
     if #listTides < listTides.maxNb then
       createTide(#listTides + 1, riverCoord.y, riverSize.w/pWindowWidth * 100, riverSize.h)
     end
-    
   end
+  
+  local i
+  for i = #listLeaves, 1, -1 do
+    local b = listLeaves[i]
+    b.x = b.x + b.vx
+    b.alpha = b.alpha + listLeaves.alphaSpeed * pDt
+    
+    if b.x > pWindowWidth then
+      table.remove(listLeaves, i)
+    end
+    
+    if #listLeaves < listLeaves.maxNb then
+      createLeaf(#listLeaves + 1, riverCoord.y, riverSize.w/pWindowWidth * 100, riverSize.h)
+    end
+    
+    if b.alpha > 255 then
+      listLeaves.alphaSpeed = 0 - listLeaves.alphaSpeed
+    end
+    if b.alpha < 150 then
+      listLeaves.alphaSpeed = 0 - listLeaves.alphaSpeed
+    end
+  end
+  
 end
 
 function River.Draw()
@@ -81,6 +142,14 @@ function River.Draw()
   for i = 1, #listTides do
     local a = listTides[i]
     love.graphics.rectangle("fill", a.x, a.y, a.w, a.h)
+  end
+  love.graphics.setColor(whiteColor)
+  
+  love.graphics.setColor(green2Color[1], green2Color[2], green2Color[3], listLeaves.alpha)
+  local i
+  for i = 1, #listLeaves do
+    local d = listLeaves[i]
+    love.graphics.ellipse("fill", d.x, d.y, d.radX, d.radY)
   end
   love.graphics.setColor(whiteColor)
   

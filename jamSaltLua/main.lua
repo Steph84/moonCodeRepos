@@ -21,7 +21,7 @@ function love.load()
 end
 
 function love.update(dt)
-  myRiver.Update(windowWidth, windowHeight)
+  myRiver.Update(dt, windowWidth, windowHeight)
 end
 
 function love.draw()
