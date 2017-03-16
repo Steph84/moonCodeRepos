@@ -11,6 +11,7 @@ listTides.maxSpeed = 3
 local tideSize = {}
 local tideCoord = {}
 
+local whiteColor = {255, 255, 255}
 local blue1Color = {0, 255, 255} -- cyan
 local blue2Color = {0, 128, 255} -- medium blue
 local blue3Color = {0, 0, 255} -- royal blue
@@ -73,6 +74,7 @@ end
 function River.Draw()
   love.graphics.setColor(blue3Color)
   love.graphics.rectangle("fill", riverCoord.x, riverCoord.y, riverSize.w, riverSize.h)
+  love.graphics.setColor(whiteColor)
   
   love.graphics.setColor(blue2Color)
   local i
@@ -80,6 +82,7 @@ function River.Draw()
     local a = listTides[i]
     love.graphics.rectangle("fill", a.x, a.y, a.w, a.h)
   end
+  love.graphics.setColor(whiteColor)
   
   love.graphics.print("number of tides "..#listTides, 5, 5)
 end
