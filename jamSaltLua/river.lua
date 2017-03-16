@@ -12,8 +12,6 @@ local listLeaves = {}
 listLeaves.initNb = 50
 listLeaves.maxNb = 50
 listLeaves.maxSpeed = 2
-listLeaves.alpha = 255
-listLeaves.alphaSpeed = 1
 
 local tideSize = {}
 local tideCoord = {}
@@ -58,7 +56,8 @@ function createLeaf(pId, pRiverY, pRiverWidth, pRiverHeight)
   item.x = math.random(0, pRiverWidth)
   item.y = math.random(pRiverY + item.radX, pRiverY + pRiverHeight - item.radY)
   item.vy = 0
-  item.alpha = math.random(150, 255)
+  item.alpha = math.random(100, 255)
+  item.alphaSpeed = math.random(50, 75)
   
   if item.y < (pRiverY + pRiverHeight/2) then
     local b = item.y/pRiverY
@@ -112,7 +111,8 @@ function River.Update(pDt, pWindowWidth, pWindowHeight)
   for i = #listLeaves, 1, -1 do
     local b = listLeaves[i]
     b.x = b.x + b.vx
-    b.alpha = b.alpha + listLeaves.alphaSpeed * pDt
+    b.alpha = b.alpha + b.alphaSpeed * pDt
+    
     
     if b.x > pWindowWidth then
       table.remove(listLeaves, i)
@@ -123,10 +123,10 @@ function River.Update(pDt, pWindowWidth, pWindowHeight)
     end
     
     if b.alpha > 255 then
-      listLeaves.alphaSpeed = 0 - listLeaves.alphaSpeed
+      b.alphaSpeed = 0 - b.alphaSpeed
     end
-    if b.alpha < 150 then
-      listLeaves.alphaSpeed = 0 - listLeaves.alphaSpeed
+    if b.alpha < 100 then
+      b.alphaSpeed = 0 - b.alphaSpeed
     end
   end
   
@@ -145,10 +145,10 @@ function River.Draw()
   end
   love.graphics.setColor(whiteColor)
   
-  love.graphics.setColor(green2Color[1], green2Color[2], green2Color[3], listLeaves.alpha)
   local i
   for i = 1, #listLeaves do
     local d = listLeaves[i]
+    love.graphics.setColor(green2Color[1], green2Color[2], green2Color[3], d.alpha)
     love.graphics.ellipse("fill", d.x, d.y, d.radX, d.radY)
   end
   love.graphics.setColor(whiteColor)
