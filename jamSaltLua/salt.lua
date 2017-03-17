@@ -6,6 +6,19 @@ Salt.pictures = {}
 
 local listSalts = {}
 
+function createSalt(pId, pX, pY)
+  local item = {}
+  
+  item.id = pId
+  item.x = pX
+  item.y = pY
+  item.picCurrent = 1
+  
+  table.insert(listSalts, item)
+  
+  return item
+end
+
 function Salt.Load()
   
   Salt.tileSheet = love.graphics.newImage("pictures/saltx32.png")
@@ -32,27 +45,20 @@ function Salt.Load()
   for n = 1, nbColumns do
     Salt.pictures[n] = Salt.tileTextures[n]
   end
-end
-
-function createSalt(pId, pX, pY)
-  local item = {}
   
-  item.id = pId
-  item.x = pX
-  item.y = pY
-  item.picCurrent = 1
+  createSalt(1, 100, 100)
   
-  return item
 end
 
 function Salt.Update(pDt)
   if #listSalts > 0 then
+    print("dell")
     local i
     for i = #listSalts, 1, -1 do
       local f = listSalts[i]
       f.picCurrent = f.picCurrent + (12 * pDt)
       
-      if math.floor(f.picCurrent) > #f.pictures then
+      if math.floor(f.picCurrent) > #Salt.pictures then
         f.picCurrent = 1
       end
     end
@@ -60,7 +66,11 @@ function Salt.Update(pDt)
 end
 
 function Salt.Draw()
-  
+  local i
+  for i = #listSalts, 1, -1 do
+    local g = listSalts[i]
+    love.graphics.draw(Salt.tileSheet, Salt.pictures[math.floor(g.picCurrent)], g.x, g.y)
+  end
 end
 
 return Salt
