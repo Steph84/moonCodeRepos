@@ -3,6 +3,7 @@ local Salt = {}
 local TILE_SIZE = 32
 Salt.tileTextures = {}
 Salt.pictures = {}
+Salt.ctrl = {}
 
 local listSalts = {}
 
@@ -17,6 +18,13 @@ function createSalt(pId, pX, pY)
   table.insert(listSalts, item)
   
   return item
+end
+
+function love.mousepressed(x, y, button, istouch)
+  if button == 1 then
+    Salt.ctrl.x = x
+    Salt.ctrl.y = y
+  end
 end
 
 function Salt.Load()
@@ -46,23 +54,28 @@ function Salt.Load()
     Salt.pictures[n] = Salt.tileTextures[n]
   end
   
-  createSalt(1, 100, 100)
+  Salt.ctrl.x = 0
+  Salt.ctrl.y = 0
   
 end
 
 function Salt.Update(pDt)
   if #listSalts > 0 then
-    print("dell")
     local i
     for i = #listSalts, 1, -1 do
       local f = listSalts[i]
-      f.picCurrent = f.picCurrent + (12 * pDt)
+      f.picCurrent = f.picCurrent + (9 * pDt)
       
       if math.floor(f.picCurrent) > #Salt.pictures then
         f.picCurrent = 1
       end
     end
   end
+  
+  if Salt.ctrl.x ~= 0 and Salt.ctrl.y ~= 0 then
+    createSalt(#listSalts + 1 ,Salt.ctrl.x, Salt.ctrl.y)
+  end
+    
 end
 
 function Salt.Draw()
