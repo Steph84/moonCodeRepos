@@ -12,6 +12,7 @@ local green2Color = {0, 255, 0}
 local green3Color = {0, 255, 128}
 local green4Color = {0, 102, 0}
 local redColor = {255, 0, 0}
+local brownColor = {102, 51, 0}
 
 local blanket = {}
 
@@ -35,10 +36,27 @@ end
 function love.update(dt)
   myRiver.Update(dt, windowWidth, windowHeight)
   mySalt.Update(dt)
+  
+  local i
+  for i = #mySalt.listSalts, 1, -1 do
+    local h = mySalt.listSalts[i]
+    if h.circRad < 50 then h.circRad = h.circRad + 10 * dt end
+  end
+  
 end
 
 function love.draw()
   love.graphics.setBackgroundColor(green4Color)
+  
+  love.graphics.setColor(brownColor)
+  local i
+  for i = #mySalt.listSalts, 1, -1 do
+    local g = mySalt.listSalts[i]
+    love.graphics.circle("fill", g.x + 32/2, g.y + 32/2, g.circRad)
+  end
+  love.graphics.setColor(whiteColor)
+  
+  myRiver.Draw()
   
   -- draw the blanket
   love.graphics.setColor(redColor)
@@ -46,7 +64,6 @@ function love.draw()
   love.graphics.setColor(whiteColor)
   love.graphics.rectangle("fill", blanket.x + 5, blanket.y + 5, blanket.w - 10, blanket.h - 10)
   
-  myRiver.Draw()
   mySalt.Draw()
   
 end

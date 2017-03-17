@@ -5,7 +5,9 @@ Salt.tileTextures = {}
 Salt.pictures = {}
 Salt.ctrl = {}
 
-local listSalts = {}
+Salt.listSalts = {}
+
+local whiteColor = {255, 255, 255}
 
 function createSalt(pId, pX, pY)
   local item = {}
@@ -14,8 +16,10 @@ function createSalt(pId, pX, pY)
   item.x = pX
   item.y = pY
   item.picCurrent = 1
+  item.circRad = 1
+  item.alpha = 255
   
-  table.insert(listSalts, item)
+  table.insert(Salt.listSalts, item)
   
   return item
 end
@@ -60,28 +64,34 @@ function Salt.Load()
 end
 
 function Salt.Update(pDt)
-  if #listSalts > 0 then
+  if #Salt.listSalts > 0 then
     local i
-    for i = #listSalts, 1, -1 do
-      local f = listSalts[i]
+    for i = #Salt.listSalts, 1, -1 do
+      local f = Salt.listSalts[i]
       f.picCurrent = f.picCurrent + (9 * pDt)
       
       if math.floor(f.picCurrent) > #Salt.pictures then
         f.picCurrent = 1
       end
+      
+      if f.alpha > 0 then f.alpha = f.alpha - 30 * pDt end
+      
     end
   end
   
   if Salt.ctrl.x ~= 0 and Salt.ctrl.y ~= 0 then
-    createSalt(#listSalts + 1 ,Salt.ctrl.x, Salt.ctrl.y)
+    createSalt(#Salt.listSalts + 1 ,Salt.ctrl.x - 32/2, Salt.ctrl.y - 32/2)
+    Salt.ctrl.x = 0
+    Salt.ctrl.y = 0
   end
     
 end
 
 function Salt.Draw()
   local i
-  for i = #listSalts, 1, -1 do
-    local g = listSalts[i]
+  for i = #Salt.listSalts, 1, -1 do
+    local g = Salt.listSalts[i]
+    love.graphics.setColor(whiteColor[1], whiteColor[2], whiteColor[3], g.alpha)
     love.graphics.draw(Salt.tileSheet, Salt.pictures[math.floor(g.picCurrent)], g.x, g.y)
   end
 end
