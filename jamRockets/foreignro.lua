@@ -1,18 +1,19 @@
-local Rocketv = {}
+local Foreignro = {}
 
 local listRockets = {}
 local rocketPic = {}
-rocketPic.src = love.graphics.newImage("pictures/v2.png")
+rocketPic.src = love.graphics.newImage("pictures/v2foreign.png")
 rocketPic.w = rocketPic.src:getWidth()
 rocketPic.h = rocketPic.src:getHeight()
 
 local state = "standBy"
+local timeElapsed = 0
 
 function createRocket(ppWindowWidth, ppWindowHeight)
   local item = {}
   
   item.scale = 0.2
-  item.x = 50
+  item.x = ppWindowWidth - rocketPic.w * item.scale/2 - 50
   item.y = ppWindowHeight - rocketPic.h * item.scale/2
   item.rotation = 0
   item.vx = 0
@@ -23,14 +24,17 @@ function createRocket(ppWindowWidth, ppWindowHeight)
   return item
 end
 
-function Rocketv.Load(pWindowWidth, pWindowHeight)
+function Foreignro.Load(pWindowWidth, pWindowHeight)
   
   createRocket(pWindowWidth, pWindowHeight)
   
 end
 
-function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
-  if love.keyboard.isDown("space") and state == "standBy" then
+function Foreignro.Update(pDt, pWindowWidth, pWindowHeight)
+  
+  timeElapsed = timeElapsed + pDt
+  
+  if state == "standBy" and timeElapsed > 5 then
     state = "launch"
   end
   
@@ -38,9 +42,9 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
     local i
     for i = 1, #listRockets do
       local r = listRockets[i]
-      r.rotation = r.rotation + 0.6 * pDt
+      r.rotation = r.rotation - 0.6 * pDt
       r.vx = r.vx + 100 * pDt
-      r.x = r.x + r.vx * pDt
+      r.x = r.x - r.vx * pDt
     end
   end
   
@@ -74,7 +78,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
   
 end
 
-function Rocketv.Draw(pWindowWidth, pWindowHeight)
+function Foreignro.Draw(pWindowWidth, pWindowHeight)
   local i
   for i = 1, #listRockets do
     local r = listRockets[i]
@@ -82,4 +86,4 @@ function Rocketv.Draw(pWindowWidth, pWindowHeight)
   end
 end
 
-return Rocketv
+return Foreignro

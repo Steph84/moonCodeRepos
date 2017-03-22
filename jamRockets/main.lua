@@ -8,9 +8,14 @@ local windowWidth = 1300 -- max value
 local windowHeight = 675 -- max value
 
 local bg = {}
+local building = {}
+
+local myRocket = require("rocketv")
+--local foreign = require("foreignro")
 
 function love.load()
   love.window.setMode(windowWidth, windowHeight)
+  
   bg.src = love.graphics.newImage("pictures/background.png")
   bg.w = bg.src:getWidth()
   bg.h = bg.src:getHeight()
@@ -18,11 +23,19 @@ function love.load()
   bg.x = 0
   bg.y = windowHeight - bg.h * bg.scale/2
   
+  building.src = love.graphics.newImage("pictures/building.png")
+  building.w = building.src:getWidth()
+  building.h = building.src:getHeight()
+  building.scale = 0.3
+  
+  myRocket.Load(windowWidth, windowHeight)
+  --foreignRocket.Load(windowWidth, windowHeight)
   
 end
 
 function love.update(dt)
-
+  myRocket.Update(dt, windowWidth, windowHeight)
+  --foreignRocket.Update(dt, windowWidth, windowHeight)
 end
 
 function love.draw()
@@ -39,6 +52,20 @@ function love.draw()
   love.graphics.setColor(255, 255, 255)
   love.graphics.draw(bg.src, bg.x, bg.y, 0, bg.scale/2, bg.scale/2)
   love.graphics.draw(bg.src, bg.x + bg.w * bg.scale/2, bg.y, 0, bg.scale/2, bg.scale/2)
+  
+  -- draw the buildings
+  love.graphics.draw(building.src,
+                     100, windowHeight - building.h*building.scale,
+                     0, building.scale)
+                   
+  love.graphics.draw(building.src,
+                     windowWidth - building.w * building.scale - 100, windowHeight - building.h*building.scale,
+                     0, building.scale)
+  
+  myRocket.Draw(windowWidth, windowHeight)
+  --foreignRocket.Draw(windowWidth, windowHeight)
+  
+  
 end
 
 function love.keypressed(key)
