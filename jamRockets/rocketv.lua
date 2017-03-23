@@ -10,6 +10,9 @@ rocketPic.h = rocketPic.src:getHeight()
 
 local timeElapsed = 0
 local power = "ready"
+local pv = {}
+
+local myControls = require("controls")
 
 function createRocket(ppWindowWidth, ppWindowHeight, pSide, pForce)
   local item = {}
@@ -32,16 +35,18 @@ function createRocket(ppWindowWidth, ppWindowHeight, pSide, pForce)
 end
 
 function Rocketv.Load(pWindowWidth, pWindowHeight)
+  pv.home = 146
+  pv.foreign = 146
   
   createRocket(pWindowWidth, pWindowHeight, "home", 2)
   
   
 end
 
-function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
-  
+function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
+  math.randomseed(os.time())
   if power == "ready" then
-    local tempForce = math.random(2, 5) -- 1/4 chance of hit
+    local tempForce = 3 --math.random(2, 5) -- 1/4 chance of hit
     createRocket(pWindowWidth, pWindowHeight, "foreign", tempForce)
     power = "processing"
     timeElapsed = 0
@@ -87,21 +92,39 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
       r.vy = r.vy - 500 * pDt
       r.y = r.y - r.vy * pDt
       if r.y > pWindowHeight - rocketPic.h * r.scale/2 then
+        if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then pv.home = pv.home - 30 end
         r.state = "crash"
         power = "ready"
         table.remove(listRockets, i)
       end
     end
     
+    if pv.home < 0 then
+      pv.home = 0
+      -- TODO animation destruction
+      -- TODO game over screen
+    end
+    
   end
 end
 
 function Rocketv.Draw(pWindowWidth, pWindowHeight)
+  
+  love.graphics.rectangle("line", 100, 500, 150, 10)
+  love.graphics.rectangle("line", pWindowWidth - 100 - 150, 500, 150, 10)
+  
+  love.graphics.setColor(0, 255, 0)
+  love.graphics.rectangle("fill", 102, 502, pv.home, 6)
+  love.graphics.rectangle("fill", pWindowWidth - 102 - 146, 502, pv.foreign, 6)
+  
+  love.graphics.setColor(255, 255, 255)
+  
   local i
   for i = 1, #listRockets do
     local r = listRockets[i]
     love.graphics.draw(rocketPic.src, r.x, r.y, r.rotation, r.scale, r.scale, rocketPic.w/2, rocketPic.h/2)
   end
+  
 end
 
 return Rocketv

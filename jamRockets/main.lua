@@ -32,7 +32,7 @@ function love.load()
 end
 
 function love.update(dt)
-  myRocket.Update(dt, windowWidth, windowHeight)
+  myRocket.Update(dt, windowWidth, windowHeight, building)
 end
 
 function love.draw()
