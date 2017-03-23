@@ -11,6 +11,9 @@ rocketPic.h = rocketPic.src:getHeight()
 local timeElapsed = 0
 local power = "ready"
 local pv = {}
+local canPlay = true
+local newValue
+local forceHome = 0
 
 local myControls = require("controls")
 
@@ -37,6 +40,8 @@ end
 function Rocketv.Load(pWindowWidth, pWindowHeight)
   pv.home = 146
   pv.foreign = 146
+  
+  myControls.Load()
   
   createRocket(pWindowWidth, pWindowHeight, "home", 2)
   
@@ -105,6 +110,8 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
       -- TODO game over screen
     end
     
+    canPlay, forceHome = myControls.Update(pDt, canPlay, forceHome)
+    
   end
 end
 
@@ -124,6 +131,8 @@ function Rocketv.Draw(pWindowWidth, pWindowHeight)
     local r = listRockets[i]
     love.graphics.draw(rocketPic.src, r.x, r.y, r.rotation, r.scale, r.scale, rocketPic.w/2, rocketPic.h/2)
   end
+  
+  myControls.Draw()
   
 end
 
