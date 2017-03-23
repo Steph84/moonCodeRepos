@@ -43,15 +43,14 @@ function Rocketv.Load(pWindowWidth, pWindowHeight)
   
   myControls.Load()
   
-  createRocket(pWindowWidth, pWindowHeight, "home", 2)
-  
+  createRocket(pWindowWidth, pWindowHeight, "home", 0)
   
 end
 
 function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
   math.randomseed(os.time())
   if power == "ready" then
-    local tempForce = 3 --math.random(2, 5) -- 1/4 chance of hit
+    local tempForce = math.random(2, 5) -- 1/4 chance of hit
     createRocket(pWindowWidth, pWindowHeight, "foreign", tempForce)
     power = "processing"
     timeElapsed = 0
@@ -67,7 +66,8 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
   
     -- manage the start and the flight along x for the player
     if r.side == "home" then
-      if love.keyboard.isDown("space") and r.state == "standBy" then r.state = "launch" end
+      r.force = forceHome
+      if canPlay == false and r.state == "standBy" then r.state = "launch" end
       if r.state == "launch" or r.state == "landing" then
         r.rotation = r.rotation + 0.6 * pDt
         r.vx = r.vx + 100 * pDt
@@ -97,11 +97,29 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
       r.vy = r.vy - 500 * pDt
       r.y = r.y - r.vy * pDt
       if r.y > pWindowHeight - rocketPic.h * r.scale/2 then
-        if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then pv.home = pv.home - 30 end
+        
+        if r.side == "foreign" then
+          if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then pv.home = pv.home - 30 end
+        end
+        
+        if r.side == "home" then
+          if r.x > (pWindowWidth - pBuilding.w * pBuilding.scale - 100) and
+             r.x < (pWindowWidth - 100) then
+                pv.foreign = pv.foreign - 30
+          end
+          canPlay = true
+        end
+        
         r.state = "crash"
         power = "ready"
         table.remove(listRockets, i)
       end
+      
+      if r.state == "crash" and r.side == "home" then
+        r.state = "standBy"
+        createRocket(pWindowWidth, pWindowHeight, "home", 0)
+      end
+      
     end
     
     if pv.home < 0 then
