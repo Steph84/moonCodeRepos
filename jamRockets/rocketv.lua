@@ -1,3 +1,5 @@
+math.randomseed(os.time()) --initialiser le random
+
 local Rocketv = {}
 
 local listRockets = {}
@@ -7,8 +9,9 @@ rocketPic.w = rocketPic.src:getWidth()
 rocketPic.h = rocketPic.src:getHeight()
 
 local timeElapsed = 0
+local power = "ready"
 
-function createRocket(ppWindowWidth, ppWindowHeight, pSide)
+function createRocket(ppWindowWidth, ppWindowHeight, pSide, pForce)
   local item = {}
   
   item.scale = 0.2
@@ -18,6 +21,7 @@ function createRocket(ppWindowWidth, ppWindowHeight, pSide)
   item.vy = 0
   item.side = pSide
   item.state = "standBy"
+  item.force = pForce
   
   if pSide == "home" then item.x = 50 end
   if pSide == "foreign" then item.x = ppWindowWidth - rocketPic.w * item.scale/2 - 50 end
@@ -29,14 +33,23 @@ end
 
 function Rocketv.Load(pWindowWidth, pWindowHeight)
   
-  createRocket(pWindowWidth, pWindowHeight, "home")
-  createRocket(pWindowWidth, pWindowHeight, "foreign")
+  createRocket(pWindowWidth, pWindowHeight, "home", 2)
+  
   
 end
 
 function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
   
-  timeElapsed = timeElapsed + pDt
+  if power == "ready" then
+    local tempForce = math.random(2, 5) -- 1/4 chance of hit
+    createRocket(pWindowWidth, pWindowHeight, "foreign", tempForce)
+    power = "processing"
+    timeElapsed = 0
+  end
+  
+  if power == "processing" then
+    timeElapsed = timeElapsed + pDt
+  end
   
   local i
   for i = #listRockets, 1, -1 do
@@ -54,7 +67,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
     
     -- manage the start and the flight along x for AI
     if r.side == "foreign" then
-      if r.state == "standBy" and timeElapsed > 5 then r.state = "launch" end
+      if power == "processing" and r.state == "standBy" and timeElapsed > 3 then r.state = "launch" end
       if r.state == "launch" or r.state == "landing" then
         r.rotation = r.rotation - 0.6 * pDt
         r.vx = r.vx + 100 * pDt
@@ -66,7 +79,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
     if r.state == "launch" then
       r.vy = r.vy + 100 * pDt
       r.y = r.y - r.vy * pDt
-      if r.y < pWindowHeight/3 then r.state = "landing" end
+      if r.y < pWindowHeight/r.force then r.state = "landing" end
     end
     
     -- manage the landing/crash along y
@@ -75,6 +88,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight)
       r.y = r.y - r.vy * pDt
       if r.y > pWindowHeight - rocketPic.h * r.scale/2 then
         r.state = "crash"
+        power = "ready"
         table.remove(listRockets, i)
       end
     end
