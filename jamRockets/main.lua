@@ -11,7 +11,6 @@ local bg = {}
 local building = {}
 
 local myRocket = require("rocketv")
---local foreign = require("foreignro")
 
 function love.load()
   love.window.setMode(windowWidth, windowHeight)
@@ -29,13 +28,11 @@ function love.load()
   building.scale = 0.3
   
   myRocket.Load(windowWidth, windowHeight)
-  --foreignRocket.Load(windowWidth, windowHeight)
   
 end
 
 function love.update(dt)
   myRocket.Update(dt, windowWidth, windowHeight)
-  --foreignRocket.Update(dt, windowWidth, windowHeight)
 end
 
 function love.draw()
@@ -63,8 +60,6 @@ function love.draw()
                      0, building.scale)
   
   myRocket.Draw(windowWidth, windowHeight)
-  --foreignRocket.Draw(windowWidth, windowHeight)
-  
   
 end
 
