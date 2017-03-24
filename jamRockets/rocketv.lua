@@ -14,6 +14,7 @@ local pv = {}
 local canPlay = true
 local newValue
 local forceHome = 0
+local game = "running"
 
 local myControls = require("controls")
 
@@ -48,87 +49,100 @@ function Rocketv.Load(pWindowWidth, pWindowHeight)
 end
 
 function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
-  math.randomseed(os.time())
-  if power == "ready" then
-    local tempForce = math.random(2, 5) -- 1/4 chance of hit
-    createRocket(pWindowWidth, pWindowHeight, "foreign", tempForce)
-    power = "processing"
-    timeElapsed = 0
-  end
   
-  if power == "processing" then
-    timeElapsed = timeElapsed + pDt
-  end
-  
-  local i
-  for i = #listRockets, 1, -1 do
-    local r = listRockets[i]
-  
-    -- manage the start and the flight along x for the player
-    if r.side == "home" then
-      r.force = forceHome
-      if canPlay == false and r.state == "standBy" then r.state = "launch" end
-      if r.state == "launch" or r.state == "landing" then
-        r.rotation = r.rotation + 0.6 * pDt
-        r.vx = r.vx + 100 * pDt
-        r.x = r.x + r.vx * pDt
-      end
+  if game == "running" then
+    math.randomseed(os.time())
+    if power == "ready" then
+      local tempForce = 3 --math.random(2, 5) -- 1/4 chance of hit
+      createRocket(pWindowWidth, pWindowHeight, "foreign", tempForce)
+      power = "processing"
+      timeElapsed = 0
     end
     
-    -- manage the start and the flight along x for AI
-    if r.side == "foreign" then
-      if power == "processing" and r.state == "standBy" and timeElapsed > 3 then r.state = "launch" end
-      if r.state == "launch" or r.state == "landing" then
-        r.rotation = r.rotation - 0.6 * pDt
-        r.vx = r.vx + 100 * pDt
-        r.x = r.x - r.vx * pDt
-      end
-    end
-  
-    -- manage the ascencion along y
-    if r.state == "launch" then
-      r.vy = r.vy + 100 * pDt
-      r.y = r.y - r.vy * pDt
-      if r.y < pWindowHeight/r.force then r.state = "landing" end
+    if power == "processing" then
+      timeElapsed = timeElapsed + pDt
     end
     
-    -- manage the landing/crash along y
-    if r.state == "landing" then
-      r.vy = r.vy - 500 * pDt
-      r.y = r.y - r.vy * pDt
-      if r.y > pWindowHeight - rocketPic.h * r.scale/2 then
-        
-        if r.side == "foreign" then
-          if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then pv.home = pv.home - 30 end
+    local i
+    for i = #listRockets, 1, -1 do
+      local r = listRockets[i]
+    
+      -- manage the start and the flight along x for the player
+      if r.side == "home" then
+        r.force = forceHome
+        if canPlay == false and r.state == "standBy" then r.state = "launch" end
+        if r.state == "launch" or r.state == "landing" then
+          r.rotation = r.rotation + 0.6 * pDt
+          r.vx = r.vx + 100 * pDt
+          r.x = r.x + r.vx * pDt
         end
-        
-        if r.side == "home" then
-          if r.x > (pWindowWidth - pBuilding.w * pBuilding.scale - 100) and
-             r.x < (pWindowWidth - 100) then
-                pv.foreign = pv.foreign - 30
+      end
+      
+      -- manage the start and the flight along x for AI
+      if r.side == "foreign" then
+        if power == "processing" and r.state == "standBy" and timeElapsed > 1 then r.state = "launch" end
+        if r.state == "launch" or r.state == "landing" then
+          r.rotation = r.rotation - 0.6 * pDt
+          r.vx = r.vx + 100 * pDt
+          r.x = r.x - r.vx * pDt
+        end
+      end
+    
+      -- manage the ascencion along y
+      if r.state == "launch" then
+        r.vy = r.vy + 100 * pDt
+        r.y = r.y - r.vy * pDt
+        if r.y < pWindowHeight/r.force then r.state = "landing" end
+      end
+      
+      -- manage the landing/crash along y
+      if r.state == "landing" then
+        r.vy = r.vy - 500 * pDt
+        r.y = r.y - r.vy * pDt
+        if r.y > pWindowHeight - rocketPic.h * r.scale/2 then
+          
+          if r.side == "foreign" then
+            if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then pv.home = pv.home - 30 end
           end
-          canPlay = true
+          
+          if r.side == "home" then
+            if r.x > (pWindowWidth - pBuilding.w * pBuilding.scale - 100) and
+               r.x < (pWindowWidth - 100) then
+                  pv.foreign = pv.foreign - 30
+            end
+            canPlay = true
+          end
+          
+          r.state = "crash"
+          power = "ready"
+          table.remove(listRockets, i)
         end
         
-        r.state = "crash"
-        power = "ready"
-        table.remove(listRockets, i)
+        if r.state == "crash" and r.side == "home" then
+          r.state = "standBy"
+          createRocket(pWindowWidth, pWindowHeight, "home", 0)
+        end
+        
       end
       
-      if r.state == "crash" and r.side == "home" then
-        r.state = "standBy"
-        createRocket(pWindowWidth, pWindowHeight, "home", 0)
+      if pv.home < 0 or pv.foreign < 0 then
+        game = "over"
       end
+      
+      
+      canPlay, forceHome = myControls.Update(pDt, canPlay, forceHome) -- return false and the force
+      
       
     end
     
-    if pv.home < 0 then
-      pv.home = 0
+    
+    
+    if game == "over" then
+      print("game over")
       -- TODO animation destruction
       -- TODO game over screen
+      -- TODO empty list rocket
     end
-    
-    canPlay, forceHome = myControls.Update(pDt, canPlay, forceHome)
     
   end
 end
