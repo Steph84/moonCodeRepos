@@ -15,8 +15,10 @@ local canPlay = true
 local newValue
 local forceHome = 0
 local game = "running"
+local callSaturn = false
 
 local myControls = require("controls")
+local mySaturnV = require("saturnv")
 
 function createRocket(ppWindowWidth, ppWindowHeight, pSide, pForce)
   local item = {}
@@ -45,6 +47,8 @@ function Rocketv.Load(pWindowWidth, pWindowHeight)
   myControls.Load()
   
   createRocket(pWindowWidth, pWindowHeight, "home", 0)
+  
+  mySaturnV.Load(pWindowWidth, pWindowHeight)
   
 end
 
@@ -102,19 +106,21 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
         if r.y > pWindowHeight - rocketPic.h * r.scale/2 then
           
           if r.side == "foreign" then
-            if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then pv.home = pv.home - 30 end
+            if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then
+              pv.home = pv.home - 30 
+              power = "ready"
+            end
           end
           
           if r.side == "home" then
             if r.x > (pWindowWidth - pBuilding.w * pBuilding.scale - 100) and
                r.x < (pWindowWidth - 100) then
-                  pv.foreign = pv.foreign - 30
+                  pv.foreign = pv.foreign - 200
             end
             canPlay = true
           end
           
           r.state = "crash"
-          power = "ready"
           table.remove(listRockets, i)
         end
         
@@ -129,19 +135,31 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
         game = "over"
       end
       
-      
       canPlay, forceHome = myControls.Update(pDt, canPlay, forceHome) -- return false and the force
-      
       
     end
     
     
-    
     if game == "over" then
-      print("game over")
       -- TODO animation destruction
-      -- TODO game over screen
-      -- TODO empty list rocket
+      
+      local i
+      for i = #listRockets, 1, -1 do
+        local r = listRockets[i]
+        table.remove(listRockets, i)
+      end
+      
+      if pv.home < 0 then
+        -- TODO game over screen
+      end
+      
+      if pv.foreign < 0 then
+        callSaturn = true
+        print("in")
+        mySaturnV.Update(pDt)
+      end
+      
+      
     end
     
   end
@@ -165,6 +183,8 @@ function Rocketv.Draw(pWindowWidth, pWindowHeight)
   end
   
   myControls.Draw()
+  
+  if callSaturn == true then mySaturnV.Draw() end
   
 end
 
