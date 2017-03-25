@@ -5,6 +5,7 @@ local propulse = {}
 local timeElapsed = 0
 
 function Saturn.Load(ppWindowWidth, ppWindowHeight)
+  -- load the Saturn rocket
   mySaturn.src = love.graphics.newImage("pictures/saturnV.png")
   mySaturn.w = mySaturn.src:getWidth()
   mySaturn.h = mySaturn.src:getHeight()
@@ -15,6 +16,7 @@ function Saturn.Load(ppWindowWidth, ppWindowHeight)
   mySaturn.scale = mySaturn.idealHeight / mySaturn.h
   mySaturn.y = ppWindowHeight - mySaturn.h * mySaturn.scale/2
   
+  -- load the propulse fire pic
   propulse.src = love.graphics.newImage("pictures/fire.png")
   propulse.w = propulse.src:getWidth()
   propulse.h = propulse.src:getHeight()
@@ -27,6 +29,7 @@ end
 function Saturn.Update(ppDt)
   timeElapsed = timeElapsed + ppDt
   
+  -- manage the move of the rocket + propulse pics
   --if timeElapsed > 2 then
     mySaturn.y = mySaturn.y - 10
     propulse.y = propulse.y - 10

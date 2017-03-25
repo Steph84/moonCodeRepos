@@ -15,6 +15,7 @@ local myRocket = require("rocketv")
 function love.load()
   love.window.setMode(windowWidth, windowHeight)
   
+  -- load the background pic
   bg.src = love.graphics.newImage("pictures/background.png")
   bg.w = bg.src:getWidth()
   bg.h = bg.src:getHeight()
@@ -22,6 +23,7 @@ function love.load()
   bg.x = 0
   bg.y = windowHeight - bg.h * bg.scale/2
   
+  -- load the building pic
   building.src = love.graphics.newImage("pictures/building.png")
   building.w = building.src:getWidth()
   building.h = building.src:getHeight()

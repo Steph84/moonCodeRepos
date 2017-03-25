@@ -8,18 +8,19 @@ rocketPic.src = love.graphics.newImage("pictures/v2.png")
 rocketPic.w = rocketPic.src:getWidth()
 rocketPic.h = rocketPic.src:getHeight()
 
-local timeElapsed = 0
-local power = "ready"
-local pv = {}
-local canPlay = true
-local newValue
+local timeElapsed = 0 -- for the foreign launching
+local power = "ready" -- for the foreign
+local pv = {} -- for the buildings
+local canPlay = true -- tru if you can choose the power of the home rocket
 local forceHome = 0
-local game = "running"
-local callSaturn = false
+local game = "running" -- to manage the game over screen
+local callSaturn = false -- call satrun rocket if home win
+local cpWin = false -- for the foreign win
 
 local myControls = require("controls")
 local mySaturnV = require("saturnv")
 
+-- create the rockets for both sides
 function createRocket(ppWindowWidth, ppWindowHeight, pSide, pForce)
   local item = {}
   
@@ -56,13 +57,16 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
   
   if game == "running" then
     math.randomseed(os.time())
+    
+    -- manage the creation of the foreign rockets
     if power == "ready" then
-      local tempForce = 3 --math.random(2, 5) -- 1/4 chance of hit
+      local tempForce = math.random(2, 5) -- 1/4 chance of hit
       createRocket(pWindowWidth, pWindowHeight, "foreign", tempForce)
       power = "processing"
       timeElapsed = 0
     end
     
+    -- counting the time for foreign
     if power == "processing" then
       timeElapsed = timeElapsed + pDt
     end
@@ -73,7 +77,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
     
       -- manage the start and the flight along x for the player
       if r.side == "home" then
-        r.force = forceHome
+        r.force = forceHome -- attribute the force when chosen
         if canPlay == false and r.state == "standBy" then r.state = "launch" end
         if r.state == "launch" or r.state == "landing" then
           r.rotation = r.rotation + 0.6 * pDt
@@ -84,7 +88,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
       
       -- manage the start and the flight along x for AI
       if r.side == "foreign" then
-        if power == "processing" and r.state == "standBy" and timeElapsed > 1 then r.state = "launch" end
+        if power == "processing" and r.state == "standBy" and timeElapsed > 2 then r.state = "launch" end -- every 2 seconds the foreign shoots
         if r.state == "launch" or r.state == "landing" then
           r.rotation = r.rotation - 0.6 * pDt
           r.vx = r.vx + 100 * pDt
@@ -107,7 +111,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
           
           if r.side == "foreign" then
             if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then
-              pv.home = pv.home - 30 
+              pv.home = pv.home - 30 -- alter the home building
               power = "ready"
             end
           end
@@ -115,9 +119,9 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
           if r.side == "home" then
             if r.x > (pWindowWidth - pBuilding.w * pBuilding.scale - 100) and
                r.x < (pWindowWidth - 100) then
-                  pv.foreign = pv.foreign - 200
+                  pv.foreign = pv.foreign - 30 -- alter the foreign building
             end
-            canPlay = true
+            canPlay = true -- can choose the force
           end
           
           r.state = "crash"
@@ -131,6 +135,7 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
         
       end
       
+      -- condition for the game over
       if pv.home < 0 or pv.foreign < 0 then
         game = "over"
       end
@@ -143,48 +148,54 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
     if game == "over" then
       -- TODO animation destruction
       
+      -- remove all the rocket because the game is over
       local i
       for i = #listRockets, 1, -1 do
         local r = listRockets[i]
         table.remove(listRockets, i)
       end
       
+      -- computer win
       if pv.home < 0 then
-        -- TODO game over screen
+        cpWin = true
       end
       
+      -- player win
       if pv.foreign < 0 then
         callSaturn = true
-        print("in")
         mySaturnV.Update(pDt)
       end
-      
-      
     end
-    
   end
 end
 
 function Rocketv.Draw(pWindowWidth, pWindowHeight)
   
-  love.graphics.rectangle("line", 100, 500, 150, 10)
-  love.graphics.rectangle("line", pWindowWidth - 100 - 150, 500, 150, 10)
-  
-  love.graphics.setColor(0, 255, 0)
-  love.graphics.rectangle("fill", 102, 502, pv.home, 6)
-  love.graphics.rectangle("fill", pWindowWidth - 102 - 146, 502, pv.foreign, 6)
-  
-  love.graphics.setColor(255, 255, 255)
-  
-  local i
-  for i = 1, #listRockets do
-    local r = listRockets[i]
-    love.graphics.draw(rocketPic.src, r.x, r.y, r.rotation, r.scale, r.scale, rocketPic.w/2, rocketPic.h/2)
+  if cpWin == false then
+    -- draw the pv bar for each buildings
+    love.graphics.rectangle("line", 100, 500, 150, 10)
+    love.graphics.rectangle("line", pWindowWidth - 100 - 150, 500, 150, 10)
+    love.graphics.setColor(0, 255, 0)
+    love.graphics.rectangle("fill", 102, 502, pv.home, 6)
+    love.graphics.rectangle("fill", pWindowWidth - 102 - 146, 502, pv.foreign, 6)
+    love.graphics.setColor(255, 255, 255)
+    
+    -- draw the rockets
+    local i
+    for i = 1, #listRockets do
+      local r = listRockets[i]
+      love.graphics.draw(rocketPic.src, r.x, r.y, r.rotation, r.scale, r.scale, rocketPic.w/2, rocketPic.h/2)
+    end
+    
+    -- call the choose buttons power for the home rockets
+    myControls.Draw()
+    
+    -- call the saturn launch
+    if callSaturn == true then mySaturnV.Draw() end
   end
   
-  myControls.Draw()
-  
-  if callSaturn == true then mySaturnV.Draw() end
+  -- game over screen if player loose
+  if cpWin == true then love.graphics.print("GAME OVER", pWindowWidth/2 - 100, pWindowHeight/2 - 100, 0, 2, 2) end
   
 end
 
