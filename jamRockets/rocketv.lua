@@ -110,9 +110,9 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
         if r.y > pWindowHeight - rocketPic.h * r.scale/2 then
           
           if r.side == "foreign" then
+            power = "ready"
             if r.x > 100 and r.x < (100 + pBuilding.w * pBuilding.scale) then
               pv.home = pv.home - 30 -- alter the home building
-              power = "ready"
             end
           end
           
