@@ -13,7 +13,8 @@ function Saturn.Load(ppWindowWidth, ppWindowHeight)
   local v2Height = 121.2 -- hard value...
   local ratio = 8 -- height ratio between V2 and Saturn V
   mySaturn.idealHeight = v2Height * ratio
-  mySaturn.scale = mySaturn.idealHeight / mySaturn.h
+   -- calculate the real height but correction to fit on the screen
+  mySaturn.scale = (mySaturn.idealHeight / mySaturn.h) * (3/5)
   mySaturn.y = ppWindowHeight - mySaturn.h * mySaturn.scale/2
   
   -- load the propulse fire pic
@@ -30,10 +31,10 @@ function Saturn.Update(ppDt)
   timeElapsed = timeElapsed + ppDt
   
   -- manage the move of the rocket + propulse pics
-  --if timeElapsed > 2 then
-    mySaturn.y = mySaturn.y - 10
-    propulse.y = propulse.y - 10
-  --end
+  if timeElapsed > 2 then
+    mySaturn.y = mySaturn.y - 4
+    propulse.y = propulse.y - 4
+  end
   
 end
 

@@ -144,28 +144,28 @@ function Rocketv.Update(pDt, pWindowWidth, pWindowHeight, pBuilding)
       
     end
     
+  end
+  if game == "over" then
+    -- TODO animation destruction
     
-    if game == "over" then
-      -- TODO animation destruction
-      
-      -- remove all the rocket because the game is over
-      local i
-      for i = #listRockets, 1, -1 do
-        local r = listRockets[i]
-        table.remove(listRockets, i)
-      end
-      
-      -- computer win
-      if pv.home < 0 then
-        cpWin = true
-      end
-      
-      -- player win
-      if pv.foreign < 0 then
-        callSaturn = true
-        mySaturnV.Update(pDt)
-      end
+    -- remove all the rocket because the game is over
+    local i
+    for i = #listRockets, 1, -1 do
+      local r = listRockets[i]
+      table.remove(listRockets, i)
     end
+    
+    -- computer win
+    if pv.home < 0 then
+      cpWin = true
+    end
+    
+    -- player win
+    if pv.foreign < 0 then
+      callSaturn = true
+      mySaturnV.Update(pDt)
+    end
+  
   end
 end
 
