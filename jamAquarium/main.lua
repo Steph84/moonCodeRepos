@@ -16,7 +16,7 @@ function love.load()
 end
 
 function love.update(dt)
-
+  myAquarium.Update(dt, windowHeight)
 end
 
 function love.draw()
