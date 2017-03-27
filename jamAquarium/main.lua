@@ -12,6 +12,7 @@ local myAquarium = require("aquarium")
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
+  love.window.setTitle("Dryland")
   myAquarium.Load(windowWidth, windowHeight)
   
 end
