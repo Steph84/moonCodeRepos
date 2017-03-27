@@ -7,10 +7,12 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth = 1300 -- max value
 local windowHeight = 675 -- max value
 
+local myAquarium = require("aquarium")
+
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
-  
+  myAquarium.Load(windowWidth, windowHeight)
   
 end
 
