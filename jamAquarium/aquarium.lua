@@ -12,6 +12,8 @@ local i
 local listBubbles = {}
 local maxBubbles = 50
 
+local myPlants = require("plant")
+
 function createBubble(ppWindowHeight, pInit)
   local item = {}
   
@@ -25,12 +27,12 @@ function createBubble(ppWindowHeight, pInit)
   
   local tempRand = 0
   while tempRand == 0 do
-    tempRand = math.random(-1, 1)
+    tempRand = math.random(-5, 5)/5
   end
   
   item.x = math.random(50, 150)
   item.vx = tempRand
-  item.vy = math.random(- 2, - 1)
+  item.vy = math.random(- 5, - 1)/5
     
   table.insert(listBubbles, item)
 end
@@ -55,6 +57,8 @@ function Aqua.Load(pWindowWidth, pWindowHeight)
   for j = 1, maxBubbles do
     createBubble(pWindowHeight, true)
   end
+  
+  myPlants.Load(pWindowWidth, pWindowHeight)
   
 end
 
@@ -87,10 +91,10 @@ function Aqua.Draw()
   local i
   for i = 1, #listBubbles do
     local b = listBubbles[i]
-    love.graphics.draw(Aqua.bubbles[b.color].src, b.x, b.y, 0, 0.1, 0.1)
+    love.graphics.draw(Aqua.bubbles[b.color].src, b.x, b.y, 0, Aqua.bubbles.scale, Aqua.bubbles.scale)
   end
   
-  
+  myPlants.Draw()
   
 end
 
