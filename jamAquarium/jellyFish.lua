@@ -26,12 +26,8 @@ function JellyFish.Load(pWindowWidth, pWindowHeight)
   JellyFish.vx = 0
   JellyFish.vy = 0
   
-  while JellyFish.vx == 0 do
-    JellyFish.vx = math.random(-10, 10)/10
-  end
-  while JellyFish.vy == 0 do
-    JellyFish.vy = math.random(-10, 10)/10
-  end
+  while JellyFish.vx == 0 do JellyFish.vx = math.random(-10, 10)/10 end
+  while JellyFish.vy == 0 do JellyFish.vy = math.random(-10, 10)/10 end
   
 end
 
