@@ -80,6 +80,8 @@ function Aqua.Update(pDt, pWindowHeight)
     
   end
   
+  myPlants.Update(pDt)
+    
 end
 
 

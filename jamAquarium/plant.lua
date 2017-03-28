@@ -18,8 +18,14 @@ function createGrass(pppWindowWidth, pppWindowHeight, pGrassPic)
   item.choice = math.random(1, 4)
   
   item.x = math.random(0, pppWindowWidth)
-  item.y = math.random(pppWindowHeight - 64, pppWindowHeight)
+  item.y = pppWindowHeight - Plant.grassPic[item.choice].h * Plant.grassPic.scale/2 + 15
   item.r = 0
+  
+  local tempRand = 0
+  while tempRand == 0 do
+    tempRand = math.random(-2, 2)/1000
+  end
+  item.vr = tempRand
   
   table.insert(listGrasses, item)
 end
@@ -40,15 +46,29 @@ function Plant.Load(ppWindowWidth, ppWindowHeight)
   end
 end
 
-function Plant.Update(pDt)
-  -- TODO change the rotation param to make move the grass
+function Plant.Update(ppDt)
+  local i
+  for i = 1, #listGrasses do
+    local g = listGrasses[i]
+    g.r = g.r + g.vr
+    if g.r > 0.1 or g.r < (- 0.1) then g.vr = - g.vr end
+  end
+  
+  
 end
 
 function Plant.Draw()
   local i
   for i = 1, #listGrasses do
     local g = listGrasses[i]
-    love.graphics.draw(Plant.grassPic[g.choice].src, g.x, g.y, g.r, Plant.grassPic.scale, Plant.grassPic.scale, 1000/2, 2000/2)
+    love.graphics.push()
+    love.graphics.translate(g.x + Plant.grassPic[g.choice].w * Plant.grassPic.scale/2,
+                            g.y + Plant.grassPic[g.choice].h * Plant.grassPic.scale - 32)
+    love.graphics.rotate(g.r)
+    love.graphics.translate( - g.x - Plant.grassPic[g.choice].w * Plant.grassPic.scale/2,
+                             - g.y - Plant.grassPic[g.choice].h * Plant.grassPic.scale + 32)
+    love.graphics.draw(Plant.grassPic[g.choice].src, g.x, g.y, 0, Plant.grassPic.scale, Plant.grassPic.scale, 1000/2, 2000/2)
+    love.graphics.pop()
   end
 end
 
