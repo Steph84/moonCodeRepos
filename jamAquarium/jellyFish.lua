@@ -2,9 +2,6 @@ math.randomseed(os.time())
 
 local JellyFish = {}
 
--- TODO change Animal to JellyFish
--- an object by animal instead
-
 JellyFish.scale = 0.2
 
 function JellyFish.Load(pWindowWidth, pWindowHeight)
