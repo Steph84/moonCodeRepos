@@ -32,6 +32,8 @@ for l = 1, nbLines do
   end
 end
 
+local myFood = require("food")
+
 function createFish(pId, ppWindowWidth, ppWindowHeight)
   local item = {}
   
@@ -61,6 +63,8 @@ function Fish.Load(pFishNumber, pWindowWidth, pWindowHeight)
     createFish(i, pWindowWidth, pWindowHeight)
   end
   
+  myFood.Load()
+  
 end
 
 function Fish.Update(pDt, pWindowWidth, pWindowHeight)
@@ -79,9 +83,9 @@ function Fish.Update(pDt, pWindowWidth, pWindowHeight)
     
     if f.y < 0 or f.y > pWindowHeight then f.vy = - f.vy end
     
-    
-    
   end
+  
+  myFood.Update(pDt)
   
 end
 
@@ -91,6 +95,9 @@ function Fish.Draw()
     local f = listFishes[i]
     love.graphics.draw(Fish.tileSheet, Fish.tileTextures[f.color], f.x, f.y, 0, f.scaleX, f.scaleY, tileWidth/2, tileHeight/2)
   end
+  
+  myFood.Draw()
+  
 end
 
 return Fish
