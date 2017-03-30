@@ -10,7 +10,8 @@ local myJellyFish = require("jellyFish")
 local myFish = require("fish")
 local myLobster = require("lobster")
 
-local fishNumber = 10
+local fishNumber = 50
+local bgMus
 
 function love.load()
   
@@ -21,6 +22,11 @@ function love.load()
   myLobster.Load(windowWidth, windowHeight)
   myJellyFish.Load(windowWidth, windowHeight)
   myFish.Load(fishNumber, windowWidth, windowHeight)
+  
+  bgMus = love.audio.newSource("sounds/bgMusic.mp3", "stream")
+  bgMus:setLooping(true)
+  bgMus:setVolume(0.25)
+  bgMus:play()
   
 end
 
