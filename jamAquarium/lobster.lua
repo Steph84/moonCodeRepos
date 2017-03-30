@@ -9,7 +9,7 @@ Lobster.scaleY = 1
 local tileWidth = 0
 local tileHeight = 0
 
-function Lobster.Load(pWindowWidth, pWindowHeight)
+function Lobster.Load(ppWindowWidth, ppWindowHeight)
   
   -- load the pictures
   Lobster.tileSheet = love.graphics.newImage("pictures/lobster_walk.png")
@@ -43,15 +43,15 @@ function Lobster.Load(pWindowWidth, pWindowHeight)
   
   Lobster.picCurrent = 1
   
-  Lobster.x = math.random(0, pWindowWidth)
-  Lobster.y = pWindowHeight - tileHeight
+  Lobster.x = math.random(0, ppWindowWidth)
+  Lobster.y = ppWindowHeight - tileHeight
   
   Lobster.vx = 1
   
 end
 
-function Lobster.Update(pDt, pWindowWidth, pWindowHeight)
-  Lobster.picCurrent = Lobster.picCurrent + (8 * pDt) -- using the delta time
+function Lobster.Update(ppDt, ppWindowWidth, ppWindowHeight)
+  Lobster.picCurrent = Lobster.picCurrent + (8 * ppDt) -- using the delta time
   
   if math.floor(Lobster.picCurrent) > #Lobster.pictures then
     Lobster.picCurrent = 1
@@ -59,7 +59,7 @@ function Lobster.Update(pDt, pWindowWidth, pWindowHeight)
   
   Lobster.x = Lobster.x + Lobster.vx
   
-  if Lobster.x < 0 or Lobster.x > pWindowWidth then
+  if Lobster.x < 0 or Lobster.x > ppWindowWidth then
     Lobster.vx = - Lobster.vx
     Lobster.scaleX = - Lobster.scaleX
   end

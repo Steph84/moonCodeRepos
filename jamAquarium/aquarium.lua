@@ -13,7 +13,10 @@ local listBubbles = {}
 local maxBubbles = 50
 
 local myPlants = require("plant")
+local myLobster = require("lobster")
+local myJellyFish = require("jellyFish")
 
+-- function to create bubbles
 function createBubble(ppWindowHeight, pInit)
   local item = {}
   
@@ -59,11 +62,12 @@ function Aqua.Load(pWindowWidth, pWindowHeight)
   end
   
   myPlants.Load(pWindowWidth, pWindowHeight)
-  
+  myLobster.Load(pWindowWidth, pWindowHeight)
+  myJellyFish.Load(pWindowWidth, pWindowWidth)
   
 end
 
-function Aqua.Update(pDt, pWindowHeight)
+function Aqua.Update(pDt, pWindowWidth, pWindowHeight)
   
   if #listBubbles < maxBubbles then
     createBubble(pWindowHeight, false)
@@ -82,7 +86,9 @@ function Aqua.Update(pDt, pWindowHeight)
   end
   
   myPlants.Update(pDt)
-    
+  myLobster.Update(pDt, pWindowWidth, pWindowHeight)
+  myJellyFish.Update(pDt, pWindowWidth, pWindowHeight)
+  
 end
 
 
@@ -90,6 +96,9 @@ function Aqua.Draw()
   
   love.graphics.draw(Aqua.background.src, 0, 0, 0, Aqua.background.scale, Aqua.background.scale)
   love.graphics.draw(Aqua.background.src, Aqua.background.w * Aqua.background.scale, 0, 0, Aqua.background.scale, Aqua.background.scale)
+  
+  myLobster.Draw()
+  myJellyFish.Draw()
   
   local i
   for i = 1, #listBubbles do
