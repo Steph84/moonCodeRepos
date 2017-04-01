@@ -15,6 +15,7 @@ local maxBubbles = 50
 local myPlants = require("plant")
 local myLobster = require("lobster")
 local myJellyFish = require("jellyFish")
+local myFish = require("fish")
 
 -- function to create bubbles
 function createBubble(ppWindowHeight, pInit)
@@ -40,7 +41,7 @@ function createBubble(ppWindowHeight, pInit)
   table.insert(listBubbles, item)
 end
 
-function Aqua.Load(pWindowWidth, pWindowHeight)
+function Aqua.Load(pWindowWidth, pWindowHeight, pFishNumber)
   
   Aqua.background.src = love.graphics.newImage("pictures/underwater.png")
   Aqua.background.w = Aqua.background.src:getWidth() -- 1024
@@ -63,7 +64,8 @@ function Aqua.Load(pWindowWidth, pWindowHeight)
   
   myPlants.Load(pWindowWidth, pWindowHeight)
   myLobster.Load(pWindowWidth, pWindowHeight)
-  myJellyFish.Load(pWindowWidth, pWindowWidth)
+  myJellyFish.Load(pWindowWidth, pWindowHeight)
+  myFish.Load(pFishNumber, pWindowWidth, pWindowHeight)
   
 end
 
@@ -88,6 +90,7 @@ function Aqua.Update(pDt, pWindowWidth, pWindowHeight)
   myPlants.Update(pDt)
   myLobster.Update(pDt, pWindowWidth, pWindowHeight)
   myJellyFish.Update(pDt, pWindowWidth, pWindowHeight)
+  myFish.Update(pDt, pWindowWidth, pWindowHeight)
   
 end
 
@@ -99,6 +102,7 @@ function Aqua.Draw()
   
   myLobster.Draw()
   myJellyFish.Draw()
+  myFish.Draw()
   
   local i
   for i = 1, #listBubbles do

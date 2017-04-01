@@ -44,7 +44,7 @@ function Lobster.Load(ppWindowWidth, ppWindowHeight)
   Lobster.picCurrent = 1
   
   Lobster.x = math.random(0, ppWindowWidth)
-  Lobster.y = ppWindowHeight - tileHeight
+  Lobster.y = ppWindowHeight - 2.5 * tileHeight
   
   Lobster.vx = 1
   

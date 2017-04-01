@@ -1,50 +1,47 @@
 local Food = {}
 
-Food.tileSheet = {}
-Food.tileTextures = {}
+Food.products = {}
+Food.listFood = {}
 
 local tileWidth = 0
 local tileHeight = 0
-local listFood = {}
 local targetX = 0
 local targetY = 0
+local avWidth = 0
+local avHeight = 0
+
+-- TODO attribute an Id and a libelle to each food to show in a prompt
 
 function createFood(pId, pX, pY)
   local item = {}
   
   item.id = pId
+  item.foodId = math.random(1, 4)
   item.x = pX
   item.y = pY
-  item.scale = 1
+  item.scale = 0.8
   
-  table.insert(listFood, item)
+  table.insert(Food.listFood, item)
 end
 
 function Food.Load()
   
   -- load the pictures
-  Food.tileSheet = love.graphics.newImage("pictures/food.png")
-  local nbColumns = 6
-  local nbLines = 1
-  tileWidth = Food.tileSheet:getWidth()/nbColumns
-  tileHeight = Food.tileSheet:getHeight()/nbLines
+  Food.products[1] = love.graphics.newImage("pictures/apple.png")
+  Food.products[2] = love.graphics.newImage("pictures/carrot.png")
+  Food.products[3] = love.graphics.newImage("pictures/cheese.png")
+  Food.products[4] = love.graphics.newImage("pictures/grapes.png")
   
-  -- get all the tiles in the tile sheet
-  local l, c
-  local id = 1
-  Food.tileTextures[0] = nil
-  for l = 1, nbLines do
-    for c = 1, nbColumns do
-    Food.tileTextures[id] = love.graphics.newQuad(
-                              (c-1)*tileWidth,
-                              (l-1)*tileHeight,
-                              tileWidth,
-                              tileHeight,
-                              Food.tileSheet:getDimensions()
-                              )
-    id = id + 1
-    end
+  local widthSum = 0
+  local heightSum = 0
+  local i
+  for i = 1, 4 do
+    local t = Food.products[i]
+    widthSum = widthSum + t:getWidth()
+    heightSum = heightSum + t:getHeight()
   end
+  avWidth = widthSum / 4 -- 36.25
+  avHeight = heightSum / 4 -- 37
   
 end
 
@@ -55,19 +52,27 @@ function love.mousepressed(x, y, button, istouch)
   end
 end
 
-function Food.Update(ppDt)
+function Food.Update(ppDt, ppWindowWidth, ppWindowHeight)
   if targetX ~= 0 and targetY ~= 0 then
-    createFood(#listFood + 1, targetX, targetY)
+    createFood(#Food.listFood + 1, targetX, targetY)
     targetX = 0
     targetY = 0
   end
+  
+  local i
+  for i = #Food.listFood, 1, -1 do
+    local f = Food.listFood[i]
+    f.y = f.y + 1
+    if f.y > ppWindowHeight - 30 then f.y = ppWindowHeight - 29 end
+  end
+  
 end
 
 function Food.Draw()
   local i
-  for i = 1, #listFood do
-    local f = listFood[i]
-    love.graphics.draw(Food.tileSheet, Food.tileTextures[1], f.x, f.y)
+  for i = 1, #Food.listFood do
+    local f = Food.listFood[i]
+    love.graphics.draw(Food.products[f.foodId], f.x, f.y, 0, f.scale, f.scale, avWidth/2, avHeight/2)
   end
 end
 
