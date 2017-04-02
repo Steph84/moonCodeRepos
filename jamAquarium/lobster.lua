@@ -3,8 +3,8 @@ math.randomseed(os.time())
 local Lobster = {}
 Lobster.tileSheet = {}
 Lobster.tileTextures = {}
-Lobster.scaleX = 1
-Lobster.scaleY = 1
+Lobster.scaleX = 1.5
+Lobster.scaleY = 1.5
 
 local tileWidth = 0
 local tileHeight = 0

@@ -79,8 +79,6 @@ function Fish.Update(pDt, pWindowWidth, pWindowHeight)
   for i = #listFishes, 1, -1 do
     local f = listFishes[i]
     
-    
-    
     if f.targetOn == false then
       f.x = f.x + f.vx
       f.y = f.y + f.vy
@@ -120,21 +118,17 @@ function Fish.Update(pDt, pWindowWidth, pWindowHeight)
       end
       
       -- each particule are going to their target
-      if f.x > (f.targetX + tileWidth * f.scaleX) then
-        f.vx = -speedTarget
-      end
-      if f.x < (f.targetX - tileWidth * f.scaleX) then
-        f.vx = speedTarget
-      end
-      if f.y > (f.targetY + tileHeight * f.scaleY) then f.vy = -speedTarget*tempRatio end
-      if f.y < (f.targetY - tileHeight * f.scaleY) then f.vy = speedTarget*tempRatio end
+      if f.x > (f.targetX) then f.vx = -speedTarget end
+      if f.x < (f.targetX) then f.vx = speedTarget end
+      if f.y > (f.targetY) then f.vy = -speedTarget*tempRatio end
+      if f.y < (f.targetY) then f.vy = speedTarget*tempRatio end
       
-      -- near their target, we just fix the coordiinate values
-      if f.x < (f.targetX + 3) and f.x > (f.targetX - 3) then
-        
-      end
-      if f.y < (f.targetY + 3) and f.y > (f.targetY - 3) then
-        
+      if f.x < (f.targetX + 3) and
+         f.x > (f.targetX - 3) and
+         f.y < (f.targetY + 3) and
+         f.y > (f.targetY - 3) then
+           f.targetOn = false
+           
       end
       
       local j
@@ -160,6 +154,8 @@ function Fish.Draw()
     love.graphics.draw(Fish.tileSheet, Fish.tileTextures[f.color], f.x, f.y, 0, f.scaleX, f.scaleY, tileWidth/2, tileHeight/2)
     love.graphics.print(i, f.x + 5, f.y + 5)
     love.graphics.circle("line", f.x, f.y, areaTarget)
+    love.graphics.circle("fill", f.x, f.y, 10)
+    if #myFood.listFood > 0 then love.graphics.circle("fill", myFood.listFood[1].x, myFood.listFood[1].y, 10) end
   end
   
   
