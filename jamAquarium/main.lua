@@ -16,12 +16,12 @@ function love.load()
   love.window.setTitle("Dryland")
   myAquarium.Load(windowWidth, windowHeight, fishNumber)
   
-  --[[
+  
   bgMus = love.audio.newSource("sounds/bgMusic.mp3", "stream")
   bgMus:setLooping(true)
-  bgMus:setVolume(0.25)
+  bgMus:setVolume(0.2)
   bgMus:play()
-  --]]
+  
   
 end
 

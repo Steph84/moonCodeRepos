@@ -1,0 +1,7 @@
+sound for drop food
+sound for fish eat
+
+show the list of food eaten
+when a fish got a particular size, it can eat the other
+
+and more...
