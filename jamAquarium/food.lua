@@ -20,6 +20,7 @@ function createFood(pId, pX, pY)
   item.x = pX
   item.y = pY
   item.scale = 0.8
+  item.isHere = true -- allowing to remove it
   
   table.insert(Food.listFood, item)
 end
@@ -64,6 +65,9 @@ function Food.Update(ppDt, ppWindowWidth, ppWindowHeight)
     local f = Food.listFood[i]
     f.y = f.y + 1
     if f.y > ppWindowHeight - 30 then f.y = ppWindowHeight - 29 end
+    
+    if f.isHere == false then table.remove(Food.listFood, i) end
+    
   end
   
 end
