@@ -7,7 +7,7 @@ local windowHeight = 675 -- max value
 
 local myAquarium = require("aquarium")
 
-local fishNumber = 1
+local fishNumber = 50
 local bgMus
 
 function love.load()

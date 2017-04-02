@@ -67,6 +67,7 @@ function Food.Update(ppDt, ppWindowWidth, ppWindowHeight)
     if f.y > ppWindowHeight - 30 then f.y = ppWindowHeight - 29 end
     
     if f.isHere == false then table.remove(Food.listFood, i) end
+    -- TODO add in a count list for each item
     
   end
   

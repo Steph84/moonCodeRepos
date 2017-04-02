@@ -1,3 +1,5 @@
+math.randomseed(os.time())
+
 local Fish = {}
 
 Fish.tileSheet = {}
@@ -136,18 +138,35 @@ function Fish.Update(pDt, pWindowWidth, pWindowHeight)
       if f.y > (f.targetY) then f.vy = -speedTarget*tempRatio end
       if f.y < (f.targetY) then f.vy = speedTarget*tempRatio end
       
-      if f.x < (f.targetX + 3) and
-         f.x > (f.targetX - 3) and
-         f.y < (f.targetY + 3) and
-         f.y > (f.targetY - 3) then
-           myFood.listFood[f.targetId].isHere = false
-           -- TODO reinitialize fish
-           f.targetOn = false
+      
+      if myFood.listFood[f.targetId] ~= nil then
+        if f.x < (f.targetX + 3) and
+           f.x > (f.targetX - 3) and
+           f.y < (f.targetY + 3) and
+           f.y > (f.targetY - 3) then
+             myFood.listFood[f.targetId].isHere = false
+             
+             -- TODO reinitialize fish
+             repeat f.dir = math.random(-1, 1) until f.dir ~= 0
+             f.vx = f.dir *  math.random(1, 10)/10
+             repeat f.vy = math.random(-10, 10)/10 until f.vy ~= 0
+             -- to expanse the fish while eating 
+             if f.scaleX > 0 then f.scaleX = (f.scaleX + 0.2) * f.dir end
+             if f.scaleX < 0 then f.scaleX = (f.scaleX - 0.2) * (- f.dir) end
+             f.scaleY = f.scaleY + 0.2
+             
+             -- no more food to target
+             f.targetOn = false
+            
+        end
+        
+        -- update the coordinates target while moving
+        f.targetX = myFood.listFood[f.targetId].x
+        f.targetY = myFood.listFood[f.targetId].y
+        
       end
       
-      -- update the coordinates target while moving
-      f.targetX = myFood.listFood[f.targetId].x
-      f.targetY = myFood.listFood[f.targetId].y
+      if myFood.listFood[f.targetId] == nil then f.targetOn = false end
       
     end
     
@@ -162,8 +181,8 @@ function Fish.Draw()
   for i = 1, #listFishes do
     local f = listFishes[i]
     love.graphics.draw(Fish.tileSheet, Fish.tileTextures[f.color], f.x, f.y, 0, f.scaleX, f.scaleY, tileWidth/2, tileHeight/2)
-    love.graphics.print(i, f.x + 5, f.y + 5)
-    love.graphics.circle("line", f.x, f.y, areaTarget)
+    --love.graphics.print(i, f.x + 5, f.y + 5)
+    --love.graphics.circle("line", f.x, f.y, areaTarget)
   end
   
   
