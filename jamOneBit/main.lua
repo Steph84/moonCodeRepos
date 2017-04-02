@@ -23,7 +23,7 @@ function love.update(dt)
 end
 
 function love.draw()
-  myTitle.Draw()
+  myTitle.Draw(windowWidth)
 end
 
 function love.keypressed(key)
