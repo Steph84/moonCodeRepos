@@ -29,6 +29,7 @@ function love.mousepressed(x, y, button, istouch)
 end
 
 function Title.Update(pDt)
+  local signal = "title"
   
   if mouseClicked.on == true then
     if mouseClicked.x > buttonPics.x - buttonPics.w/2 and
@@ -46,11 +47,11 @@ function Title.Update(pDt)
   if animeButton == true then
     timeElapsed = timeElapsed + pDt
     if timeElapsed > 3 then
-      local signal = "menu"
-      return signal
+      signal = "game"
     end
   end
   
+  return signal
 end
 
 function Title.Draw(pWindowWidth)

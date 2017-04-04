@@ -10,28 +10,39 @@ local windowHeight = 675 -- max value
 local actualScreen = "title"
 local tempScreen = "title"
 local myTitle = require("title")
+local myGame = require("game")
 
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("RPG clicker")
   
-  if actualScreen == "title" then myTitle.Load(windowWidth) end
+  myTitle.Load(windowWidth)
+  myGame.Load()
   
   
 end
 
 function love.update(dt)
   if actualScreen == "title" then
-    --tempScreen = 
-    myTitle.Update(dt)
+    tempScreen = myTitle.Update(dt)
     if tempScreen ~= "title" then actualScreen = tempScreen end
   end
-  if actualScreen == "menu" then print("truc") end
+  if actualScreen == "game" then
+      --tempScreen = myGame.Update(dt)
+  end
 end
 
 function love.draw()
   if actualScreen == "title" then myTitle.Draw(windowWidth) end
+  
+  if actualScreen == "game" then 
+    love.graphics.setBackgroundColor(255, 255, 255)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", 0, 611, windowWidth, 64)
+    love.graphics.setColor(255, 255, 255)
+    myGame.Draw()
+  end
   
 end
 
