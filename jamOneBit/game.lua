@@ -1,10 +1,13 @@
 local Game = {}
 
+local myControl = require("control")
+
 local castlePic, castlePicW
 local field = {}
 field.map = {}
 field.nbLines = 7
 field.nbColumns = 12
+Game.increment = 20
 
 function CreateCase(pId)
   local item = {}
@@ -16,7 +19,7 @@ function CreateCase(pId)
   return item
 end
 
-function Game.Load()
+function Game.Load(pWindowHeight)
   castlePic = love.graphics.newImage("pictures/castleMap.png")
   castlePicW = castlePic:getWidth()
   
@@ -30,6 +33,12 @@ function Game.Load()
     end
   end
   
+  myControl.Load()
+  
+end
+
+function Game.Update(pDt, pWindowHeight)
+  myControl.Update(pDt, Game.increment, pWindowHeight)
 end
 
 function Game.Draw()
@@ -57,6 +66,8 @@ function Game.Draw()
   end
   
   love.graphics.setColor(255, 255, 255)
+  
+  myControl.Draw()
   
 end
 

@@ -31,6 +31,7 @@ function love.update(dt)
   if actualScreen == "game" then
       --tempScreen = myGame.Update(dt)
   end
+  myGame.Update(dt, windowHeight)
 end
 
 function love.draw()
