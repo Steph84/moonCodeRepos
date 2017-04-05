@@ -7,7 +7,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth = 1300 -- max value
 local windowHeight = 675 -- max value
 
-local actualScreen = "title"
+local actualScreen = "game"
 local tempScreen = "title"
 local myTitle = require("title")
 local myGame = require("game")
