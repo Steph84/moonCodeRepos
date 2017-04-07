@@ -1,6 +1,11 @@
 local Control = {}
 
-local wallButtons = {}
+local buttonPics = {}
+buttonPics.tileSheet = {}
+buttonPics.tileTextures = {}
+local tileWidth = 96
+local tileHeight = 48
+
 local listButtons = {}
 local buttonUp, buttonDown
 local mouseClicked = {} 
@@ -10,9 +15,9 @@ function CreateButton(pId, pppWindowHeight)
   local item = {}
   
   item.id = pId
-  item.x = 364 -- mini 300
+  if pId > 2 then item.x = - 50 + pId * 150 end
+  if pId < 3 then item.x = - 70 + pId * 150 end
   item.y = pppWindowHeight - 64/2 -- height of the bar menu
-  item.lvl = 1 -- 1, 2, 4, or 8
   item.isEnabled = false
   item.position = "up"
   
@@ -20,12 +25,27 @@ function CreateButton(pId, pppWindowHeight)
 end
 
 function Control.Load()
-  wallButtons.src = love.graphics.newImage("pictures/wallButtons.png")
-  wallButtons.w = 64
-  wallButtons.h = 32
+  buttonPics.tileSheet = love.graphics.newImage("pictures/buttonsTileSheet.png")
   
-  buttonUp = love.graphics.newQuad(0, 0, wallButtons.w, wallButtons.h, wallButtons.src:getDimensions())
-  buttonDown = love.graphics.newQuad(0, wallButtons.h, wallButtons.w, wallButtons.h, wallButtons.src:getDimensions())
+  -- get all the tiles in the tile sheet
+  local l, c
+  local id = 1
+  local nbLines = 2
+  local nbColumns = 6
+  buttonPics.tileTextures[0] = nil
+  for l = 1, nbLines do
+    for c = 1, nbColumns do
+    buttonPics.tileTextures[id] = love.graphics.newQuad(
+                              (c-1)*tileWidth,
+                              (l-1)*tileHeight,
+                              tileWidth,
+                              tileHeight,
+                              buttonPics.tileSheet:getDimensions()
+                              )
+    id = id + 1
+    end
+  end
+  
 end
 
 function love.mousepressed(x, y, button, istouch)
@@ -37,8 +57,13 @@ function love.mousepressed(x, y, button, istouch)
 end
 
 function Control.Update(ppDt, pIncrement, ppWindowHeight)
-  if pIncrement > 10 and #listButtons < 1 then
+  if pIncrement > 10 and #listButtons < 6 then
     CreateButton(1, ppWindowHeight)
+    CreateButton(2, ppWindowHeight)
+    CreateButton(3, ppWindowHeight)
+    CreateButton(4, ppWindowHeight)
+    CreateButton(5, ppWindowHeight)
+    CreateButton(6, ppWindowHeight)
   end
 end
 
@@ -47,12 +72,12 @@ function Control.Draw()
   local i
   for i = 1, #listButtons do
     local b = listButtons[i]
-    love.graphics.draw(wallButtons.src, buttonUp,
+    love.graphics.draw(buttonPics.tileSheet, buttonPics.tileTextures[b.id],
                        b.x, b.y,
-                       0, 1.5, 1.5,
-                       wallButtons.w/2, wallButtons.h/2)
-                     
-      love.graphics.print(b.lvl, b.x - 35, b.y - 10)
+                       0, 1, 1,
+                       tileWidth/2, tileHeight/2)
+  
+  
   end
 end
 
