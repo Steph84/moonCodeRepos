@@ -18,13 +18,13 @@ function CreateButton(pId, pppWindowHeight)
   if pId > 2 then item.x = - 50 + pId * 150 end
   if pId < 3 then item.x = - 70 + pId * 150 end
   item.y = pppWindowHeight - 64/2 -- height of the bar menu
-  item.isEnabled = false
+  if pId == 1 then item.isEnabled = true else item.isEnabled = false end
   item.position = "up"
   
   table.insert(listButtons, item)
 end
 
-function Control.Load()
+function Control.Load(ppWindowHeight)
   buttonPics.tileSheet = love.graphics.newImage("pictures/buttonsTileSheet.png")
   
   -- get all the tiles in the tile sheet
@@ -46,6 +46,14 @@ function Control.Load()
     end
   end
   
+  
+  local j
+  for j = 1, 6 do
+    CreateButton(j, ppWindowHeight)
+  end
+  
+  
+  
 end
 
 function love.mousepressed(x, y, button, istouch)
@@ -56,15 +64,32 @@ function love.mousepressed(x, y, button, istouch)
   end
 end
 
-function Control.Update(ppDt, pIncrement, ppWindowHeight)
-  if pIncrement > 10 and #listButtons < 6 then
-    CreateButton(1, ppWindowHeight)
-    CreateButton(2, ppWindowHeight)
-    CreateButton(3, ppWindowHeight)
-    CreateButton(4, ppWindowHeight)
-    CreateButton(5, ppWindowHeight)
-    CreateButton(6, ppWindowHeight)
+function love.mousereleased(x, y, button, istouch)
+  if button == 1 then
+    mouseClicked.on = false
+    mouseClicked.x = nil
+    mouseClicked.y = nil
   end
+end
+
+function Control.Update(ppDt, pIncrement)
+  
+  local i
+  for i = 1, #listButtons do
+    local b = listButtons[i]
+    --if b.isEnabled == true then -- if the button is showing
+      if mouseClicked.on == true then -- if the player click
+        if mouseClicked.x > b.x - tileWidth/2 and
+           mouseClicked.x < b.x + tileWidth/2 then
+             if mouseClicked.y > b.y - tileHeight/2 and
+                mouseClicked.y < b.y + tileHeight/2 then
+                  b.position = "down" -- if the button is clicked, button down
+             end
+        end
+      else b.position = "up" end -- if the player doesn t click, button back up
+    --end
+  end
+  
 end
 
 function Control.Draw()
@@ -72,11 +97,17 @@ function Control.Draw()
   local i
   for i = 1, #listButtons do
     local b = listButtons[i]
-    love.graphics.draw(buttonPics.tileSheet, buttonPics.tileTextures[b.id],
-                       b.x, b.y,
-                       0, 1, 1,
-                       tileWidth/2, tileHeight/2)
-  
+    -- manage the showing of the button
+    --if b.isEnabled == true then
+      local tempTextId
+      -- manage the animation up and down of the button
+      if b.position == "up" then tempTextId = b.id elseif b.position == "down" then tempTextId = b.id + 6 end
+      
+      love.graphics.draw(buttonPics.tileSheet, buttonPics.tileTextures[tempTextId],
+                         b.x, b.y,
+                         0, 1, 1,
+                         tileWidth/2, tileHeight/2)
+    --end
   
   end
 end

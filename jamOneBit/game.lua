@@ -33,12 +33,12 @@ function Game.Load(pWindowHeight)
     end
   end
   
-  myControl.Load()
+  myControl.Load(pWindowHeight)
   
 end
 
-function Game.Update(pDt, pWindowHeight)
-  myControl.Update(pDt, Game.increment, pWindowHeight)
+function Game.Update(pDt)
+  myControl.Update(pDt, Game.increment)
 end
 
 function Game.Draw()

@@ -18,7 +18,7 @@ function love.load()
   love.window.setTitle("RPG clicker")
   
   myTitle.Load(windowWidth)
-  myGame.Load()
+  myGame.Load(windowHeight)
   
   
 end
@@ -31,7 +31,7 @@ function love.update(dt)
   if actualScreen == "game" then
       --tempScreen = myGame.Update(dt)
   end
-  myGame.Update(dt, windowHeight)
+  myGame.Update(dt)
 end
 
 function love.draw()
