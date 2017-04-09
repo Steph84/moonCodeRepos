@@ -2,12 +2,13 @@ local Game = {}
 
 local myControl = require("control")
 
-local castlePic, castlePicW
+local castlePic, castlePicW, wallPic
 local Map = {}
 Game.nbLines = 7
 Game.nbColumns = 12
 Game.increment = 0
 local wallSignal = false
+local wallLevel = 0
 local tempCount = 0
 local colNumber = 1
 
@@ -25,6 +26,8 @@ function Game.Load(pWindowHeight)
   castlePic = love.graphics.newImage("pictures/castleMap.png")
   castlePicW = castlePic:getWidth()
   
+  wallPic = love.graphics.newImage("pictures/wallPic.png")
+  
   local nLine, nColumn
   local id = 0
   for nLine = 1, Game.nbLines do
@@ -40,7 +43,7 @@ function Game.Load(pWindowHeight)
 end
 
 function Game.Update(pDt)
-  Game.increment, wallSignal = myControl.Update(pDt, Game.increment, wallSignal)
+  Game.increment, wallSignal, wallLevel = myControl.Update(pDt, Game.increment, wallSignal, wallLevel)
   
   if wallSignal == true then
     local nLine
@@ -51,6 +54,7 @@ function Game.Update(pDt)
       if Map[nLine][colNumber].elt == "empty" then
         tempCount = tempCount + 1
         Map[nLine][colNumber].elt = "wall"
+        Map[nLine][colNumber].lvlElt = 1
         wallSignal = false
         
         if tempCount == 7 then
@@ -80,14 +84,13 @@ function Game.Draw()
   for nLine = 1, Game.nbLines do
     for nColumn = 1, Game.nbColumns do
       local case = Map[nLine][nColumn]
-      if case.elt == "empty" then
-        love.graphics.setColor(0, 0, 0)
-        love.graphics.rectangle("fill", x, y, caseSize, caseSize)
-      end
+      
+      love.graphics.setColor(0, 0, 0)
+      love.graphics.rectangle("fill", x, y, caseSize, caseSize)
       
       if case.elt == "wall" then
         love.graphics.setColor(255, 255, 255)
-        love.graphics.print("gunther", x + 32, y + 32)
+        love.graphics.draw(wallPic, x, y)
       end
       
       love.graphics.setColor(255, 255, 255)

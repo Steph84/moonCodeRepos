@@ -129,7 +129,7 @@ function love.mousereleased(x, y, button, istouch)
   end
 end
 
-function Control.Update(ppDt, pIncrement, pWallSignal)
+function Control.Update(ppDt, pIncrement, pWallSignal, pWallLevel)
   local i
   for i = 1, #listButtons do
     local b = listButtons[i]
@@ -161,6 +161,7 @@ function Control.Update(ppDt, pIncrement, pWallSignal)
                   if b.id == 3 then
                     pIncrement = pIncrement - wallLvl1Cost
                     pWallSignal = true
+                    pWallLevel = 1
                     mouseClicked.x = 0
                     mouseClicked.y = 0
                   end
@@ -186,7 +187,7 @@ function Control.Update(ppDt, pIncrement, pWallSignal)
   if pIncrement > wallLvl4Cost then listButtons[5].isEnabled = true else listButtons[5].isEnabled = false end
   if pIncrement > wallLvl8Cost then listButtons[6].isEnabled = true else listButtons[6].isEnabled = false end
   
-  return pIncrement, pWallSignal
+  return pIncrement, pWallSignal, pWallLevel
 end
 
 function Control.Draw()
