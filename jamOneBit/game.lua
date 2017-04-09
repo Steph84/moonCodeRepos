@@ -7,7 +7,7 @@ local field = {}
 field.map = {}
 field.nbLines = 7
 field.nbColumns = 12
-Game.increment = 20
+Game.increment = 0
 
 function CreateCase(pId)
   local item = {}
@@ -38,7 +38,7 @@ function Game.Load(pWindowHeight)
 end
 
 function Game.Update(pDt)
-  myControl.Update(pDt, Game.increment)
+  Game.increment = myControl.Update(pDt, Game.increment)
 end
 
 function Game.Draw()
@@ -64,6 +64,9 @@ function Game.Draw()
     x = castlePicW + 24
     y = y + caseGap + caseSize
   end
+  
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.print(Game.increment, 150, 50)
   
   love.graphics.setColor(255, 255, 255)
   

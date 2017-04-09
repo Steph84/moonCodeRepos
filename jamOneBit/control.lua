@@ -7,9 +7,7 @@ local tileWidth = 96
 local tileHeight = 48
 
 local listButtons = {}
-local buttonUp, buttonDown
-local mouseClicked = {} 
-local animeButton = false
+local mouseClicked = {}
 
 function CreateButton(pId, pppWindowHeight)
   local item = {}
@@ -84,12 +82,14 @@ function Control.Update(ppDt, pIncrement)
              if mouseClicked.y > b.y - tileHeight/2 and
                 mouseClicked.y < b.y + tileHeight/2 then
                   b.position = "down" -- if the button is clicked, button down
+                  if b.id == 1 then pIncrement = pIncrement + 1 end
              end
         end
       else b.position = "up" end -- if the player doesn t click, button back up
     --end
   end
   
+  return pIncrement
 end
 
 function Control.Draw()
