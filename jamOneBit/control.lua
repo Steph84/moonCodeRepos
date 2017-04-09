@@ -13,10 +13,17 @@ local peoplePics = {}
 local listButtons = {}
 local listPeople = {}
 local mouseClicked = {}
+
 local peopleCost = 10
 local peopleIncome = 10
 local peopleTime = 1
 local timeElapsed = 0
+
+local wallLvl1Cost = 10
+local wallLvl2Cost = 20
+local wallLvl4Cost = 40
+local wallLvl8Cost = 80
+
 
 function CreateButton(pId, pppWindowHeight)
   local item = {}
@@ -122,12 +129,14 @@ function love.mousereleased(x, y, button, istouch)
   end
 end
 
-function Control.Update(ppDt, pIncrement)
-  if mouseClicked.on == true then -- if the player click
-    local i
-    for i = 1, #listButtons do
-      local b = listButtons[i]
-      if b.isEnabled == true then -- if the button is showing
+function Control.Update(ppDt, pIncrement, pWallSignal)
+  local i
+  for i = 1, #listButtons do
+    local b = listButtons[i]
+    if b.isEnabled == true then -- if the button is showing
+      -- if the player click
+      -- have to stay here to keep the animation
+      if mouseClicked.on == true then
         if mouseClicked.x > b.x - tileWidth/2 and
            mouseClicked.x < b.x + tileWidth/2 then
              if mouseClicked.y > b.y - tileHeight/2 and
@@ -149,6 +158,13 @@ function Control.Update(ppDt, pIncrement)
                     mouseClicked.y = 0
                   end
                   
+                  if b.id == 3 then
+                    pIncrement = pIncrement - wallLvl1Cost
+                    pWallSignal = true
+                    mouseClicked.x = 0
+                    mouseClicked.y = 0
+                  end
+                  
                   
              end
         end
@@ -156,7 +172,7 @@ function Control.Update(ppDt, pIncrement)
     end
   end
   
-  -- manage the showing of the people button
+  -- manage the people button
   if pIncrement > peopleCost and #listPeople < 24 then listButtons[2].isEnabled = true else listButtons[2].isEnabled = false end
   if #listPeople > 0 then timeElapsed = timeElapsed + ppDt end
   if timeElapsed > peopleTime then
@@ -164,8 +180,13 @@ function Control.Update(ppDt, pIncrement)
     timeElapsed = 0
   end
   
+  -- manage the wall buttons
+  if pIncrement > wallLvl1Cost then listButtons[3].isEnabled = true else listButtons[3].isEnabled = false end
+  if pIncrement > wallLvl2Cost then listButtons[4].isEnabled = true else listButtons[4].isEnabled = false end
+  if pIncrement > wallLvl4Cost then listButtons[5].isEnabled = true else listButtons[5].isEnabled = false end
+  if pIncrement > wallLvl8Cost then listButtons[6].isEnabled = true else listButtons[6].isEnabled = false end
   
-  return pIncrement
+  return pIncrement, pWallSignal
 end
 
 function Control.Draw()
