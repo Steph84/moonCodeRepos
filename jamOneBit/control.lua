@@ -82,7 +82,12 @@ function Control.Update(ppDt, pIncrement)
              if mouseClicked.y > b.y - tileHeight/2 and
                 mouseClicked.y < b.y + tileHeight/2 then
                   b.position = "down" -- if the button is clicked, button down
-                  if b.id == 1 then pIncrement = pIncrement + 1 end
+                  if b.id == 1 then
+                    pIncrement = pIncrement + 1
+                    -- to stop increment without stopping animation
+                    mouseClicked.x = 0
+                    mouseClicked.y = 0
+                  end
              end
         end
       else b.position = "up" end -- if the player doesn t click, button back up
