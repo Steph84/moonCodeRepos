@@ -166,6 +166,29 @@ function Control.Update(ppDt, pIncrement, pWallSignal, pWallLevel)
                     mouseClicked.y = 0
                   end
                   
+                  if b.id == 4 then
+                    pIncrement = pIncrement - wallLvl2Cost
+                    pWallSignal = true
+                    pWallLevel = 2
+                    mouseClicked.x = 0
+                    mouseClicked.y = 0
+                  end
+                  
+                  if b.id == 5 then
+                    pIncrement = pIncrement - wallLvl4Cost
+                    pWallSignal = true
+                    pWallLevel = 4
+                    mouseClicked.x = 0
+                    mouseClicked.y = 0
+                  end
+                  
+                  if b.id == 6 then
+                    pIncrement = pIncrement - wallLvl8Cost
+                    pWallSignal = true
+                    pWallLevel = 8
+                    mouseClicked.x = 0
+                    mouseClicked.y = 0
+                  end
                   
              end
         end

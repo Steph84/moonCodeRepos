@@ -1,9 +1,10 @@
 local Game = {}
 
 local myControl = require("control")
+local myEnnemy = require("ennemy")
 
 local castlePic, castlePicW, wallPic
-local Map = {}
+Game.Map = {}
 Game.nbLines = 7
 Game.nbColumns = 12
 Game.increment = 0
@@ -31,10 +32,10 @@ function Game.Load(pWindowHeight)
   local nLine, nColumn
   local id = 0
   for nLine = 1, Game.nbLines do
-    Map[nLine] = {}
+    Game.Map[nLine] = {}
     for nColumn = 1, Game.nbColumns do
       id = id + 1
-      Map[nLine][nColumn] = CreateCase(id)
+      Game.Map[nLine][nColumn] = CreateCase(id)
     end
   end
   
@@ -51,13 +52,13 @@ function Game.Update(pDt)
     for nLine = 1, Game.nbLines do
       --for nColumn = 1, Game.nbColumns do
         --local case = Map[nLine][nColumn]
-      if Map[nLine][colNumber].elt == "empty" then
+      if Game.Map[nLine][colNumber].elt == "empty" then
         tempCount = tempCount + 1
-        Map[nLine][colNumber].elt = "wall"
-        Map[nLine][colNumber].lvlElt = 1
+        Game.Map[nLine][colNumber].elt = "wall"
+        Game.Map[nLine][colNumber].lvlElt = wallLevel
         wallSignal = false
         
-        if tempCount == 7 then
+        if tempCount == Game.nbLines then
           colNumber = colNumber + 1
           tempCount = 0
         end
@@ -69,6 +70,8 @@ function Game.Update(pDt)
       
     end
   end
+  
+  myEnnemy.Update(pDt, Game.Map, Game.nbLines)
   
 end
 
@@ -83,7 +86,7 @@ function Game.Draw()
   local nLine, nColumn
   for nLine = 1, Game.nbLines do
     for nColumn = 1, Game.nbColumns do
-      local case = Map[nLine][nColumn]
+      local case = Game.Map[nLine][nColumn]
       
       love.graphics.setColor(0, 0, 0)
       love.graphics.rectangle("fill", x, y, caseSize, caseSize)
