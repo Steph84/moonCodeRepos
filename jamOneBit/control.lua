@@ -19,7 +19,7 @@ local peopleIncome = 10
 local peopleTime = 1
 local timeElapsed = 0
 
-local wallLvl1Cost = 10
+local wallLvl1Cost = 1
 local wallLvl2Cost = 20
 local wallLvl4Cost = 40
 local wallLvl8Cost = 80

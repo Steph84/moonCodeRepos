@@ -1,18 +1,24 @@
 -- initialiser le random
 math.randomseed(os.time())
+
 local Ennemy = {}
 
 Ennemy.listEnnemies = {}
 local timeElapsed = 0
 local ennemySignal = false
+local enumLevel = { 1, 2, 4, 8 }
 
 function CreteEnnemy(pId, pNbColumns)
   local item = {}
   
   item.coorLine = pId
   item.coorColumn = pNbColumns
-  item.level = 1
-  item.speed = item.level
+  
+  -- determine the level random
+  local tempLvl = math.random(1, 4)
+  item.level = enumLevel[tempLvl]
+  
+  item.speed = 1
   
   table.insert(Ennemy.listEnnemies, item)
 end
@@ -34,14 +40,24 @@ function Ennemy.Update(ppDt, pGame)
   end
   
   if ennemySignal == true then
-    local j
-    for j = 1, pGame.nbLines do
-      CreteEnnemy(j, pGame.nbColumns)
+    if #Ennemy.listEnnemies < 7 then
+      local j
+      for j = 1, pGame.nbLines do
+        CreteEnnemy(j, pGame.nbColumns)
+      end
     end
-  
-  
-  
-  
+    
+    timeElapsed = timeElapsed + ppDt
+        
+    if timeElapsed > 1 then
+      local n
+      for n = 1, #Ennemy.listEnnemies do
+        local e = Ennemy.listEnnemies[n]
+        e.coorColumn = e.coorColumn - e.speed
+      end
+      timeElapsed = 0
+    end
+    
   
   end
   
