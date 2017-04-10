@@ -65,13 +65,28 @@ function Game.Update(pDt)
         
         break
       end
-      
-      
-      
     end
   end
   
-  myEnnemy.Update(pDt, Game.Map, Game.nbLines)
+  local nLine2, nColumn2
+  for nLine2 = 1, Game.nbLines do
+    for nColumn2 = 1, Game.nbColumns do
+      local k
+      for k = 1, #myEnnemy.listEnnemies do
+        local case = Game.Map[nLine2][nColumn2]
+        local e = myEnnemy.listEnnemies[k]
+        if Game.Map[e.coorLine][e.coorColumn].elt == "empty" then
+          Game.Map[e.coorLine][e.coorColumn].elt = "ennemy"
+          Game.Map[e.coorLine][e.coorColumn].lvlElt = e.level
+        end
+        
+      end
+    end
+  end
+  
+  
+  
+  myEnnemy.Update(pDt, Game)
   
 end
 
@@ -94,6 +109,11 @@ function Game.Draw()
       if case.elt == "wall" then
         love.graphics.setColor(255, 255, 255)
         love.graphics.draw(wallPic, x, y)
+      end
+      
+      if case.elt == "ennemy" then
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.circle("fill", x + caseSize/2, y + caseSize/2, 10)
       end
       
       love.graphics.setColor(255, 255, 255)

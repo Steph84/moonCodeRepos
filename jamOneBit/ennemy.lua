@@ -1,21 +1,23 @@
+-- initialiser le random
+math.randomseed(os.time())
 local Ennemy = {}
 
-local listEnnemies = {}
+Ennemy.listEnnemies = {}
 local timeElapsed = 0
 local ennemySignal = false
 
-function CreteEnnemy()
+function CreteEnnemy(pId, pNbColumns)
   local item = {}
   
-  --item.coorLine = 
-  --item.coorColumn = 
-  --item.level = 
-  --item.speed = 
+  item.coorLine = pId
+  item.coorColumn = pNbColumns
+  item.level = 1
+  item.speed = item.level
   
-  table.insert(listEnnemies, item)
+  table.insert(Ennemy.listEnnemies, item)
 end
 
-function Ennemy.Update(ppDt, pMap, pNbLines)
+function Ennemy.Update(ppDt, pGame)
   
   -- if there is a minimum of the first line of wall, ennemy AI activates
   if ennemySignal == false then
@@ -24,14 +26,24 @@ function Ennemy.Update(ppDt, pMap, pNbLines)
     local nLine
     local id = 0
     
-    for nLine = 1, pNbLines do
-      if pMap[nLine][colNumber].elt == "wall" then tempCount = tempCount + 1 end
+    for nLine = 1, pGame.nbLines do
+      if pGame.Map[nLine][colNumber].elt == "wall" then tempCount = tempCount + 1 end
     end
     
     if tempCount > 6 then ennemySignal = true end
   end
   
-  if ennemySignal == true then print("avast!") end
+  if ennemySignal == true then
+    local j
+    for j = 1, pGame.nbLines do
+      CreteEnnemy(j, pGame.nbColumns)
+    end
+  
+  
+  
+  
+  
+  end
   
   
 end
