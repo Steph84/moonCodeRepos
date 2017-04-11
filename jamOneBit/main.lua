@@ -7,15 +7,16 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth = 1300 -- max value
 local windowHeight = 675 -- max value
 
-local actualScreen = "game"
-local tempScreen = "title"
+local actualScreen = "title"
+local tempScreen
 local myTitle = require("title")
 local myGame = require("game")
+local myOver = require("over")
 
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
-  love.window.setTitle("RPG clicker")
+  love.window.setTitle("Tower clicker")
   
   myTitle.Load(windowWidth)
   myGame.Load(windowHeight)
@@ -29,9 +30,9 @@ function love.update(dt)
     if tempScreen ~= "title" then actualScreen = tempScreen end
   end
   if actualScreen == "game" then
-      --tempScreen = myGame.Update(dt)
+    tempScreen = myGame.Update(dt)
+    if tempScreen ~= "game" then actualScreen = tempScreen end
   end
-  myGame.Update(dt)
 end
 
 function love.draw()
@@ -45,6 +46,9 @@ function love.draw()
     myGame.Draw()
   end
   
+  if actualScreen == "gameOver" then
+    myOver.Draw(windowWidth, windowHeight)
+  end
 end
 
 function love.keypressed(key)

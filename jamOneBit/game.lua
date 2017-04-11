@@ -12,6 +12,7 @@ local wallSignal = false
 local wallLevel = 0
 local tempCount = 0
 local colNumber = 1
+local gameOver = false
 
 function CreateCase(pId)
   local item = {}
@@ -44,54 +45,48 @@ function Game.Load(pWindowHeight)
 end
 
 function Game.Update(pDt)
-  Game.increment, wallSignal, wallLevel = myControl.Update(pDt, Game.increment, wallSignal, wallLevel)
   
-  myEnnemy.Update(pDt, Game)
+  local signal = "game"
   
-  if wallSignal == true then
-    local nLine
-    local id = 0
-    for nLine = 1, Game.nbLines do
-      --for nColumn = 1, Game.nbColumns do
-        --local case = Map[nLine][nColumn]
-      if Game.Map[nLine][colNumber].elt == "empty" then
-        tempCount = tempCount + 1
-        Game.Map[nLine][colNumber].elt = "wall"
-        Game.Map[nLine][colNumber].lvlElt = wallLevel
-        wallSignal = false
-        
-        if tempCount == Game.nbLines then
-          colNumber = colNumber + 1
-          tempCount = 0
-        end
-        
-        break
-      end
-    end
-  end
+  if gameOver == false then
   
-  local nLine2, nColumn2
-  for nLine2 = 1, Game.nbLines do
-    for nColumn2 = 1, Game.nbColumns do
-      local k
-      for k = #myEnnemy.listEnnemies, 1, -1 do
-        local case = Game.Map[nLine2][nColumn2]
-        local e = myEnnemy.listEnnemies[k]
-        if Game.Map[e.coorLine][e.coorColumn].elt == "empty" then
-          Game.Map[e.coorLine][e.coorColumn].elt = "ennemy"
-          Game.Map[e.coorLine][e.coorColumn].lvlElt = e.level
+    Game.increment, wallSignal, wallLevel = myControl.Update(pDt, Game.increment, wallSignal, wallLevel)
+    
+    myEnnemy.Update(pDt, Game)
+    
+    if wallSignal == true then
+      local nLine
+      local id = 0
+      for nLine = 1, Game.nbLines do
+        --for nColumn = 1, Game.nbColumns do
+          --local case = Map[nLine][nColumn]
+        if Game.Map[nLine][colNumber].elt == "empty" then
+          tempCount = tempCount + 1
+          Game.Map[nLine][colNumber].elt = "wall"
+          Game.Map[nLine][colNumber].lvlElt = wallLevel
+          wallSignal = false
           
-          if e.coorColumn < Game.nbColumns then
-            Game.Map[e.coorLine][e.coorColumn + e.speed].elt = "empty"
-            Game.Map[e.coorLine][e.coorColumn + e.speed].lvlElt = 0
+          if tempCount == Game.nbLines then
+            colNumber = colNumber + 1
+            tempCount = 0
           end
           
+          break
         end
-        
-        if Game.Map[e.coorLine][e.coorColumn].elt == "wall" then
+      end
+    end
+    
+    local nLine2, nColumn2
+    for nLine2 = 1, Game.nbLines do
+      for nColumn2 = 1, Game.nbColumns do
+        local k
+        for k = #myEnnemy.listEnnemies, 1, -1 do
+          local case = Game.Map[nLine2][nColumn2]
+          local e = myEnnemy.listEnnemies[k]
           
-          -- if wall worst than ennemy
-          if Game.Map[e.coorLine][e.coorColumn].lvlElt < e.level then
+          if Game.Map[e.coorLine][1].elt == "ennemy" then gameOver = true end
+          
+          if Game.Map[e.coorLine][e.coorColumn].elt == "empty" then
             Game.Map[e.coorLine][e.coorColumn].elt = "ennemy"
             Game.Map[e.coorLine][e.coorColumn].lvlElt = e.level
             
@@ -100,37 +95,58 @@ function Game.Update(pDt)
               Game.Map[e.coorLine][e.coorColumn + e.speed].lvlElt = 0
             end
             
-          -- if wall better than ennemy
-          elseif Game.Map[e.coorLine][e.coorColumn].lvlElt > e.level then
-            -- don t change the wall case
-            
-            if e.coorColumn < Game.nbColumns then
-              Game.Map[e.coorLine][e.coorColumn + e.speed].elt = "empty"
-              Game.Map[e.coorLine][e.coorColumn + e.speed].lvlElt = 0
-            end
-            table.remove(myEnnemy.listEnnemies, k)
-            
-          -- if wall and ennemy are equals
-          elseif Game.Map[e.coorLine][e.coorColumn].lvlElt == e.level then
-            Game.Map[e.coorLine][e.coorColumn].elt = "empty"
-            Game.Map[e.coorLine][e.coorColumn].lvlElt = 0
-            
-            if e.coorColumn < Game.nbColumns then
-              Game.Map[e.coorLine][e.coorColumn + e.speed].elt = "empty"
-              Game.Map[e.coorLine][e.coorColumn + e.speed].lvlElt = 0
-            end
-            table.remove(myEnnemy.listEnnemies, k)
           end
           
-          
+          if Game.Map[e.coorLine][e.coorColumn].elt == "wall" then
+            
+            -- if wall worst than ennemy
+            if Game.Map[e.coorLine][e.coorColumn].lvlElt < e.level then
+              Game.Map[e.coorLine][e.coorColumn].elt = "ennemy"
+              Game.Map[e.coorLine][e.coorColumn].lvlElt = e.level - 1
+              
+              if e.coorColumn < Game.nbColumns then
+                Game.Map[e.coorLine][e.coorColumn + e.speed].elt = "empty"
+                Game.Map[e.coorLine][e.coorColumn + e.speed].lvlElt = 0
+              end
+              
+            -- if wall better than ennemy
+            elseif Game.Map[e.coorLine][e.coorColumn].lvlElt > e.level then
+              Game.Map[e.coorLine][e.coorColumn].lvlElt = Game.Map[e.coorLine][e.coorColumn].lvlElt - 1
+              
+              if e.coorColumn < Game.nbColumns then
+                Game.Map[e.coorLine][e.coorColumn + e.speed].elt = "empty"
+                Game.Map[e.coorLine][e.coorColumn + e.speed].lvlElt = 0
+              end
+              table.remove(myEnnemy.listEnnemies, k)
+              
+            -- if wall and ennemy are equals
+            elseif Game.Map[e.coorLine][e.coorColumn].lvlElt == e.level then
+              Game.Map[e.coorLine][e.coorColumn].elt = "empty"
+              Game.Map[e.coorLine][e.coorColumn].lvlElt = 0
+              
+              if e.coorColumn < Game.nbColumns then
+                Game.Map[e.coorLine][e.coorColumn + e.speed].elt = "empty"
+                Game.Map[e.coorLine][e.coorColumn + e.speed].lvlElt = 0
+              end
+              table.remove(myEnnemy.listEnnemies, k)
+            end
+            
+            if Game.Map[e.coorLine][e.coorColumn].lvlElt == 0 then
+              Game.Map[e.coorLine][e.coorColumn].elt = "empty"
+            end
+            
+            
+          end
           
         end
-        
       end
     end
   end
   
-  
+  if gameOver == true then
+    signal = "gameOver"
+  end
+  return signal
 end
 
 function Game.Draw()

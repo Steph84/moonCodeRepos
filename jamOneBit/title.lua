@@ -20,6 +20,7 @@ function Title.Load(pWindowWidth)
   buttonPressed = love.graphics.newQuad(0, buttonPics.h, buttonPics.w, buttonPics.h, buttonPics.src:getDimensions())
 end
 
+--[[
 function love.mousepressed(x, y, button, istouch)
   if button == 1 then
     mouseClicked.on = true
@@ -27,19 +28,31 @@ function love.mousepressed(x, y, button, istouch)
     mouseClicked.y = y
   end
 end
+--]]
 
 function Title.Update(pDt)
   local signal = "title"
   
+  -- modification from love.mousepressed to love.mouse.isDown function because it didn t work anymore...
+  if love.mouse.isDown(1) then
+    if love.mouse.getX() > buttonPics.x - buttonPics.w/2 and
+       love.mouse.getX() < buttonPics.x + buttonPics.w/2 then
+         if love.mouse.getY() > buttonPics.y - buttonPics.h/2 and
+            love.mouse.getY() < buttonPics.y + buttonPics.h/2 then
+    
+  --[[
   if mouseClicked.on == true then
     if mouseClicked.x > buttonPics.x - buttonPics.w/2 and
        mouseClicked.x < buttonPics.x + buttonPics.w/2 then
          if mouseClicked.y > buttonPics.y - buttonPics.h/2 and
             mouseClicked.y < buttonPics.y + buttonPics.h/2 then
+            --]]
               animeButton = true
+              --[[
               mouseClicked.x = nil
               mouseClicked.y = nil
               mouseClicked.on = false
+              --]]
          end
     end
   end
