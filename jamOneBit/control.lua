@@ -14,15 +14,15 @@ local listButtons = {}
 local listPeople = {}
 local mouseClicked = {}
 
-local peopleCost = 10
+local peopleCost = 50
 local peopleIncome = 10
-local peopleTime = 1
+local peopleTime = 5
 local timeElapsed = 0
 
-local wallLvl1Cost = 1
-local wallLvl2Cost = 20
-local wallLvl4Cost = 40
-local wallLvl8Cost = 80
+local wallLvl1Cost = 50
+local wallLvl2Cost = 100
+local wallLvl4Cost = 200
+local wallLvl8Cost = 500
 
 
 function CreateButton(pId, pppWindowHeight)

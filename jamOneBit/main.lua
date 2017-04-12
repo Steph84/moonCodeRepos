@@ -36,7 +36,11 @@ function love.update(dt)
 end
 
 function love.draw()
-  if actualScreen == "title" then myTitle.Draw(windowWidth) end
+  if actualScreen == "title" then
+    myTitle.Draw(windowWidth)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.print("The Castle Clicker", 450, 200, 0, 4, 4)
+  end
   
   if actualScreen == "game" then 
     love.graphics.setBackgroundColor(255, 255, 255)

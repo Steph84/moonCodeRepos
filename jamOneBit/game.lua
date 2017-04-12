@@ -7,7 +7,7 @@ local castlePic, castlePicW, wallPic
 Game.Map = {}
 Game.nbLines = 7
 Game.nbColumns = 12
-Game.increment = 1000
+Game.increment = 0
 local wallSignal = false
 local wallLevel = 0
 local tempCount = 0

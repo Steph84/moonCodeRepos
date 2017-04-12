@@ -7,8 +7,9 @@ Ennemy.listEnnemies = {}
 local timeElapsed = 0
 local ennemySignal = false
 local enumLevel = { 1, 2, 4, 8 }
+local speed = 3
 
-function CreteEnnemy(pId, pNbColumns)
+function CreateEnnemy(pId, pNbColumns)
   local item = {}
   
   item.coorLine = pId
@@ -18,7 +19,7 @@ function CreteEnnemy(pId, pNbColumns)
   local tempLvl = math.random(1, 4)
   item.level = enumLevel[tempLvl]
   
-  item.speed = 1
+  item.speed = speed
   
   table.insert(Ennemy.listEnnemies, item)
 end
@@ -43,13 +44,13 @@ function Ennemy.Update(ppDt, pGame)
     if #Ennemy.listEnnemies < 7 then
       local j
       for j = 1, pGame.nbLines do
-        CreteEnnemy(j, pGame.nbColumns)
+        CreateEnnemy(j, pGame.nbColumns)
       end
     end
     
     timeElapsed = timeElapsed + ppDt
         
-    if timeElapsed > 1 then
+    if timeElapsed > speed then
       local n
       for n = 1, #Ennemy.listEnnemies do
         local e = Ennemy.listEnnemies[n]
