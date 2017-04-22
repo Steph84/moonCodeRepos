@@ -7,10 +7,15 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth = 1280 -- 32x32px sprites value (40 columns)
 local windowHeight = 672 -- 32x32px sprites value (21 lines)
 
+local gameState = "title"
+
+local myGame = require("game")
+
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("CivCity")
+  
   
 end
 
