@@ -18,6 +18,10 @@ local colorRed = {255, 0, 0}
 local colorGreen = {0, 255, 0}
 local colorBlue = {0, 0, 255}
 local colorYellow = {255, 255, 0}
+local colorRedA = {255, 0, 0, 100}
+local colorGreenA = {0, 255, 0, 100}
+local colorBlueA = {0, 0, 255, 100}
+local colorYellowA = {255, 255, 0, 100}
 
 local cityWindow = {}
 
@@ -46,11 +50,12 @@ function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
     item.Id = i
     item.Name = listNames[i]
     item.Color = nil
+    item.ColorAlpha = nil
     item.X = 0
     item.Y = 0
     item.BuildingNumber = {0, 0, 0} -- Residential, Commercial, Industrial
     item.Population = 1
-    item.Food = 0
+    item.Surface = 1
     item.Treasury = 2000
     
     table.insert(City.listCities, item)
@@ -69,6 +74,10 @@ function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
   City.listCities[2].Color = colorRed
   City.listCities[3].Color = colorGreen
   City.listCities[4].Color = colorYellow
+  City.listCities[1].ColorAlpha = colorBlueA
+  City.listCities[2].ColorAlpha = colorRedA
+  City.listCities[3].ColorAlpha = colorGreenA
+  City.listCities[4].ColorAlpha = colorYellowA
   
   local j
   for j = 1, 3 do
@@ -100,6 +109,12 @@ function City.Update(pDt, pScreen)
     local c = City.listCities[k]
     c.Population = c.BuildingNumber[1] * 10
     
+    if c.BuildingNumber[1] > 4 then c.Surface = 7 end
+    if c.BuildingNumber[1] > 20 then c.Surface = 12 end
+    if c.BuildingNumber[1] > 36 then c.Surface = 15 end
+    if c.BuildingNumber[1] > 52 then c.Surface = 17 end
+    if c.BuildingNumber[1] > 84 then c.Surface = 20 end
+    
     if timeElapsed > 2 then
       c.Treasury = c.Treasury + c.Population * 5 + c.BuildingNumber[2] * 15 + c.BuildingNumber[3] * 20
       timeElapsed = 0
@@ -111,10 +126,17 @@ end
 
 function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
   
+  -- draw surface
+  local atlantis = City.listCities[1]
+  
+  love.graphics.setColor(255, 255, 255)
+  
   -- draw cities
   local i
   for i = 1, #City.listCities do
     local c = City.listCities[i]
+    love.graphics.setColor(c.ColorAlpha)
+    love.graphics.circle("fill", c.X + 32/2, c.Y + 32/2, c.Surface * 10)
     love.graphics.setColor(c.Color)
     love.graphics.draw(cityPic, c.X, c.Y, 0, 1, 1)
     love.graphics.setColor(255, 255, 255)
@@ -122,11 +144,12 @@ function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
   end
   
   -- show stat for the Atlantis city
+  love.graphics.setColor(255, 255, 255)
   love.graphics.rectangle("fill", 0, pGameWindowHeight, pGameWindowWidth, 32)
   love.graphics.setColor(0, 0, 0)
   love.graphics.print("Your city : "..City.listCities[1].Name, 30, pGameWindowHeight + 32/3)
   love.graphics.print("Population : "..City.listCities[1].Population, pGameWindowWidth/4, pGameWindowHeight + 32/3)
-  love.graphics.print("Food : "..City.listCities[1].Food, pGameWindowWidth/2, pGameWindowHeight + 32/3)
+  love.graphics.print("Surface : "..City.listCities[1].Surface, pGameWindowWidth/2, pGameWindowHeight + 32/3)
   love.graphics.print("Treasury : "..City.listCities[1].Treasury, pGameWindowWidth*3/4, pGameWindowHeight + 32/3)
   
   -- manage the city screen

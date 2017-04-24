@@ -16,8 +16,7 @@ function Game.Load(pGameWindowWidth, pGameWindowHeight)
 end
 
 function Game.Update(pDt)
-  -- TODO call the update functions
-  -- manage the pause and the city screen
+  
   if Screen == "map" then Screen = myMap.Update(pDt, Screen, myCity.listCities) end
   Screen = myCity.Update(pDt, Screen)
   
