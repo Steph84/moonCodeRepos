@@ -35,8 +35,9 @@ function love.update(dt)
   end
   
   if gameState == "game" then
-    myGame.Update(dt)
+    gameState = myGame.Update(dt, gameState)
   end
+  
 end
 
 function love.draw()
@@ -58,7 +59,16 @@ function love.draw()
     love.graphics.rectangle("line", 0, 0, gameWindowWidth/2, gameWindowHeight/2)
     love.graphics.rectangle("line", gameWindowWidth/2, gameWindowHeight/2, gameWindowWidth/2, gameWindowHeight/2)
     
-    myGame.Draw(gameWindowWidth, gameWindowHeight)
+    myGame.Draw(gameWindowWidth, gameWindowHeight, gameState)
+  end
+  
+  if gameState == "gameOver" then
+    love.graphics.setBackgroundColor(102, 255, 102)
+    love.graphics.setColor(255, 0, 0)
+    love.graphics.print("GAME OVER", windowWidth/2 - 100, windowHeight/2 - 100, 0, 3, 3)
+    love.graphics.setColor(255, 255, 255)
+    
+    myGame.Draw(gameWindowWidth, gameWindowHeight, gameState)
   end
   
 end

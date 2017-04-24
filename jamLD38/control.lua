@@ -39,17 +39,19 @@ function Control.UpdateButt(pDt, pListButtons, pCityWindow, pListCities, pScreen
       local butt = pListButtons[i]
       local coorX = pCityWindow.cityWindowX + butt.X
       local coorY = pCityWindow.cityWindowY + i*butt.Y
-      if mouseClicked.x > coorX and
-         mouseClicked.x < coorX + 32*butt.Scale then
-           if mouseClicked.y > coorY and
-              mouseClicked.y < coorY + 32*butt.Scale then
-                
-                pListCities[1].BuildingNumber[i] = pListCities[1].BuildingNumber[i] + 1
-                pListCities[1].Treasury = pListCities[1].Treasury - i*i*100
-                mouseClicked.x = 0
-                mouseClicked.y = 0
-                
-           end
+      if pListCities[1].Treasury > 0 then
+        if mouseClicked.x > coorX and
+           mouseClicked.x < coorX + 32*butt.Scale then
+             if mouseClicked.y > coorY and
+                mouseClicked.y < coorY + 32*butt.Scale then
+                  
+                  pListCities[1].BuildingNumber[i] = pListCities[1].BuildingNumber[i] + 1
+                  pListCities[1].Treasury = pListCities[1].Treasury - i*i*100
+                  mouseClicked.x = 0
+                  mouseClicked.y = 0
+                  
+             end
+        end
       end
     end
   end

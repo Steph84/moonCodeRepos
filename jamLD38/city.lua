@@ -1,3 +1,5 @@
+math.randomseed(os.time())
+
 local City = {}
 
 local plusPic, moinsPic
@@ -31,6 +33,7 @@ local cityWindowWidth
 local cityWindowHeight
 
 local timeElapsed = 0
+local timeElapsedAI = 0
 
 local cityPic
 
@@ -96,8 +99,9 @@ function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
   
 end
 
-function City.Update(pDt, pScreen)
+function City.Update(pDt, pScreen, pGameState)
   timeElapsed = timeElapsed + pDt
+  timeElapsedAI = timeElapsedAI + pDt
   
   -- TODO all the calculation : ratio, growth
   if pScreen == "city" then
@@ -115,13 +119,27 @@ function City.Update(pDt, pScreen)
     if c.BuildingNumber[1] > 52 then c.Surface = 17 end
     if c.BuildingNumber[1] > 84 then c.Surface = 20 end
     
-    if timeElapsed > 2 then
+    if c.BuildingNumber[1] > 90 then pGameState = "gameOver" end
+    
+    if timeElapsed > 5 then
       c.Treasury = c.Treasury + c.Population * 5 + c.BuildingNumber[2] * 15 + c.BuildingNumber[3] * 20
       timeElapsed = 0
     end
-    
   end
-  return pScreen
+  
+  -- manage AI
+  if timeElapsedAI > 2 then
+    local tempA = math.random(1, 3)
+    City.listCities[2].BuildingNumber[tempA] = City.listCities[2].BuildingNumber[tempA] + 1
+    local tempB = math.random(1, 3)
+    City.listCities[3].BuildingNumber[tempB] = City.listCities[3].BuildingNumber[tempB] + 1
+    local tempC = math.random(1, 3)
+    City.listCities[4].BuildingNumber[tempC] = City.listCities[4].BuildingNumber[tempC] + 1
+    
+    timeElapsedAI = 0
+  end
+  
+  return pScreen, pGameState
 end
 
 function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
