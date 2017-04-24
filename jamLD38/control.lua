@@ -45,6 +45,7 @@ function Control.UpdateButt(pDt, pListButtons, pCityWindow, pListCities, pScreen
               mouseClicked.y < coorY + 32*butt.Scale then
                 
                 pListCities[1].BuildingNumber[i] = pListCities[1].BuildingNumber[i] + 1
+                pListCities[1].Treasury = pListCities[1].Treasury - i*i*100
                 mouseClicked.x = 0
                 mouseClicked.y = 0
                 

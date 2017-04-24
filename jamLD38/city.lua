@@ -98,10 +98,10 @@ function City.Update(pDt, pScreen)
   local k
   for k = 1, #City.listCities do
     local c = City.listCities[k]
-    c.Population = c.BuildingNumber[1] * 50
+    c.Population = c.BuildingNumber[1] * 10
     
     if timeElapsed > 2 then
-      c.Treasury = c.Treasury + c.Population * 50 + c.BuildingNumber[2] * 1500 + c.BuildingNumber[3] * 2000
+      c.Treasury = c.Treasury + c.Population * 5 + c.BuildingNumber[2] * 15 + c.BuildingNumber[3] * 20
       timeElapsed = 0
     end
     
@@ -111,6 +111,7 @@ end
 
 function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
   
+  -- draw cities
   local i
   for i = 1, #City.listCities do
     local c = City.listCities[i]
@@ -120,6 +121,7 @@ function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
     love.graphics.print(c.Name, c.X, c.Y - 20)
   end
   
+  -- show stat for the Atlantis city
   love.graphics.rectangle("fill", 0, pGameWindowHeight, pGameWindowWidth, 32)
   love.graphics.setColor(0, 0, 0)
   love.graphics.print("Your city : "..City.listCities[1].Name, 30, pGameWindowHeight + 32/3)
@@ -127,8 +129,10 @@ function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
   love.graphics.print("Food : "..City.listCities[1].Food, pGameWindowWidth/2, pGameWindowHeight + 32/3)
   love.graphics.print("Treasury : "..City.listCities[1].Treasury, pGameWindowWidth*3/4, pGameWindowHeight + 32/3)
   
+  -- manage the city screen
   if pScreen == "city" then
     
+    -- black rectangles
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("fill", pGameWindowWidth/10, pGameWindowHeight/10, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
     love.graphics.setColor(255, 255, 255)
@@ -138,18 +142,23 @@ function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
     love.graphics.setColor(255, 255, 255)
     love.graphics.rectangle("line", pGameWindowWidth*0.15, pGameWindowHeight*0.15, pGameWindowWidth*0.7, pGameWindowHeight*0.7)
     
+    -- the insides of the city screen
     love.graphics.print("ATLANTIS", cityWindow.cityWindowX + cityWindow.cityWindowWidth/2 - 50, cityWindow.cityWindowY + 50, 0, 2, 2)
-    
+    love.graphics.print("Click to add building",
+                        cityWindow.cityWindowX + 50,
+                        cityWindow.cityWindowY + 50)
     local pic
     for pic = 1, #City.listButtons do
       local b = City.listButtons[pic]
       love.graphics.draw(b.SrcPic, cityWindow.cityWindowX + b.X, cityWindow.cityWindowY + pic*b.Y, 0, b.Scale, b.Scale)
     end
-      
     love.graphics.print("Residential buildings : "..City.listCities[1].BuildingNumber[1], 400, 210)
     love.graphics.print("Commercial buildings : "..City.listCities[1].BuildingNumber[2], 400, 320)
     love.graphics.print("Industrial buildings : "..City.listCities[1].BuildingNumber[3], 400, 430)
+    
+    love.graphics.print("Esc to exit", cityWindow.cityWindowX + cityWindow.cityWindowWidth - 20, cityWindow.cityWindowY - 20)
   end
+  
   
 end
 
