@@ -19,7 +19,7 @@ function Game.Update(pDt)
   -- TODO call the update functions
   -- manage the pause and the city screen
   if Screen == "map" then Screen = myMap.Update(pDt, Screen, myCity.listCities) end
-  if Screen == "city" then myCity.Update(pDt) end
+  myCity.Update(pDt, Screen)
   
 end
 

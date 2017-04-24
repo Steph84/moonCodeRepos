@@ -26,6 +26,8 @@ local cityWindowY
 local cityWindowWidth
 local cityWindowHeight
 
+local timeElapsed = 0
+
 local myControl = require("control")
 
 function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
@@ -81,9 +83,26 @@ function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
   
 end
 
-function City.Update(pDt)
+function City.Update(pDt, pScreen)
+  timeElapsed = timeElapsed + pDt
+  
   -- TODO all the calculation : ratio, growth
-  myControl.UpdateButt(pDt, City.listButtons, cityWindow, City.listCities)
+  if pScreen == "city" then
+    myControl.UpdateButt(pDt, City.listButtons, cityWindow, City.listCities)
+  end
+  
+  local k
+  for k = 1, #City.listCities do
+    local c = City.listCities[k]
+    c.Population = c.BuildingNumber[1] * 50
+    
+    if timeElapsed > 2 then
+      c.Treasury = c.Treasury + c.Population * 50 + c.BuildingNumber[2] * 1500 + c.BuildingNumber[3] * 2000
+      timeElapsed = 0
+    end
+    
+  end
+  
 end
 
 function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
