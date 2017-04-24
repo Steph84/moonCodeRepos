@@ -28,6 +28,8 @@ local cityWindowHeight
 
 local timeElapsed = 0
 
+local cityPic
+
 local myControl = require("control")
 
 function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
@@ -81,6 +83,8 @@ function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
     table.insert(City.listButtons, button)
   end
   
+  cityPic = love.graphics.newImage("pictures/cityPic.png")
+  
 end
 
 function City.Update(pDt, pScreen)
@@ -88,7 +92,7 @@ function City.Update(pDt, pScreen)
   
   -- TODO all the calculation : ratio, growth
   if pScreen == "city" then
-    myControl.UpdateButt(pDt, City.listButtons, cityWindow, City.listCities)
+    pScreen = myControl.UpdateButt(pDt, City.listButtons, cityWindow, City.listCities, pScreen)
   end
   
   local k
@@ -102,7 +106,7 @@ function City.Update(pDt, pScreen)
     end
     
   end
-  
+  return pScreen
 end
 
 function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
@@ -111,7 +115,7 @@ function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
   for i = 1, #City.listCities do
     local c = City.listCities[i]
     love.graphics.setColor(c.Color)
-    love.graphics.rectangle("fill", c.X, c.Y, 32, 32)
+    love.graphics.draw(cityPic, c.X, c.Y, 0, 1, 1)
     love.graphics.setColor(255, 255, 255)
     love.graphics.print(c.Name, c.X, c.Y - 20)
   end

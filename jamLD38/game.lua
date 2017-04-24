@@ -11,28 +11,25 @@ local Screen = "map"
 function Game.Load(pGameWindowWidth, pGameWindowHeight)
   
   myCity.Load(4, pGameWindowWidth, pGameWindowHeight)
+  myMap.Load()
   
-  -- call the map
 end
 
 function Game.Update(pDt)
   -- TODO call the update functions
   -- manage the pause and the city screen
   if Screen == "map" then Screen = myMap.Update(pDt, Screen, myCity.listCities) end
-  myCity.Update(pDt, Screen)
+  Screen = myCity.Update(pDt, Screen)
   
 end
 
 function Game.Draw(pGameWindowWidth, pGameWindowHeight)
   
+  myMap.Draw()
   myCity.Draw(pGameWindowWidth, pGameWindowHeight, Screen)
-  
-  
   
 end
 
 
-
-  love.graphics.setColor(255, 255, 255)
 
 return Game
