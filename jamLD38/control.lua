@@ -55,7 +55,6 @@ function Control.UpdateButt(pDt, pListButtons, pCityWindow, pListCities, pScreen
   end
   
   if love.keyboard.isDown("escape") then
-    print(pScreen)
     pScreen = "map"
   end
   return pScreen
