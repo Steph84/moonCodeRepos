@@ -83,7 +83,7 @@ end
 
 function City.Update(pDt)
   -- TODO all the calculation : ratio, growth
-  myControl.UpdateButt(pDt, City.listButtons, cityWindow)
+  myControl.UpdateButt(pDt, City.listButtons, cityWindow, City.listCities)
 end
 
 function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
@@ -105,8 +105,6 @@ function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
   love.graphics.print("Treasury : "..City.listCities[1].Treasury, pGameWindowWidth*3/4, pGameWindowHeight + 32/3)
   
   if pScreen == "city" then
-    
-    
     
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("fill", pGameWindowWidth/10, pGameWindowHeight/10, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
