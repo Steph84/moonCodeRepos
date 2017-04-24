@@ -1,22 +1,40 @@
 local City = {}
 
-local plusPic, moinsPic, residentialPic, commercialPic, industrialPic
+local plusPic, moinsPic
+local srcPic = {}
 
 plusPic = love.graphics.newImage("pictures/plusPic.png")
 moinsPic = love.graphics.newImage("pictures/moinsPic.png")
-residentialPic = love.graphics.newImage("pictures/residentialPic.png")
-commercialPic = love.graphics.newImage("pictures/commercialPic.png")
-industrialPic = love.graphics.newImage("pictures/industrialPic.png")
+
+srcPic[1] = love.graphics.newImage("pictures/residentialPic.png")
+srcPic[2] = love.graphics.newImage("pictures/commercialPic.png")
+srcPic[3] = love.graphics.newImage("pictures/industrialPic.png")
 
 local listNames = {"Atlantis", "Babylon", "Kyoto", "Nazca"}
 City.listCities = {}
+City.listButtons = {}
 
 local colorRed = {255, 0, 0}
 local colorGreen = {0, 255, 0}
 local colorBlue = {0, 0, 255}
 local colorYellow = {255, 255, 0}
 
+local cityWindow = {}
+
+local cityWindowX
+local cityWindowY
+local cityWindowWidth
+local cityWindowHeight
+
+local myControl = require("control")
+
 function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
+  
+  cityWindow.cityWindowX = pGameWindowWidth*0.15
+  cityWindow.cityWindowY = pGameWindowHeight*0.15
+  cityWindow.cityWindowWidth = pGameWindowWidth*0.7
+  cityWindow.cityWindowHeight = pGameWindowHeight*0.7
+    
   local i
   for i = 1, pNumber do
     local item = {}
@@ -48,10 +66,24 @@ function City.Load(pNumber, pGameWindowWidth, pGameWindowHeight)
   City.listCities[3].Color = colorGreen
   City.listCities[4].Color = colorYellow
   
+  local j
+  for j = 1, 3 do
+    local button ={}
+    
+    button.Id = j
+    button.SrcPic = srcPic[j]
+    button.X = 50
+    button.Y = 100
+    button.Scale = 2
+    
+    table.insert(City.listButtons, button)
+  end
+  
 end
 
 function City.Update(pDt)
   -- TODO all the calculation : ratio, growth
+  myControl.UpdateButt(pDt, City.listButtons, cityWindow)
 end
 
 function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
@@ -73,29 +105,29 @@ function City.Draw(pGameWindowWidth, pGameWindowHeight, pScreen)
   love.graphics.print("Treasury : "..City.listCities[1].Treasury, pGameWindowWidth*3/4, pGameWindowHeight + 32/3)
   
   if pScreen == "city" then
-  
-  local cityWindowX = pGameWindowWidth*0.15
-  local cityWindowY = pGameWindowHeight*0.15
-  local cityWindowWidth = pGameWindowWidth*0.7
-  local cityWindowHeight = pGameWindowHeight*0.7
-  
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.rectangle("fill", pGameWindowWidth/10, pGameWindowHeight/10, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.rectangle("line", pGameWindowWidth*0.1, pGameWindowHeight*0.1, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.rectangle("fill", pGameWindowWidth/10, pGameWindowHeight/10, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.rectangle("line", pGameWindowWidth*0.15, pGameWindowHeight*0.15, pGameWindowWidth*0.7, pGameWindowHeight*0.7)
-  
-  love.graphics.print("ATLANTIS", cityWindowX + cityWindowWidth/2 - 50, cityWindowY + 50, 0, 2, 2)
-  love.graphics.draw(residentialPic, cityWindowX + 50, cityWindowY + 100, 0, 2, 2)
-  love.graphics.draw(commercialPic, cityWindowX + 50, cityWindowY + 200, 0, 2, 2)
-  love.graphics.draw(industrialPic, cityWindowX + 50, cityWindowY + 300, 0, 2, 2)
     
-  love.graphics.print("Residential buildings : "..City.listCities[1].BuildingNumber[1], 400, 210)
-  love.graphics.print("Commercial buildings : "..City.listCities[1].BuildingNumber[2], 400, 320)
-  love.graphics.print("Industrial buildings : "..City.listCities[1].BuildingNumber[3], 400, 430)
+    
+    
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", pGameWindowWidth/10, pGameWindowHeight/10, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.rectangle("line", pGameWindowWidth*0.1, pGameWindowHeight*0.1, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", pGameWindowWidth/10, pGameWindowHeight/10, pGameWindowWidth*0.8, pGameWindowHeight*0.8)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.rectangle("line", pGameWindowWidth*0.15, pGameWindowHeight*0.15, pGameWindowWidth*0.7, pGameWindowHeight*0.7)
+    
+    love.graphics.print("ATLANTIS", cityWindow.cityWindowX + cityWindow.cityWindowWidth/2 - 50, cityWindow.cityWindowY + 50, 0, 2, 2)
+    
+    local pic
+    for pic = 1, #City.listButtons do
+      local b = City.listButtons[pic]
+      love.graphics.draw(b.SrcPic, cityWindow.cityWindowX + b.X, cityWindow.cityWindowY + pic*b.Y, 0, b.Scale, b.Scale)
+    end
+      
+    love.graphics.print("Residential buildings : "..City.listCities[1].BuildingNumber[1], 400, 210)
+    love.graphics.print("Commercial buildings : "..City.listCities[1].BuildingNumber[2], 400, 320)
+    love.graphics.print("Industrial buildings : "..City.listCities[1].BuildingNumber[3], 400, 430)
   end
   
 end
