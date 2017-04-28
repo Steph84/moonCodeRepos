@@ -14,13 +14,17 @@ function love.load()
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("Menu")
   
+  -- list of items of the menu
   listOptions = { "Start game", "How to play", "About" }
+  -- which item is selected on opening
   itemSelected = 1
-  --love.keyboard.setKeyRepeat(true)
+  -- change the type face and the size
+  love.graphics.setFont(love.graphics.newFont("font/Pacifico.ttf", 35))
   
 end
 
 function Tick()
+  -- manage the looping selection on the menu
   local optionsLength = #listOptions
   if itemSelected < 1 then itemSelected = itemSelected + optionsLength end
   if itemSelected > optionsLength then itemSelected = itemSelected - optionsLength end
@@ -45,29 +49,25 @@ function love.update(dt)
 end
 
 function love.draw()
-  local scale = 4
-  --love.graphics.setDefaultFilter("nearest", "nearest")
-  love.graphics.setDefaultFilter("linear", "linear")
   
-  print(itemSelected)
-  
+  -- draw the menu selection
   local i
   for i = 1, #listOptions do
     local msg = listOptions[i]
     
+    -- highlight the selected item
     if i == itemSelected then
       msg = "> "..msg.." <"
       msgColor = {255, 255, 255}
     else msgColor = {120, 120, 120} end
     
     love.graphics.setColor(msgColor)
-    love.graphics.printf(msg, 0, windowHeight*1/4 + i * 100, windowWidth/scale, "center", 0, scale, scale)
+    love.graphics.printf(msg, 0, windowHeight*1/4 + i * 100, windowWidth, "center")
   end
-  
-  
   
 end
 
+-- manage the navigation through the menu
 function love.keypressed(key, isRepeat)
   if key == "up" then itemSelected = itemSelected - 1 end
   if key == "down" then itemSelected = itemSelected + 1 end
