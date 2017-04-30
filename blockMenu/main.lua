@@ -8,44 +8,32 @@ local windowHeight = 600 -- default value
 local listOptions = {}
 local itemSelected
 local msgColor = {}
+local fontSize = 35
+local gameState = "title"
 
 function love.load()
-  
   love.window.setMode(windowWidth, windowHeight)
-  love.window.setTitle("Menu")
+  love.window.setTitle("myMenu")
   
   -- list of items of the menu
-  listOptions = { "Start game", "How to play", "About" }
+  listOptions = { "New game", "Options", "Credits", "Exit" } -- Load Game
   -- which item is selected on opening
   itemSelected = 1
-  -- change the type face and the size
-  love.graphics.setFont(love.graphics.newFont("font/Pacifico.ttf", 35))
+  -- change the type face and the font size
+  love.graphics.setFont(love.graphics.newFont("font/Pacifico.ttf", fontSize))
   
 end
 
-function Tick()
+function loopMenu()
   -- manage the looping selection on the menu
   local optionsLength = #listOptions
   if itemSelected < 1 then itemSelected = itemSelected + optionsLength end
   if itemSelected > optionsLength then itemSelected = itemSelected - optionsLength end
+  
 end
 
---[[
-
-		if (input.attack.clicked || input.menu.clicked) {
-			if (selected == 0) {
-				Sound.test.play();
-				game.resetGame();
-				game.setMenu(null);
-			}
-			if (selected == 1) game.setMenu(new InstructionsMenu(this));
-			if (selected == 2) game.setMenu(new AboutMenu(this));
-		}
-	}
---]]
-
 function love.update(dt)
-  Tick()
+  loopMenu()
 end
 
 function love.draw()
@@ -62,13 +50,24 @@ function love.draw()
     else msgColor = {120, 120, 120} end
     
     love.graphics.setColor(msgColor)
-    love.graphics.printf(msg, 0, windowHeight*1/4 + i * 100, windowWidth, "center")
+    love.graphics.printf(msg, 0, windowHeight*1/3 + (i-1) * fontSize*2, windowWidth, "center")
   end
   
 end
 
--- manage the navigation through the menu
 function love.keypressed(key, isRepeat)
+  -- manage the looping navigation through the menu
   if key == "up" then itemSelected = itemSelected - 1 end
   if key == "down" then itemSelected = itemSelected + 1 end
+  
+  -- manage the selection
+  if key == "return" then
+    if itemSelected == 1 then gameState = "game" end -- start a new game
+    if itemSelected == #listOptions then love.event.quit() end -- exit the game
+    
+    -- if itemSelected == 2 then gameState = "loadGame" end
+    if itemSelected == 2 then gameState = "options" end
+    if itemSelected == 3 then gameState = "credits" end
+  end
+  
 end
