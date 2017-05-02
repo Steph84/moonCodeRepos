@@ -11,6 +11,8 @@ local msgColor = {}
 local fontSize = 35
 local gameState = "title"
 
+local myCredits = require("credits")
+
 function love.load()
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("myMenu")
@@ -19,8 +21,11 @@ function love.load()
   listOptions = { "New game", "Options", "Credits", "Exit" } -- Load Game
   -- which item is selected on opening
   itemSelected = 1
+
   -- change the type face and the font size
   love.graphics.setFont(love.graphics.newFont("font/Pacifico.ttf", fontSize))
+  
+  myCredits.Load()
   
 end
 
