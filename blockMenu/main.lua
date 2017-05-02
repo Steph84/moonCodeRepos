@@ -11,6 +11,9 @@ local msgColor = {}
 local fontSize = 35
 local gameState = "title"
 
+local soundMoveSelect
+local soundValidateSelect
+
 local myCredits = require("credits")
 
 function love.load()
@@ -26,6 +29,10 @@ function love.load()
   love.graphics.setFont(love.graphics.newFont("font/Pacifico.ttf", fontSize))
   
   myCredits.Load()
+  
+  soundMoveSelect = love.audio.newSource("sounds/moveSelect.wav", "static")
+  soundValidateSelect = love.audio.newSource("sounds/validateSelect.wav", "static")
+  
   
 end
 
@@ -62,13 +69,28 @@ end
 
 function love.keypressed(key, isRepeat)
   -- manage the looping navigation through the menu
-  if key == "up" then itemSelected = itemSelected - 1 end
-  if key == "down" then itemSelected = itemSelected + 1 end
+  if key == "up" then
+    soundMoveSelect:stop()
+    soundMoveSelect:play()
+    itemSelected = itemSelected - 1
+  end
+  if key == "down" then
+    soundMoveSelect:stop()
+    soundMoveSelect:play()
+    itemSelected = itemSelected + 1
+  end
   
   -- manage the selection
   if key == "return" then
+    
+    soundMoveSelect:stop()
+    soundValidateSelect:play()
+    
     if itemSelected == 1 then gameState = "game" end -- start a new game
-    if itemSelected == #listOptions then love.event.quit() end -- exit the game
+    if itemSelected == #listOptions then
+      love.timer.sleep(0.6)
+      love.event.quit() -- exit the game
+    end
     
     -- if itemSelected == 2 then gameState = "loadGame" end
     if itemSelected == 2 then gameState = "options" end
