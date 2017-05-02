@@ -26,7 +26,6 @@ local soundBackgroundMusic
 local myCredits = require("credits")
 
 function love.load()
-  print(love.graphics.getFont())
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("myMenu")
   
@@ -49,7 +48,7 @@ function love.load()
   soundBackgroundMusic = love.audio.newSource("musics/dkSNESTheme.mp3", "stream")
   soundBackgroundMusic:setLooping(true)
   soundBackgroundMusic:setVolume(0.25)
-  soundBackgroundMusic:play()
+  --soundBackgroundMusic:play()
 end
 
 function loopMenu()
@@ -57,45 +56,58 @@ function loopMenu()
   local optionsLength = #listOptions
   if itemSelected < 1 then itemSelected = itemSelected + optionsLength end
   if itemSelected > optionsLength then itemSelected = itemSelected - optionsLength end
-  
 end
 
 function love.update(dt)
-  loopMenu()
+  
+  if gameState == "title" then
+    loopMenu()
+  end
+  
+  if gameState == "credits" then
+    myCredits.Update(dt)
+  end
+  
 end
 
 function love.draw()
   
-  -- draw the title and subtitle
-  love.graphics.setColor(0, 0, 255)
-  love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", itemFontSize.Title))
-  love.graphics.printf("SALEM", 0, anchorTitle, windowWidth, "center")
-  
-  love.graphics.setColor(255, 0, 255)
-  love.graphics.setFont(love.graphics.newFont("fonts/AlexBrush-Regular.ttf", itemFontSize.Title))
-  love.graphics.printf("Story", 0, anchorTitle + itemFontSize.Title, windowWidth, "center")
-  
-  
-  -- draw the menu selection
-  love.graphics.setFont(love.graphics.newFont("fonts/Pacifico.ttf", itemFontSize.Select))
-  local i
-  for i = 1, #listOptions do
-    local msg = listOptions[i]
+  if gameState == "title" then
+    -- draw the title and subtitle
+    love.graphics.setColor(0, 0, 255)
+    love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", itemFontSize.Title))
+    love.graphics.printf("SALEM", 0, anchorTitle, windowWidth, "center")
     
-    -- highlight the selected item
-    if i == itemSelected then
-      msg = "> "..msg.." <"
-      msgColor = {255, 255, 255}
-    else msgColor = {120, 120, 120} end
+    love.graphics.setColor(255, 0, 255)
+    love.graphics.setFont(love.graphics.newFont("fonts/AlexBrush-Regular.ttf", itemFontSize.Title))
+    love.graphics.printf("Story", 0, anchorTitle + itemFontSize.Title, windowWidth, "center")
     
-    love.graphics.setColor(msgColor)
-    love.graphics.printf(msg, 0, anchorSelection + 1.5*(i-1) * itemFontSize.Select, windowWidth, "center")
+    
+    -- draw the menu selection
+    love.graphics.setFont(love.graphics.newFont("fonts/Pacifico.ttf", itemFontSize.Select))
+    local i
+    for i = 1, #listOptions do
+      local msg = listOptions[i]
+      
+      -- highlight the selected item
+      if i == itemSelected then
+        msg = "> "..msg.." <"
+        msgColor = {255, 255, 255}
+      else msgColor = {120, 120, 120} end
+      
+      love.graphics.setColor(msgColor)
+      love.graphics.printf(msg, 0, anchorSelection + 1.5*(i-1) * itemFontSize.Select, windowWidth, "center")
+    end
+    
+    -- draw the game version
+    love.graphics.setColor(250, 250, 250)
+    love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", itemFontSize.Version))
+    love.graphics.printf(gameVersion, 0, windowHeight - itemFontSize.Version, windowWidth, "right")
   end
   
-  -- draw the game version
-  love.graphics.setColor(250, 250, 250)
-  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", itemFontSize.Version))
-  love.graphics.printf(gameVersion, 0, windowHeight - itemFontSize.Version, windowWidth, "right")
+  if gameState == "credits" then
+    myCredits.Draw(windowWidth, windowHeight, itemFontSize.Select)
+  end
   
 end
 
