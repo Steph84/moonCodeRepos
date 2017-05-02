@@ -13,6 +13,7 @@ local gameState = "title"
 
 local soundMoveSelect
 local soundValidateSelect
+local soundBackgroundMusic
 
 local myCredits = require("credits")
 
@@ -28,12 +29,22 @@ function love.load()
   -- change the type face and the font size
   love.graphics.setFont(love.graphics.newFont("font/Pacifico.ttf", fontSize))
   
+  
+  -- load the different parts of the menu block
   myCredits.Load()
   
+  
+  -- load the sounds
   soundMoveSelect = love.audio.newSource("sounds/moveSelect.wav", "static")
   soundValidateSelect = love.audio.newSource("sounds/validateSelect.wav", "static")
+  soundMoveSelect:setVolume(0.25)
+  soundValidateSelect:setVolume(0.25)
   
-  
+  -- load the background music
+  soundBackgroundMusic = love.audio.newSource("musics/dkSNESTheme.mp3", "stream")
+  soundBackgroundMusic:setLooping(true)
+  soundBackgroundMusic:setVolume(0.25)
+  soundBackgroundMusic:play()
 end
 
 function loopMenu()
@@ -70,12 +81,12 @@ end
 function love.keypressed(key, isRepeat)
   -- manage the looping navigation through the menu
   if key == "up" then
-    soundMoveSelect:stop()
+    soundMoveSelect:stop() -- avoid to overlap the sounds
     soundMoveSelect:play()
     itemSelected = itemSelected - 1
   end
   if key == "down" then
-    soundMoveSelect:stop()
+    soundMoveSelect:stop() -- avoid to overlap the sounds
     soundMoveSelect:play()
     itemSelected = itemSelected + 1
   end
@@ -83,12 +94,14 @@ function love.keypressed(key, isRepeat)
   -- manage the selection
   if key == "return" then
     
+    -- avoid to overlap the sounds
     soundMoveSelect:stop()
+    soundValidateSelect:stop()
     soundValidateSelect:play()
     
     if itemSelected == 1 then gameState = "game" end -- start a new game
     if itemSelected == #listOptions then
-      love.timer.sleep(0.6)
+      love.timer.sleep(0.6) -- wait a moment to heard the sound effect
       love.event.quit() -- exit the game
     end
     
