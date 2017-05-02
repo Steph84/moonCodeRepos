@@ -10,6 +10,14 @@ local itemSelected
 local msgColor = {}
 local fontSize = 35
 local gameState = "title"
+local gameVersion = "v1.0"
+local itemFontSize = {}
+itemFontSize.Title = fontSize * 2
+itemFontSize.Select = fontSize * 1
+itemFontSize.Version = fontSize * 0.75
+
+local anchorTitle = windowHeight*0.05
+local anchorSelection = windowHeight*0.5
 
 local soundMoveSelect
 local soundValidateSelect
@@ -18,6 +26,7 @@ local soundBackgroundMusic
 local myCredits = require("credits")
 
 function love.load()
+  print(love.graphics.getFont())
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("myMenu")
   
@@ -26,10 +35,6 @@ function love.load()
   -- which item is selected on opening
   itemSelected = 1
 
-  -- change the type face and the font size
-  love.graphics.setFont(love.graphics.newFont("font/Pacifico.ttf", fontSize))
-  
-  
   -- load the different parts of the menu block
   myCredits.Load()
   
@@ -61,7 +66,18 @@ end
 
 function love.draw()
   
+  -- draw the title and subtitle
+  love.graphics.setColor(0, 0, 255)
+  love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", itemFontSize.Title))
+  love.graphics.printf("SALEM", 0, anchorTitle, windowWidth, "center")
+  
+  love.graphics.setColor(255, 0, 255)
+  love.graphics.setFont(love.graphics.newFont("fonts/AlexBrush-Regular.ttf", itemFontSize.Title))
+  love.graphics.printf("Story", 0, anchorTitle + itemFontSize.Title, windowWidth, "center")
+  
+  
   -- draw the menu selection
+  love.graphics.setFont(love.graphics.newFont("fonts/Pacifico.ttf", itemFontSize.Select))
   local i
   for i = 1, #listOptions do
     local msg = listOptions[i]
@@ -73,8 +89,13 @@ function love.draw()
     else msgColor = {120, 120, 120} end
     
     love.graphics.setColor(msgColor)
-    love.graphics.printf(msg, 0, windowHeight*1/3 + (i-1) * fontSize*2, windowWidth, "center")
+    love.graphics.printf(msg, 0, anchorSelection + 1.5*(i-1) * itemFontSize.Select, windowWidth, "center")
   end
+  
+  -- draw the game version
+  love.graphics.setColor(250, 250, 250)
+  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", itemFontSize.Version))
+  love.graphics.printf(gameVersion, 0, windowHeight - itemFontSize.Version, windowWidth, "right")
   
 end
 
