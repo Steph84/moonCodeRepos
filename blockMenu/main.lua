@@ -15,12 +15,14 @@ local itemFontSize = {}
 itemFontSize.Title = fontSize * 2
 itemFontSize.Select = fontSize * 1
 itemFontSize.Version = fontSize * 0.75
+itemFontSize.Credits = fontSize * 0.75
 
 local anchorTitle = windowHeight*0.05
 local anchorSelection = windowHeight*0.5
 
 local soundMoveSelect
 local soundValidateSelect
+local soundHeadBack
 local soundBackgroundMusic
 
 local myCredits = require("credits")
@@ -40,9 +42,11 @@ function love.load()
   
   -- load the sounds
   soundMoveSelect = love.audio.newSource("sounds/moveSelect.wav", "static")
-  soundValidateSelect = love.audio.newSource("sounds/validateSelect.wav", "static")
   soundMoveSelect:setVolume(0.25)
+  soundValidateSelect = love.audio.newSource("sounds/validateSelect.wav", "static")
   soundValidateSelect:setVolume(0.25)
+  soundHeadBack = love.audio.newSource("sounds/headBack.wav", "static")
+  soundHeadBack:setVolume(0.5)
   
   -- load the background music
   soundBackgroundMusic = love.audio.newSource("musics/dkSNESTheme.mp3", "stream")
@@ -100,47 +104,56 @@ function love.draw()
     end
     
     -- draw the game version
-    love.graphics.setColor(250, 250, 250)
+    love.graphics.setColor(255, 255, 255)
     love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", itemFontSize.Version))
     love.graphics.printf(gameVersion, 0, windowHeight - itemFontSize.Version, windowWidth, "right")
   end
   
   if gameState == "credits" then
-    myCredits.Draw(windowWidth, windowHeight, itemFontSize.Select)
+    myCredits.Draw(windowWidth, windowHeight, itemFontSize.Credits)
   end
   
 end
 
 function love.keypressed(key, isRepeat)
-  -- manage the looping navigation through the menu
-  if key == "up" then
-    soundMoveSelect:stop() -- avoid to overlap the sounds
-    soundMoveSelect:play()
-    itemSelected = itemSelected - 1
-  end
-  if key == "down" then
-    soundMoveSelect:stop() -- avoid to overlap the sounds
-    soundMoveSelect:play()
-    itemSelected = itemSelected + 1
-  end
-  
-  -- manage the selection
-  if key == "return" then
-    
-    -- avoid to overlap the sounds
-    soundMoveSelect:stop()
-    soundValidateSelect:stop()
-    soundValidateSelect:play()
-    
-    if itemSelected == 1 then gameState = "game" end -- start a new game
-    if itemSelected == #listOptions then
-      love.timer.sleep(0.6) -- wait a moment to heard the sound effect
-      love.event.quit() -- exit the game
+  if gameState == "title" then
+    -- manage the looping navigation through the menu
+    if key == "up" then
+      soundMoveSelect:stop() -- avoid to overlap the sounds
+      soundMoveSelect:play()
+      itemSelected = itemSelected - 1
+    end
+    if key == "down" then
+      soundMoveSelect:stop() -- avoid to overlap the sounds
+      soundMoveSelect:play()
+      itemSelected = itemSelected + 1
     end
     
-    -- if itemSelected == 2 then gameState = "loadGame" end
-    if itemSelected == 2 then gameState = "options" end
-    if itemSelected == 3 then gameState = "credits" end
+    -- manage the selection
+    if key == "return" then
+      
+      -- avoid to overlap the sounds
+      soundMoveSelect:stop()
+      soundValidateSelect:stop()
+      soundValidateSelect:play()
+      
+      if itemSelected == 1 then gameState = "game" end -- start a new game
+      if itemSelected == #listOptions then
+        love.timer.sleep(0.6) -- wait a moment to heard the sound effect
+        love.event.quit() -- exit the game
+      end
+      
+      -- if itemSelected == 2 then gameState = "loadGame" end
+      if itemSelected == 2 then gameState = "options" end
+      if itemSelected == 3 then gameState = "credits" end
+    end
+  end
+  
+  if gameState == "credits" then
+    if key == "escape" then
+      soundHeadBack:play()
+      gameState = "title"
+    end
   end
   
 end

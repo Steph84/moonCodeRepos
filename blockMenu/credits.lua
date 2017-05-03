@@ -18,6 +18,7 @@ function Credits.Load()
     end
   end
   
+  
 end
 
 function Credits.Update(pDt)
@@ -26,15 +27,24 @@ end
 
 function Credits.Draw(pWindowWidth, pWindowHeight, pFontSize)
   
-  love.graphics.setColor(250, 250, 250)
-  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", pFontSize))
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", pFontSize * 2))
   
+  love.graphics.printf("The Credits", 0, pWindowHeight * 0.05, pWindowWidth, "center")
+  
+  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", pFontSize))
   local i, j
   for i = 1, #dataObject do
     for j = 1, #dataObject[i] do
-      love.graphics.printf(dataObject[i][j], 0, pWindowHeight * 0.01 + (i + 1) * pFontSize, pWindowWidth, "center")
+      love.graphics.printf(dataObject[i][j],
+                           pWindowWidth * 0.1,
+                           -- offset 10%       + offset between 2 blocks   + offset between 2 lines in the same block
+                           pWindowHeight * 0.2 + (i - 1) * pFontSize * 3.5 + (j - 1) * pFontSize,
+                           pWindowWidth, "left")
     end
   end
+  
+  love.graphics.printf("To get back, press escape ", 0, pWindowHeight - pFontSize, pWindowWidth, "right")
   
 end
 
