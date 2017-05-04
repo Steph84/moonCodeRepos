@@ -16,6 +16,7 @@ itemFontSize.Title = fontSize * 2
 itemFontSize.Select = fontSize * 1
 itemFontSize.Version = fontSize * 0.75
 itemFontSize.Credits = fontSize * 0.75
+itemFontSize.Options = fontSize * 0.75
 
 local anchorTitle = windowHeight*0.05
 local anchorSelection = windowHeight*0.5
@@ -26,6 +27,7 @@ local soundHeadBack
 local soundBackgroundMusic
 
 local myCredits = require("credits")
+local myOptions = require("options")
 
 function love.load()
   love.window.setMode(windowWidth, windowHeight)
@@ -38,7 +40,7 @@ function love.load()
 
   -- load the different parts of the menu block
   myCredits.Load()
-  
+  myOptions.Load()
   
   -- load the sounds
   soundMoveSelect = love.audio.newSource("sounds/moveSelect.wav", "static")
@@ -113,6 +115,10 @@ function love.draw()
     myCredits.Draw(windowWidth, windowHeight, itemFontSize.Credits)
   end
   
+  if gameState == "options" then
+    myOptions.Draw(windowWidth, windowHeight, itemFontSize.Options)
+  end
+  
 end
 
 function love.keypressed(key, isRepeat)
@@ -154,6 +160,10 @@ function love.keypressed(key, isRepeat)
       soundHeadBack:play()
       gameState = "title"
     end
+  end
+  
+  if gameState == "options" then
+    -- TODO add controls
   end
   
 end
