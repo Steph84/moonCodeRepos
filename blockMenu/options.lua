@@ -8,8 +8,16 @@ local bgOptions = nil
 local ratioW = 0
 local ratioH = 0
 
+local anchorX = 100
+local anchorY = 100
+local dropDownWidth = 200
+
+local myDropList = require("dropList")
+
+
 function Options.Load(pWindowWidth, pWindowHeight)
   
+  -- manage the scale of the background picture
   bgOptions = love.graphics.newImage("pictures/back.png")
   local bgWidth = bgOptions:getWidth()
   local bgHeight = bgOptions:getHeight()
@@ -20,6 +28,9 @@ function Options.Load(pWindowWidth, pWindowHeight)
   elseif ratioW < ratioH and ratioW > 1 and ratioH > 1 then
     ratioH = ratioW
   end
+  
+  myDropList.Load()
+  
   
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
   --print(Resolution.displayScreen[1], Resolution.displayScreen[2])
@@ -38,14 +49,20 @@ function Options.Load(pWindowWidth, pWindowHeight)
   end
 end
 
-function Options.Update(pDt)
+function Options.Update(pDt, pGameState)
+  if love.keyboard.isDown("escape") then pGameState = "title" end
   
+  myDropList.Update(pDt)
+  
+  return pGameState
 end
 
 
 function Options.Draw(pWindowWidth, pWindowHeight, pFontSize)
+  
   love.graphics.draw(bgOptions, 0, 0, 0, 1/ratioW, 1/ratioH)
   
+  myDropList.Draw(anchorX, anchorY, dropDownWidth, pFontSize)
   
 end
 

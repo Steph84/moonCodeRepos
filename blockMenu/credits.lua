@@ -21,8 +21,9 @@ function Credits.Load()
   
 end
 
-function Credits.Update(pDt)
-
+function Credits.Update(pDt, pGameState)
+  if love.keyboard.isDown("escape") then pGameState = "title" end
+  return pGameState
 end
 
 function Credits.Draw(pWindowWidth, pWindowHeight, pFontSize)

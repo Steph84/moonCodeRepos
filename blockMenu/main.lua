@@ -57,25 +57,24 @@ function love.load()
   --soundBackgroundMusic:play()
 end
 
-function loopMenu()
-  -- manage the looping selection on the menu
-  local optionsLength = #listOptions
-  if itemSelected < 1 then itemSelected = itemSelected + optionsLength end
-  if itemSelected > optionsLength then itemSelected = itemSelected - optionsLength end
-end
 
 function love.update(dt)
   
   if gameState == "title" then
-    loopMenu()
+    -- manage the looping selection on the menu
+    local optionsLength = #listOptions
+    if itemSelected < 1 then itemSelected = itemSelected + optionsLength end
+    if itemSelected > optionsLength then itemSelected = itemSelected - optionsLength end
   end
   
   if gameState == "credits" then
-    myCredits.Update(dt)
+    gameState = myCredits.Update(dt, gameState)
+    if gameState == "title" then soundHeadBack:play() end
   end
   
   if gameState == "options" then
-    myOptions.Update(dt)
+    gameState = myOptions.Update(dt, gameState)
+    if gameState == "title" then soundHeadBack:play() end
   end
   
 end
@@ -125,6 +124,7 @@ function love.draw()
   
 end
 
+-- using keypressed function ponctual action
 function love.keypressed(key, isRepeat)
   if gameState == "title" then
     -- manage the looping navigation through the menu
@@ -157,17 +157,6 @@ function love.keypressed(key, isRepeat)
       if itemSelected == 2 then gameState = "options" end
       if itemSelected == 3 then gameState = "credits" end
     end
-  end
-  
-  if gameState == "credits" then
-    if key == "escape" then
-      soundHeadBack:play()
-      gameState = "title"
-    end
-  end
-  
-  if gameState == "options" then
-    -- TODO add controls
   end
   
 end
