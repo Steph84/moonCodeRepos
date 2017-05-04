@@ -4,9 +4,23 @@ local Resolution = {}
 Resolution.displayScreen = { 0, 0 }
 Resolution.window = { 0, 0 }
 
-Options.resolution = { 0, 0 }
+local bgOptions = nil
+local ratioW = 0
+local ratioH = 0
 
-function Options.Load()
+function Options.Load(pWindowWidth, pWindowHeight)
+  
+  bgOptions = love.graphics.newImage("pictures/back.png")
+  local bgWidth = bgOptions:getWidth()
+  local bgHeight = bgOptions:getHeight()
+  ratioW = bgWidth/pWindowWidth
+  ratioH = bgHeight/pWindowHeight
+  if ratioW > ratioH and ratioW > 1 and ratioH > 1 then
+    ratioW = ratioH
+  elseif ratioW < ratioH and ratioW > 1 and ratioH > 1 then
+    ratioH = ratioW
+  end
+  
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
   --print(Resolution.displayScreen[1], Resolution.displayScreen[2])
   
@@ -22,6 +36,16 @@ function Options.Load()
   for j = 1, #flags do
     print(flags[i])
   end
+end
+
+function Options.Update(pDt)
+  
+end
+
+
+function Options.Draw(pWindowWidth, pWindowHeight, pFontSize)
+  love.graphics.draw(bgOptions, 0, 0, 0, 1/ratioW, 1/ratioH)
+  
   
 end
 

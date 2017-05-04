@@ -40,7 +40,7 @@ function love.load()
 
   -- load the different parts of the menu block
   myCredits.Load()
-  myOptions.Load()
+  myOptions.Load(windowWidth, windowHeight)
   
   -- load the sounds
   soundMoveSelect = love.audio.newSource("sounds/moveSelect.wav", "static")
@@ -72,6 +72,10 @@ function love.update(dt)
   
   if gameState == "credits" then
     myCredits.Update(dt)
+  end
+  
+  if gameState == "options" then
+    myOptions.Update(dt)
   end
   
 end
