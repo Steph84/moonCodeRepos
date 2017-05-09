@@ -9,7 +9,7 @@ local listOptions = {}
 local itemSelected
 local msgColor = {}
 local fontSize = 35
-local gameState = "title"
+local gameState = "options"
 local gameVersion = "v1.0"
 local itemFontSize = {}
 itemFontSize.Title = fontSize * 2
@@ -40,7 +40,7 @@ function love.load()
 
   -- load the different parts of the menu block
   myCredits.Load()
-  myOptions.Load(windowWidth, windowHeight)
+  myOptions.Load(windowWidth, windowHeight, itemFontSize.Options)
   
   -- load the sounds
   soundMoveSelect = love.audio.newSource("sounds/moveSelect.wav", "static")

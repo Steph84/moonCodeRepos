@@ -15,7 +15,7 @@ local dropDownWidth = 200
 local myDropList = require("dropList")
 
 
-function Options.Load(pWindowWidth, pWindowHeight)
+function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   
   -- manage the scale of the background picture
   bgOptions = love.graphics.newImage("pictures/back.png")
@@ -29,7 +29,7 @@ function Options.Load(pWindowWidth, pWindowHeight)
     ratioH = ratioW
   end
   
-  myDropList.Load()
+  myDropList.Load(anchorX, anchorY, dropDownWidth, pFontSize)
   
   
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
