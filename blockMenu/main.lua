@@ -8,7 +8,7 @@ local windowHeight = 600 -- default value
 local listOptions = {}
 local itemSelected
 local msgColor = {}
-local fontSize = 35
+local fontSize = 32
 local gameState = "options"
 local gameVersion = "v1.0"
 local itemFontSize = {}
@@ -16,7 +16,7 @@ itemFontSize.Title = fontSize * 2
 itemFontSize.Select = fontSize * 1
 itemFontSize.Version = fontSize * 0.75
 itemFontSize.Credits = fontSize * 0.75
-itemFontSize.Options = fontSize * 0.75
+itemFontSize.Options = fontSize
 
 local anchorTitle = windowHeight*0.05
 local anchorSelection = windowHeight*0.5

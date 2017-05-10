@@ -28,8 +28,10 @@ function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   elseif ratioW < ratioH and ratioW > 1 and ratioH > 1 then
     ratioH = ratioW
   end
+  local content = 1
+  myDropList.Load(anchorX, anchorY, dropDownWidth, pFontSize, content, "Resolution")
   
-  myDropList.Load(anchorX, anchorY, dropDownWidth, pFontSize)
+  myDropList.Load(anchorX + 100, anchorY + 100, dropDownWidth, pFontSize, 2, "autre truc")
   
   
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
@@ -62,7 +64,7 @@ function Options.Draw(pWindowWidth, pWindowHeight, pFontSize)
   
   love.graphics.draw(bgOptions, 0, 0, 0, 1/ratioW, 1/ratioH)
   
-  myDropList.Draw(anchorX, anchorY, dropDownWidth, pFontSize)
+  myDropList.Draw()
   
 end
 
