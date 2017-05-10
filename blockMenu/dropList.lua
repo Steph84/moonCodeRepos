@@ -8,6 +8,8 @@ cursorItem.src = love.graphics.newImage("pictures/cursorDropList_32x32.png")
 cursorItem.w = cursorItem.src:getWidth()
 cursorItem.h = cursorItem.src:getHeight()
 
+local myListItems = require("listitems")
+
 function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, pTitle)
   local item = {}
   
@@ -17,7 +19,7 @@ function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, 
   item.w = pDropDownWidth
   item.h = pFontSize
   item.isOpen = false
-  item.listValues = pContent
+  item.listValues = myListItems[pContent]
   item.title = pTitle
   item.cursorSize = pFontSize/cursorItem.h
   
@@ -50,7 +52,7 @@ function DropList.Update(pDt)
              mouseClicked.x < thatDropList.x + thatDropList.w then
                if mouseClicked.y > thatDropList.y and
                   mouseClicked.y < thatDropList.y + thatDropList.h then
-                    print("fuck it")
+                    thatDropList.isOpen = true
                     mouseClicked.x = 0
                     mouseClicked.y = 0
                     
@@ -61,7 +63,7 @@ function DropList.Update(pDt)
       
 end
 
-function DropList.Draw()
+function DropList.Draw(pWindowWidth)
   
   local i
   for i = 1, #DropList.listItems do
@@ -71,23 +73,46 @@ function DropList.Draw()
     
     -- draw the title of the dropList
     love.graphics.setColor(255, 255, 255)
-    love.graphics.printf(thisDropList.title, thisDropList.x, thisDropList.y - thisDropList.h * 1.25, thisDropList.w + cursorItem.w, "left")
-    
-    -- draw the black background
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.rectangle("fill", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
-    
-    -- draw the white outline
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
+    love.graphics.printf(thisDropList.title,
+                         thisDropList.x, thisDropList.y - thisDropList.h * 1.25,
+                         pWindowWidth,
+                         "left")
     
     -- draw the cursor
     love.graphics.draw(cursorItem.src,
                        thisDropList.x + thisDropList.w + 2, thisDropList.y,
                        0,
                        thisDropList.cursorSize, thisDropList.cursorSize)
-                     
-    love.graphics.printf("800 x 600", thisDropList.x, thisDropList.y - 2, thisDropList.w, "center")
+
+    if thisDropList.isOpen == false then
+      -- draw the black background
+      love.graphics.setColor(0, 0, 0)
+      love.graphics.rectangle("fill", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
+      
+      -- draw the white outline
+      love.graphics.setColor(255, 255, 255)
+      love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
+      
+      love.graphics.printf("800 x 600", thisDropList.x, thisDropList.y - 2, thisDropList.w, "center")
+    end
+    
+    if thisDropList.isOpen == true then
+      -- draw the black background
+      love.graphics.setColor(0, 0, 0)
+      love.graphics.rectangle("fill", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h * #thisDropList.listValues)
+      
+      -- draw the white outline
+      love.graphics.setColor(255, 255, 255)
+      love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h * #thisDropList.listValues)
+      
+      local j
+      for j = 1, #thisDropList.listValues do
+        local value = thisDropList.listValues[j]
+        love.graphics.printf(value, thisDropList.x, thisDropList.y - 2 + thisDropList.h * (j - 1), thisDropList.w, "center")
+      end
+      
+      
+    end
     
   end
 end

@@ -31,8 +31,6 @@ function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   local content = 1
   myDropList.Load(anchorX, anchorY, dropDownWidth, pFontSize, content, "Resolution")
   
-  myDropList.Load(anchorX + 100, anchorY + 100, dropDownWidth, pFontSize, 2, "autre truc")
-  
   
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
   --print(Resolution.displayScreen[1], Resolution.displayScreen[2])
@@ -44,7 +42,6 @@ function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   end
   
   width, height, flags = love.window.getMode()
-  print(width, height, flags)
   local j
   for j = 1, #flags do
     print(flags[i])
@@ -64,7 +61,7 @@ function Options.Draw(pWindowWidth, pWindowHeight, pFontSize)
   
   love.graphics.draw(bgOptions, 0, 0, 0, 1/ratioW, 1/ratioH)
   
-  myDropList.Draw()
+  myDropList.Draw(pWindowWidth)
   
 end
 
