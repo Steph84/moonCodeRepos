@@ -7,6 +7,7 @@ local cursorItem = {}
 cursorItem.src = love.graphics.newImage("pictures/cursorDropList_32x32.png")
 cursorItem.w = cursorItem.src:getWidth()
 cursorItem.h = cursorItem.src:getHeight()
+local selection = {}
 
 local myListItems = require("listitems")
 
@@ -48,19 +49,32 @@ function DropList.Update(pDt)
   for i = 1, #DropList.listItems do
     local thatDropList = DropList.listItems[i]
     if mouseClicked.on == true then
-          if mouseClicked.x > thatDropList.x and
-             mouseClicked.x < thatDropList.x + thatDropList.w then
-               if mouseClicked.y > thatDropList.y and
-                  mouseClicked.y < thatDropList.y + thatDropList.h then
-                    thatDropList.isOpen = true
-                    mouseClicked.x = 0
-                    mouseClicked.y = 0
-                    
-                  end
-                end
-              end
+      if mouseClicked.x > thatDropList.x and
+         mouseClicked.x < thatDropList.x + thatDropList.w then
+           if mouseClicked.y > thatDropList.y and
+              mouseClicked.y < thatDropList.y + thatDropList.h then
+                thatDropList.isOpen = true
+                mouseClicked.x = 0
+                mouseClicked.y = 0
+                
             end
-      
+        end
+    end
+    
+    if thatDropList.isOpen == true then
+      selection.x, selection.y = love.mouse.getPosition()
+      if selection.x > thatDropList.x and
+         selection.x < thatDropList.x + thatDropList.w and
+         selection.y > thatDropList.y and
+         selection.y < thatDropList.y + #thatDropList.listValues * thatDropList.h then
+          selection.highlight = true
+      else selection.highlight = false
+      end
+    end
+    
+    
+  end
+  
 end
 
 function DropList.Draw(pWindowWidth)
@@ -111,10 +125,16 @@ function DropList.Draw(pWindowWidth)
         love.graphics.printf(value, thisDropList.x, thisDropList.y - 2 + thisDropList.h * (j - 1), thisDropList.w, "center")
       end
       
+      if selection.highlight == true then
+        love.graphics.setColor(255, 0, 0)
+        love.graphics.rectangle("fill", thisDropList.x, selection.y - thisDropList.h/2, thisDropList.w, thisDropList.h)
+      end
+      
       
     end
     
   end
+  love.graphics.setColor(255, 255, 255)
 end
 
 return DropList
