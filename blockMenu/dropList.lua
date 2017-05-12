@@ -1,6 +1,5 @@
 local DropList = {}
 
-local cursorPic = nil
 local mouseClicked = {}
 DropList.listItems = {}
 local cursorItem = {}
@@ -8,6 +7,7 @@ cursorItem.src = love.graphics.newImage("pictures/cursorDropList_32x32.png")
 cursorItem.w = cursorItem.src:getWidth()
 cursorItem.h = cursorItem.src:getHeight()
 local selection = {}
+selection.border = 2
 
 local myListItems = require("listitems")
 
@@ -23,6 +23,7 @@ function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, 
   item.listValues = myListItems[pContent]
   item.title = pTitle
   item.cursorSize = pFontSize/cursorItem.h
+  item.selected = 1
   
   table.insert(DropList.listItems, item)  
 end
@@ -68,6 +69,7 @@ function DropList.Update(pDt)
          selection.y > thatDropList.y and
          selection.y < thatDropList.y + #thatDropList.listValues * thatDropList.h then
           selection.highlight = true
+          selection.position = math.floor((selection.y - thatDropList.y) / thatDropList.h)
       else selection.highlight = false
       end
     end
@@ -107,7 +109,9 @@ function DropList.Draw(pWindowWidth)
       love.graphics.setColor(255, 255, 255)
       love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
       
-      love.graphics.printf("800 x 600", thisDropList.x, thisDropList.y - 2, thisDropList.w, "center")
+      love.graphics.printf(thisDropList.listValues[thisDropList.selected],
+                           thisDropList.x, thisDropList.y - 2,
+                           thisDropList.w, "center")
     end
     
     if thisDropList.isOpen == true then
@@ -126,8 +130,12 @@ function DropList.Draw(pWindowWidth)
       end
       
       if selection.highlight == true then
-        love.graphics.setColor(255, 0, 0)
-        love.graphics.rectangle("fill", thisDropList.x, selection.y - thisDropList.h/2, thisDropList.w, thisDropList.h)
+        love.graphics.setColor(255, 255, 0, 150)
+        love.graphics.rectangle("fill",
+                                thisDropList.x + selection.border,
+                                (thisDropList.y + selection.position * thisDropList.h) + selection.border,
+                                thisDropList.w - 2 * selection.border,
+                                thisDropList.h - 2 * selection.border)
       end
       
       
