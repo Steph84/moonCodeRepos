@@ -1,16 +1,23 @@
 local DropList = {}
+DropList.listItems = {} -- list of dropList items
 
-local mouseClicked = {}
-DropList.listItems = {}
+local mouseClicked = {} -- to manage the mouse control
+mouseClicked.isTouch = false
+
+-- picture of the right cursor
 local cursorItem = {}
 cursorItem.src = love.graphics.newImage("pictures/cursorDropList_32x32.png")
 cursorItem.w = cursorItem.src:getWidth()
 cursorItem.h = cursorItem.src:getHeight()
+
+-- to manage the highlight selection
 local selection = {}
 selection.border = 2
 
+-- to load the data for the dropLists
 local myListItems = require("listitems")
 
+-- create all the dropLists called by the options menu
 function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, pTitle)
   local item = {}
   
@@ -28,6 +35,7 @@ function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, 
   table.insert(DropList.listItems, item)  
 end
 
+-- manage the mouse control
 function love.mousepressed(x, y, button, istouch)
   if button == 1 then
     mouseClicked.on = true
@@ -35,7 +43,6 @@ function love.mousepressed(x, y, button, istouch)
     mouseClicked.y = y
   end
 end
-
 function love.mousereleased(x, y, button, istouch)
   if button == 1 then
     mouseClicked.on = false
@@ -45,31 +52,42 @@ function love.mousereleased(x, y, button, istouch)
 end
 
 function DropList.Update(pDt)
-    
+  
   local i
   for i = 1, #DropList.listItems do
     local thatDropList = DropList.listItems[i]
-    if mouseClicked.on == true then
-      if mouseClicked.x > thatDropList.x and
-         mouseClicked.x < thatDropList.x + thatDropList.w then
+    
+    -- manage the dropList opening
+    if thatDropList.isOpen == false and mouseClicked.on == true then
+      if mouseClicked.x > thatDropList.x and             -- (   allow to click on the cursor too     ) 
+         mouseClicked.x < thatDropList.x + thatDropList.w + (thatDropList.cursorSize * thatDropList.h) then
            if mouseClicked.y > thatDropList.y and
               mouseClicked.y < thatDropList.y + thatDropList.h then
                 thatDropList.isOpen = true
-                mouseClicked.x = 0
-                mouseClicked.y = 0
-                
+                mouseClicked.on = false -- avoid mouse click repeat
             end
         end
     end
     
+    -- manage the opened dropList
     if thatDropList.isOpen == true then
       selection.x, selection.y = love.mouse.getPosition()
+      
       if selection.x > thatDropList.x and
          selection.x < thatDropList.x + thatDropList.w and
          selection.y > thatDropList.y and
-         selection.y < thatDropList.y + #thatDropList.listValues * thatDropList.h then
+         selection.y < thatDropList.y + #thatDropList.listValues * thatDropList.h then -- drop all the item in the list
+          
+          -- manage to higlight the selection
           selection.highlight = true
           selection.position = math.floor((selection.y - thatDropList.y) / thatDropList.h)
+          
+          -- manage to select the new item in the list and close the dropList
+          if mouseClicked.on == true then
+            thatDropList.selected = selection.position + 1
+            thatDropList.isOpen = false
+          end
+          
       else selection.highlight = false
       end
     end
@@ -100,6 +118,7 @@ function DropList.Draw(pWindowWidth)
                        0,
                        thisDropList.cursorSize, thisDropList.cursorSize)
 
+    -- manage the draw when the dropList is closed
     if thisDropList.isOpen == false then
       -- draw the black background
       love.graphics.setColor(0, 0, 0)
@@ -114,6 +133,7 @@ function DropList.Draw(pWindowWidth)
                            thisDropList.w, "center")
     end
     
+    -- manage the draw when the dropList is opened
     if thisDropList.isOpen == true then
       -- draw the black background
       love.graphics.setColor(0, 0, 0)
@@ -123,12 +143,7 @@ function DropList.Draw(pWindowWidth)
       love.graphics.setColor(255, 255, 255)
       love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h * #thisDropList.listValues)
       
-      local j
-      for j = 1, #thisDropList.listValues do
-        local value = thisDropList.listValues[j]
-        love.graphics.printf(value, thisDropList.x, thisDropList.y - 2 + thisDropList.h * (j - 1), thisDropList.w, "center")
-      end
-      
+      -- manage the highlight draw
       if selection.highlight == true then
         love.graphics.setColor(255, 255, 0, 150)
         love.graphics.rectangle("fill",
@@ -138,6 +153,14 @@ function DropList.Draw(pWindowWidth)
                                 thisDropList.h - 2 * selection.border)
       end
       
+      love.graphics.setColor(255, 255, 255)
+      
+      -- draw all the items in the list
+      local j
+      for j = 1, #thisDropList.listValues do
+        local value = thisDropList.listValues[j]
+        love.graphics.printf(value, thisDropList.x, thisDropList.y - 2 + thisDropList.h * (j - 1), thisDropList.w, "center")
+      end
       
     end
     
