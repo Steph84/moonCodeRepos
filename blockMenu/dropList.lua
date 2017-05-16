@@ -2,7 +2,6 @@ local DropList = {}
 DropList.listItems = {} -- list of dropList items
 
 local mouseClicked = {} -- to manage the mouse control
-mouseClicked.isTouch = false
 
 -- picture of the right cursor
 local cursorItem = {}
@@ -13,6 +12,11 @@ cursorItem.h = cursorItem.src:getHeight()
 -- to manage the highlight selection
 local selection = {}
 selection.border = 2
+
+local colorDropList = {}
+colorDropList.white = {255, 255, 255}
+colorDropList.black = {0, 0, 0}
+colorDropList.highlight = {200, 200, 200, 150}
 
 -- to load the data for the dropLists
 local myListItems = require("listitems")
@@ -106,7 +110,7 @@ function DropList.Draw(pWindowWidth)
     love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", thisDropList.h))
     
     -- draw the title of the dropList
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(colorDropList.white)
     love.graphics.printf(thisDropList.title,
                          thisDropList.x, thisDropList.y - thisDropList.h * 1.25,
                          pWindowWidth,
@@ -121,31 +125,32 @@ function DropList.Draw(pWindowWidth)
     -- manage the draw when the dropList is closed
     if thisDropList.isOpen == false then
       -- draw the black background
-      love.graphics.setColor(0, 0, 0)
+      love.graphics.setColor(colorDropList.black)
       love.graphics.rectangle("fill", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
       
       -- draw the white outline
-      love.graphics.setColor(255, 255, 255)
+      love.graphics.setColor(colorDropList.white)
       love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
       
-      love.graphics.printf(thisDropList.listValues[thisDropList.selected],
-                           thisDropList.x, thisDropList.y - 2,
-                           thisDropList.w, "center")
+      love.graphics.printf(
+        thisDropList.listValues[thisDropList.selected][1].." x "..thisDropList.listValues[thisDropList.selected][2],
+        thisDropList.x, thisDropList.y - 2,
+        thisDropList.w, "center")
     end
     
     -- manage the draw when the dropList is opened
     if thisDropList.isOpen == true then
       -- draw the black background
-      love.graphics.setColor(0, 0, 0)
+      love.graphics.setColor(colorDropList.black)
       love.graphics.rectangle("fill", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h * #thisDropList.listValues)
       
       -- draw the white outline
-      love.graphics.setColor(255, 255, 255)
+      love.graphics.setColor(colorDropList.white)
       love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h * #thisDropList.listValues)
       
       -- manage the highlight draw
       if selection.highlight == true then
-        love.graphics.setColor(255, 255, 0, 150)
+        love.graphics.setColor(colorDropList.highlight)
         love.graphics.rectangle("fill",
                                 thisDropList.x + selection.border,
                                 (thisDropList.y + selection.position * thisDropList.h) + selection.border,
@@ -153,19 +158,21 @@ function DropList.Draw(pWindowWidth)
                                 thisDropList.h - 2 * selection.border)
       end
       
-      love.graphics.setColor(255, 255, 255)
       
+      love.graphics.setColor(colorDropList.white)
       -- draw all the items in the list
       local j
       for j = 1, #thisDropList.listValues do
         local value = thisDropList.listValues[j]
-        love.graphics.printf(value, thisDropList.x, thisDropList.y - 2 + thisDropList.h * (j - 1), thisDropList.w, "center")
+        love.graphics.printf(value[1].." x "..value[2],
+                             thisDropList.x, thisDropList.y - 2 +
+                             thisDropList.h * (j - 1), thisDropList.w, "center")
       end
       
     end
     
   end
-  love.graphics.setColor(255, 255, 255)
+  
 end
 
 return DropList
