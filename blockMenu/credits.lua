@@ -1,10 +1,15 @@
 local Credits = {}
 
+local windowWidth, windowHeight, fontSize
+
 local dataObject = {}
 local dataBloc = {}
 local dataNumberLines = 3
 
-function Credits.Load()
+function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
+  windowWidth = pWindowWidth
+  windowHeight = pWindowHeight
+  fontSize = pFontSize
   
   local iteration = 0
   for line in love.filesystem.lines("credits.txt") do
@@ -26,26 +31,26 @@ function Credits.Update(pDt, pGameState)
   return pGameState
 end
 
-function Credits.Draw(pWindowWidth, pWindowHeight, pFontSize)
+function Credits.Draw()
   
   love.graphics.setColor(255, 255, 255)
-  love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", pFontSize * 2))
+  love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", fontSize * 2))
   
-  love.graphics.printf("The Credits", 0, pWindowHeight * 0.05, pWindowWidth, "center")
+  love.graphics.printf("The Credits", 0, windowHeight * 0.05, windowWidth, "center")
   
-  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", pFontSize))
+  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
   local i, j
   for i = 1, #dataObject do
     for j = 1, #dataObject[i] do
       love.graphics.printf(dataObject[i][j],
-                           pWindowWidth * 0.1,
+                           windowWidth * 0.1,
                            -- offset 10%       + offset between 2 blocks   + offset between 2 lines in the same block
-                           pWindowHeight * 0.2 + (i - 1) * pFontSize * 3.5 + (j - 1) * pFontSize,
-                           pWindowWidth, "left")
+                           windowHeight * 0.2 + (i - 1) * fontSize * 3.5 + (j - 1) * fontSize,
+                           windowWidth, "left")
     end
   end
   
-  love.graphics.printf("To get back, press escape ", 0, pWindowHeight - pFontSize, pWindowWidth, "right")
+  love.graphics.printf("To get back, press escape ", 0, windowHeight - fontSize, windowWidth, "right")
   
 end
 

@@ -1,5 +1,7 @@
 local Options = {}
 
+local windowWidth, windowHeight, fontSize
+
 local Resolution = {}
 Resolution.displayScreen = { 0, 0 }
 Resolution.window = { 0, 0, 0 } -- width, height, selection
@@ -19,13 +21,16 @@ local myListItems = require("listitems")
 
 
 function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
+  windowWidth = pWindowWidth
+  windowHeight = pWindowHeight
+  fontSize = pFontSize
   
   -- manage the scale of the background picture
   bgOptions = love.graphics.newImage("pictures/back.png")
   local bgWidth = bgOptions:getWidth()
   local bgHeight = bgOptions:getHeight()
-  ratioW = bgWidth/pWindowWidth
-  ratioH = bgHeight/pWindowHeight
+  ratioW = bgWidth/windowWidth
+  ratioH = bgHeight/windowHeight
   if ratioW > ratioH and ratioW > 1 and ratioH > 1 then
     ratioW = ratioH
   elseif ratioW < ratioH and ratioW > 1 and ratioH > 1 then
@@ -38,7 +43,7 @@ function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   Resolution.window[3] = 1
   
   local content = 3
-  myDropList.Load(anchorX, anchorY, dropDownWidth, pFontSize, content, "Resolution", Resolution.window[3])
+  myDropList.Load(anchorX, anchorY, dropDownWidth, fontSize, content, "Resolution", Resolution.window[3])
   
 end
 
@@ -59,11 +64,11 @@ function Options.Update(pDt, pGameState)
 end
 
 
-function Options.Draw(pWindowWidth, pWindowHeight, pFontSize)
+function Options.Draw()
   
   love.graphics.draw(bgOptions, 0, 0, 0, 1/ratioW, 1/ratioH)
   
-  myDropList.Draw(pWindowWidth)
+  myDropList.Draw(windowWidth)
   
 end
 
