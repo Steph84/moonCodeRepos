@@ -4,7 +4,7 @@ local listOptions = {}
 local itemSelected
 local msgColor = {}
 local fontSize = 32
-local menuState = "options"
+local menuState = "title"
 local gameVersion = "v1.0"
 local itemFontSize = {}
 itemFontSize.Title = fontSize * 2

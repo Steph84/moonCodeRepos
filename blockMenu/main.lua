@@ -25,9 +25,3 @@ end
 function love.draw()
   myMenu.Draw(windowWidth, windowHeight)
 end
-
-function love.keypressed(key)
-  
-  print(key)
-  
-end
