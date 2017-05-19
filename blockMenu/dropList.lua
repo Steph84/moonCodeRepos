@@ -22,7 +22,7 @@ colorDropList.highlight = {200, 200, 200, 150}
 local myListItems = require("listitems")
 
 -- create all the dropLists called by the options menu
-function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, pTitle)
+function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, pTitle, pSelected)
   local item = {}
   
   item.id = #DropList.listItems + 1
@@ -34,7 +34,7 @@ function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, 
   item.listValues = myListItems[pContent]
   item.title = pTitle
   item.cursorSize = pFontSize/cursorItem.h
-  item.selected = 1
+  item.selected = pSelected
   
   table.insert(DropList.listItems, item)  
 end
@@ -55,7 +55,7 @@ function love.mousereleased(x, y, button, istouch)
   end
 end
 
-function DropList.Update(pDt)
+function DropList.Update(pDt, pData)
   
   local i
   for i = 1, #DropList.listItems do
@@ -89,6 +89,7 @@ function DropList.Update(pDt)
           -- manage to select the new item in the list and close the dropList
           if mouseClicked.on == true then
             thatDropList.selected = selection.position + 1
+            pData = thatDropList.selected
             thatDropList.isOpen = false
           end
           
@@ -99,6 +100,7 @@ function DropList.Update(pDt)
     
   end
   
+  return pData
 end
 
 function DropList.Draw(pWindowWidth)
