@@ -1,6 +1,8 @@
 local Menu = {}
 
+local windowWidth, windowHeight
 local listOptions = {}
+
 local itemSelected
 local msgColor = {}
 local fontSize = 32
@@ -24,8 +26,11 @@ local myCredits = require("credits")
 local myOptions = require("options")
 
 function Menu.Load(pWindowWidth, pWindowHeight)
-  anchorTitle = pWindowHeight*0.05
-  anchorSelection = pWindowHeight*0.5
+  windowWidth = pWindowWidth
+  windowHeight = pWindowHeight
+  
+  anchorTitle = windowHeight*0.05
+  anchorSelection = windowHeight*0.5
 
   
   -- list of items of the menu
@@ -35,7 +40,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
 
   -- load the different parts of the menu block
   myCredits.Load()
-  myOptions.Load(pWindowWidth, pWindowHeight, itemFontSize.Options)
+  myOptions.Load(windowWidth, windowHeight, itemFontSize.Options)
   
   -- load the sounds
   soundMoveSelect = love.audio.newSource("sounds/moveSelect.wav", "static")
@@ -74,17 +79,17 @@ function Menu.Update(pDt)
   
 end
 
-function Menu.Draw(pWindowWidth, pWindowHeight)
+function Menu.Draw()
   
   if menuState == "title" then
     -- draw the title and subtitle
     love.graphics.setColor(0, 0, 255)
     love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", itemFontSize.Title))
-    love.graphics.printf("SALEM", 0, anchorTitle, pWindowWidth, "center")
+    love.graphics.printf("SALEM", 0, anchorTitle, windowWidth, "center")
     
     love.graphics.setColor(255, 0, 255)
     love.graphics.setFont(love.graphics.newFont("fonts/AlexBrush-Regular.ttf", itemFontSize.Title))
-    love.graphics.printf("Story", 0, anchorTitle + itemFontSize.Title, pWindowWidth, "center")
+    love.graphics.printf("Story", 0, anchorTitle + itemFontSize.Title, windowWidth, "center")
     
     
     -- draw the menu selection
@@ -100,21 +105,21 @@ function Menu.Draw(pWindowWidth, pWindowHeight)
       else msgColor = {120, 120, 120} end
       
       love.graphics.setColor(msgColor)
-      love.graphics.printf(msg, 0, anchorSelection + 1.5*(i-1) * itemFontSize.Select, pWindowWidth, "center")
+      love.graphics.printf(msg, 0, anchorSelection + 1.5*(i-1) * itemFontSize.Select, windowWidth, "center")
     end
     
     -- draw the game version
     love.graphics.setColor(255, 255, 255)
     love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", itemFontSize.Version))
-    love.graphics.printf(gameVersion, 0, pWindowHeight - itemFontSize.Version, pWindowWidth, "right")
+    love.graphics.printf(gameVersion, 0, windowHeight - itemFontSize.Version, windowWidth, "right")
   end
   
   if menuState == "credits" then
-    myCredits.Draw(pWindowWidth, pWindowHeight, itemFontSize.Credits)
+    myCredits.Draw(windowWidth, windowHeight, itemFontSize.Credits)
   end
   
   if menuState == "options" then
-    myOptions.Draw(pWindowWidth, pWindowHeight, itemFontSize.Options)
+    myOptions.Draw(windowWidth, windowHeight, itemFontSize.Options)
   end
   
 end

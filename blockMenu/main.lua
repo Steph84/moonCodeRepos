@@ -23,5 +23,5 @@ function love.update(dt)
 end
 
 function love.draw()
-  myMenu.Draw(windowWidth, windowHeight)
+  myMenu.Draw()
 end
