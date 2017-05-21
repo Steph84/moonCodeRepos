@@ -31,7 +31,9 @@ function DropList.Load(pTitle, pDataList, pSelected, pAnchorX, pAnchorY, pDropDo
   item.w = pDropDownWidth
   item.h = pFontSize
   item.isOpen = false
-  item.listValues = pDataList --myListItems[pDataList]
+  item.listValues = pDataList
+  -- get the data type
+  item.type = #item.listValues[1]
   item.title = pTitle
   item.cursorSize = pFontSize/cursorItem.h
   item.selected = pSelected
@@ -125,9 +127,6 @@ function DropList.Draw()
                        0,
                        thisDropList.cursorSize, thisDropList.cursorSize)
 
--- TODO make all the data list possiblity
--- now it's only the pairs data
-
     -- manage the draw when the dropList is closed
     if thisDropList.isOpen == false then
       -- draw the black background
@@ -138,10 +137,13 @@ function DropList.Draw()
       love.graphics.setColor(colorDropList.white)
       love.graphics.rectangle("line", thisDropList.x, thisDropList.y, thisDropList.w, thisDropList.h)
       
-      love.graphics.printf(
-        thisDropList.listValues[thisDropList.selected][1].." x "..thisDropList.listValues[thisDropList.selected][2],
-        thisDropList.x, thisDropList.y - 2,
-        thisDropList.w, "center")
+      if thisDropList.type == 2 then
+        love.graphics.printf(
+          thisDropList.listValues[thisDropList.selected][1].." x "..thisDropList.listValues[thisDropList.selected][2],
+          thisDropList.x, thisDropList.y - 2,
+          thisDropList.w, "center")
+      end
+      
     end
     
     -- manage the draw when the dropList is opened
@@ -170,9 +172,13 @@ function DropList.Draw()
       local j
       for j = 1, #thisDropList.listValues do
         local value = thisDropList.listValues[j]
-        love.graphics.printf(value[1].." x "..value[2],
-                             thisDropList.x, thisDropList.y - 2 +
-                             thisDropList.h * (j - 1), thisDropList.w, "center")
+        
+        if thisDropList.type == 2 then
+          love.graphics.printf(value[1].." x "..value[2],
+                               thisDropList.x, thisDropList.y - 2 +
+                               thisDropList.h * (j - 1), thisDropList.w, "center")
+        end
+        
       end
       
     end
