@@ -19,10 +19,10 @@ colorDropList.black = {0, 0, 0}
 colorDropList.highlight = {200, 200, 200, 150}
 
 -- to load the data for the dropLists
-local myListItems = require("listitems")
+local myListItems = require("dropListItems")
 
 -- create all the dropLists called by the options menu
-function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, pTitle, pSelected)
+function DropList.Load(pTitle, pDataList, pSelected, pAnchorX, pAnchorY, pDropDownWidth, pFontSize)
   local item = {}
   
   item.id = #DropList.listItems + 1
@@ -31,7 +31,7 @@ function DropList.Load(pAnchorX, pAnchorY, pDropDownWidth, pFontSize, pContent, 
   item.w = pDropDownWidth
   item.h = pFontSize
   item.isOpen = false
-  item.listValues = myListItems[pContent]
+  item.listValues = myListItems[pDataList]
   item.title = pTitle
   item.cursorSize = pFontSize/cursorItem.h
   item.selected = pSelected
@@ -55,7 +55,7 @@ function love.mousereleased(x, y, button, istouch)
   end
 end
 
-function DropList.Update(pDt, pData)
+function DropList.Update(dt, pData)
   
   local i
   for i = 1, #DropList.listItems do
@@ -91,6 +91,7 @@ function DropList.Update(pDt, pData)
             thatDropList.selected = selection.position + 1
             pData = thatDropList.selected
             thatDropList.isOpen = false
+            mouseClicked.on = false -- avoid stay open if click on the actual selection
           end
           
       else selection.highlight = false
@@ -103,7 +104,7 @@ function DropList.Update(pDt, pData)
   return pData
 end
 
-function DropList.Draw(pWindowWidth)
+function DropList.Draw()
   
   local i
   for i = 1, #DropList.listItems do
@@ -115,7 +116,7 @@ function DropList.Draw(pWindowWidth)
     love.graphics.setColor(colorDropList.white)
     love.graphics.printf(thisDropList.title,
                          thisDropList.x, thisDropList.y - thisDropList.h * 1.25,
-                         pWindowWidth,
+                         thisDropList.w,
                          "left")
     
     -- draw the cursor

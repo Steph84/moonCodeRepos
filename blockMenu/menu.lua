@@ -5,8 +5,8 @@ local selectionItems = {}
 local itemFonts = {}
 local soundObjects = {}
 
-local myCredits = require("credits")
-local myOptions = require("options")
+local myCredits = require("menuCredits")
+local myOptions = require("menuOptions")
 
 function Menu.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
@@ -50,7 +50,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
 end
 
 
-function Menu.Update(pDt)
+function Menu.Update(dt)
   
   if menuState == "title" then
     -- manage the looping selection on the menu
@@ -64,12 +64,12 @@ function Menu.Update(pDt)
   end
   
   if menuState == "credits" then
-    menuState = myCredits.Update(pDt, menuState)
+    menuState = myCredits.Update(dt, menuState)
     if menuState == "title" then soundObjects.back:play() end
   end
   
   if menuState == "options" then
-    menuState = myOptions.Update(pDt, menuState)
+    menuState = myOptions.Update(dt, menuState)
     if menuState == "title" then soundObjects.back:play() end
   end
   

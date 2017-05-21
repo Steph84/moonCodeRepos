@@ -2,9 +2,9 @@ local Credits = {}
 
 local windowWidth, windowHeight, fontSize
 
-local dataObject = {}
-local dataBloc = {}
-local dataNumberLines = 3
+local dataObject = {} -- all the credits
+local dataBloc = {} -- bloc of credits
+local dataNumberLines = 3 -- title, name, url
 
 function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
   windowWidth = pWindowWidth
@@ -12,7 +12,7 @@ function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
   fontSize = pFontSize
   
   local iteration = 0
-  for line in love.filesystem.lines("credits.txt") do
+  for line in love.filesystem.lines("menuCreditsData.txt") do
     table.insert(dataBloc, line)
     iteration = iteration + 1
     
@@ -22,11 +22,9 @@ function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
       dataBloc = {}
     end
   end
-  
-  
 end
 
-function Credits.Update(pDt, pGameState)
+function Credits.Update(dt, pGameState)
   if love.keyboard.isDown("escape") then pGameState = "title" end
   return pGameState
 end
