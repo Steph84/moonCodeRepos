@@ -1,5 +1,7 @@
 local Resolution = {}
 
+-- TODO manage the full screen mode
+
 local windowWidth, windowHeight, fontSize, resolutionProp
 
 Resolution.displayScreen = { 0, 0 }
@@ -12,6 +14,9 @@ local myDropList = require("dropList")
 
 -- load the data for the dropLists
 local myListItems = require("dropListItems")
+
+
+  local data = {}
 
 function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp)
   windowWidth = pWindowWidth
@@ -36,12 +41,31 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
   -- get the screen resolution of the display #1
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
   
+  dropListProp.data = {}
+  local modes = love.window.getFullscreenModes() -- get the resolution possible
+  -- sort the resolution by ascendant size
+  table.sort(modes, function(a, b) return a.width*a.height < b.width*b.height end)
+  -- refacto the data to fit the dropList schema
+  local i
+  for i = 1, #modes do
+    local thisRes = {}
+    table.insert(thisRes, modes[i].width)
+    table.insert(thisRes, modes[i].height)
+    table.insert(dropListProp.data, thisRes)
+  end
+  
   -- get the window resolution of the game
   Resolution.window[1], Resolution.window[2], flags = love.window.getMode()
-  Resolution.window[3] = 1 -- TODO temp
+  local j
+  for j = 1, #dropListProp.data do
+    local item = dropListProp.data[j]
+    if item[1] == Resolution.window[1] and item[2] == Resolution.window[2] then
+      Resolution.window[3] = j
+    end
+  end
   
-  local dataList = 3 -- TODO temp
-  myDropList.Load("Resolution", dataList, Resolution.window[3],
+  -- create the resolution dropList object
+  myDropList.Load("Resolution", dropListProp.data, Resolution.window[3],
                   resolutionProp.anchorX, resolutionProp.anchorY, resolutionProp.dropDownWidth, fontSize)
   
 end
@@ -55,8 +79,8 @@ function Resolution.Update(dt, pGameState)
   tempReso = myDropList.Update(dt, Resolution.window[3])
   if tempReso ~= Resolution.window[3] then
     Resolution.window[3] = tempReso
-    Resolution.window[1] = myListItems[3][Resolution.window[3]][1]
-    Resolution.window[2] = myListItems[3][Resolution.window[3]][2]
+    Resolution.window[1] = dropListProp.data[Resolution.window[3]][1]
+    Resolution.window[2] = dropListProp.data[Resolution.window[3]][2]
     love.window.setMode( Resolution.window[1], Resolution.window[2] )
   end
   

@@ -31,7 +31,7 @@ function DropList.Load(pTitle, pDataList, pSelected, pAnchorX, pAnchorY, pDropDo
   item.w = pDropDownWidth
   item.h = pFontSize
   item.isOpen = false
-  item.listValues = myListItems[pDataList]
+  item.listValues = pDataList --myListItems[pDataList]
   item.title = pTitle
   item.cursorSize = pFontSize/cursorItem.h
   item.selected = pSelected
@@ -124,6 +124,9 @@ function DropList.Draw()
                        thisDropList.x + thisDropList.w + 2, thisDropList.y,
                        0,
                        thisDropList.cursorSize, thisDropList.cursorSize)
+
+-- TODO make all the data list possiblity
+-- now it's only the pairs data
 
     -- manage the draw when the dropList is closed
     if thisDropList.isOpen == false then
