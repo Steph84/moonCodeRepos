@@ -40,8 +40,15 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
   
   -- get the screen resolution of the display #1
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
-  
   dropListProp.data = {}
+  dropListProp.data[1] = {800, 600}
+  dropListProp.data[2] = { Resolution.displayScreen[1] / 2, Resolution.displayScreen[2] / 2 }
+  dropListProp.data[3] = { math.floor(Resolution.displayScreen[1] * (1-0.03)),
+                           math.floor(Resolution.displayScreen[2] * (1-0.13)) }
+  dropListProp.data[4] = { Resolution.displayScreen[1], Resolution.displayScreen[2]}
+  
+  
+  --[[
   local modes = love.window.getFullscreenModes() -- get the resolution possible
   -- sort the resolution by ascendant size
   table.sort(modes, function(a, b) return a.width*a.height < b.width*b.height end)
@@ -53,6 +60,7 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
     table.insert(thisRes, modes[i].height)
     table.insert(dropListProp.data, thisRes)
   end
+  --]]
   
   -- get the window resolution of the game
   Resolution.window[1], Resolution.window[2], flags = love.window.getMode()

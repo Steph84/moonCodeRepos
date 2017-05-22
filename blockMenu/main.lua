@@ -14,6 +14,11 @@ function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("my Title")
+  local azerty, qwerty, flags = love.window.getMode()
+  
+
+  
+  
   
   myMenu.Load(windowWidth, windowHeight)
   
