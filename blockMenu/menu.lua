@@ -1,18 +1,20 @@
 local Menu = {}
 
-local windowWidth, windowHeight, menuState, gameVersion, anchorTitleY, anchorSelectionY
+Menu.menuState = nil
+
+local windowWidth, windowHeight, gameVersion, anchorTitleY, anchorSelectionY
 local selectionItems = {}
 local itemFonts = {}
 local soundObjects = {}
 
 local myCredits = require("menuCredits")
-local myOptions = require("menuOptions")
+Menu.myOptions = require("menuOptions")
 
 function Menu.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   
-  menuState = "title"
+  Menu.menuState = "title"
   gameVersion = "v1.0"
   
   itemFonts.fontSize = 32
@@ -31,7 +33,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   selectionItems.itemSelected = 1
 
   -- load the different parts of the menu block
-  myOptions.Load(windowWidth, windowHeight, itemFonts.options)
+  Menu.myOptions.Load(windowWidth, windowHeight, itemFonts.options)
   myCredits.Load(windowWidth, windowHeight, itemFonts.credits)
   
   -- load the sound effects
@@ -52,7 +54,7 @@ end
 
 function Menu.Update(dt)
   
-  if menuState == "title" then
+  if Menu.menuState == "title" then
     -- manage the looping selection on the menu
     local optionsLength = #selectionItems.data
     if selectionItems.itemSelected < 1 then
@@ -63,21 +65,21 @@ function Menu.Update(dt)
     end
   end
   
-  if menuState == "credits" then
-    menuState = myCredits.Update(dt, menuState)
-    if menuState == "title" then soundObjects.back:play() end
+  if Menu.menuState == "credits" then
+    Menu.menuState = myCredits.Update(dt, Menu.menuState)
+    if Menu.menuState == "title" then soundObjects.back:play() end
   end
   
-  if menuState == "options" then
-    menuState = myOptions.Update(dt, menuState)
-    if menuState == "title" then soundObjects.back:play() end
+  if Menu.menuState == "options" then
+    Menu.menuState = Menu.myOptions.Update(dt, Menu.menuState)
+    if Menu.menuState == "title" then soundObjects.back:play() end
   end
   
 end
 
 function Menu.Draw()
   
-  if menuState == "title" then
+  if Menu.menuState == "title" then
     -- draw the title and subtitle
     love.graphics.setColor(0, 0, 255)
     love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", itemFonts.titles))
@@ -109,15 +111,15 @@ function Menu.Draw()
     love.graphics.printf(gameVersion, 0, windowHeight - itemFonts.version, windowWidth, "right")
   end
   
-  if menuState == "credits" then myCredits.Draw() end
+  if Menu.menuState == "credits" then myCredits.Draw() end
   
-  if menuState == "options" then  myOptions.Draw() end
+  if Menu.menuState == "options" then  Menu.myOptions.Draw() end
   
 end
 
 -- using keypressed function ponctual action
 function love.keypressed(key, isRepeat)
-  if menuState == "title" then
+  if Menu.menuState == "title" then
     -- manage the looping navigation through the menu
     if key == "up" then
       soundObjects.selectionMove:stop() -- avoid to overlap the sounds
@@ -138,15 +140,15 @@ function love.keypressed(key, isRepeat)
       soundObjects.selectionValidate:stop()
       soundObjects.selectionValidate:play()
       
-      if selectionItems.itemSelected == 1 then menuState = "game" end -- start a new game
+      if selectionItems.itemSelected == 1 then Menu.menuState = "game" end -- start a new game
       if selectionItems.itemSelected == #selectionItems.data then
         love.timer.sleep(0.6) -- wait a moment to heard the sound effect
         love.event.quit() -- exit the game
       end
       
       -- if itemSelected == 2 then gameState = "loadGame" end
-      if selectionItems.itemSelected == 2 then menuState = "options" end
-      if selectionItems.itemSelected == 3 then menuState = "credits" end
+      if selectionItems.itemSelected == 2 then Menu.menuState = "options" end
+      if selectionItems.itemSelected == 3 then Menu.menuState = "credits" end
     end
   end
   

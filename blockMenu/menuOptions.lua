@@ -3,7 +3,7 @@ local Options = {}
 local windowWidth, windowHeight, fontSize
 local resolutionProp = {}
 
-local myResolution = require("menuOptionsResolution")
+Options.myResolution = require("menuOptionsResolution")
 
 function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   windowWidth = pWindowWidth
@@ -13,18 +13,20 @@ function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   resolutionProp.anchorX = 100
   resolutionProp.anchorY = 100
   resolutionProp.dropDownWidth = 200
-  myResolution.Load(windowWidth, windowHeight, fontSize, resolutionProp)
+  Options.myResolution.Load(windowWidth, windowHeight, fontSize, resolutionProp)
   
 end
 
 function Options.Update(dt, pGameState)
-  myResolution.Update(dt, pGameState)
+  if love.keyboard.isDown("escape") then pGameState = "title" end
+  
+  Options.myResolution.Update(dt)
   return pGameState
 end
 
 
 function Options.Draw()
-  myResolution.Draw()
+  Options.myResolution.Draw()
 end
 
 return Options

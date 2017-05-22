@@ -100,7 +100,6 @@ function DropList.Update(dt, pData)
       end
     end
     
-    
   end
   
   return pData

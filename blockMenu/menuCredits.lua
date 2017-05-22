@@ -10,6 +10,7 @@ function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   fontSize = pFontSize
+  dataObject = {}
   
   local iteration = 0
   for line in love.filesystem.lines("menuCreditsData.txt") do

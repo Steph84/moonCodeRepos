@@ -70,18 +70,18 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
   
 end
 
-function Resolution.Update(dt, pGameState)
+function Resolution.Update(dt)
   
   local tempReso = Resolution.window[3]
   
-  if love.keyboard.isDown("escape") then pGameState = "title" end
+  
   
   tempReso = myDropList.Update(dt, Resolution.window[3])
   if tempReso ~= Resolution.window[3] then
     Resolution.window[3] = tempReso
     Resolution.window[1] = dropListProp.data[Resolution.window[3]][1]
     Resolution.window[2] = dropListProp.data[Resolution.window[3]][2]
-    love.window.setMode( Resolution.window[1], Resolution.window[2] )
+    --love.window.setMode( Resolution.window[1], Resolution.window[2] )
   end
   
   return pGameState
