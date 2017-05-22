@@ -10,14 +10,14 @@ local soundObjects = {}
 local myCredits = require("menuCredits")
 Menu.myOptions = require("menuOptions")
 
-function Menu.Load(pWindowWidth, pWindowHeight)
+function Menu.Load(pWindowWidth, pWindowHeight, pScale)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   
   Menu.menuState = "title"
   gameVersion = "v1.0"
   
-  itemFonts.fontSize = 32
+  itemFonts.fontSize = 32 * pScale
   itemFonts.titles = itemFonts.fontSize * 2
   itemFonts.selections = itemFonts.fontSize * 1
   itemFonts.version = itemFonts.fontSize * 0.75
