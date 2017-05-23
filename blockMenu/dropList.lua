@@ -99,8 +99,11 @@ function DropList.Update(dt, pData)
       else selection.highlight = false
       end
     end
-    
+  
+  print(thatDropList.isOpen)
+  
   end
+  
   
   return pData
 end
@@ -174,8 +177,8 @@ function DropList.Draw()
         
         if thisDropList.type == 2 then
           love.graphics.printf(value[1].." x "..value[2],
-                               thisDropList.x, thisDropList.y - 2 +
-                               thisDropList.h * (j - 1), thisDropList.w, "center")
+                               thisDropList.x, thisDropList.y - 2 + thisDropList.h * (j - 1),
+                               thisDropList.w, "center")
         end
         
       end
