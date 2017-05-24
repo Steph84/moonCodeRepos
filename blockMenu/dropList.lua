@@ -100,8 +100,6 @@ function DropList.Update(dt, pData)
       end
     end
   
-  print(thatDropList.isOpen)
-  
   end
   
   

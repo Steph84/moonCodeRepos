@@ -17,6 +17,23 @@ function love.load()
   
   myMenu.Load(windowWidth, windowHeight)
   
+  local a = {"one", "two", "three"}
+    for i, v in ipairs(a) do
+      print(i, v)
+    end
+    
+  j, w = next(a, 2)
+    print(j, w)
+    
+    print( string.byte( "800 x600", 1, -1 ) ) -- ASCII
+  --[[
+  local file = love.filesystem.newFile("highscore.lua")
+   file:open("w")
+   file:write("highscore = { bob = 5, tom = 200, jane = 4000 }", 1000)
+   file:close()
+--]]
+
+  
 end
 
 function love.update(dt)
