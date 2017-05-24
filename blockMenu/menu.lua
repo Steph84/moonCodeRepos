@@ -8,7 +8,7 @@ local itemFonts = {}
 local soundObjects = {}
 
 local myCredits = require("menuCredits")
-Menu.myOptions = require("menuOptions")
+local myOptions = require("menuOptions")
 
 function Menu.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
@@ -33,7 +33,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   selectionItems.itemSelected = 1
 
   -- load the different parts of the menu block
-  Menu.myOptions.Load(windowWidth, windowHeight, itemFonts.options)
+  myOptions.Load(windowWidth, windowHeight, itemFonts.options)
   myCredits.Load(windowWidth, windowHeight, itemFonts.credits)
   
   -- load the sound effects
@@ -71,7 +71,7 @@ function Menu.Update(dt)
   end
   
   if Menu.menuState == "options" then
-    Menu.menuState = Menu.myOptions.Update(dt, Menu.menuState)
+    Menu.menuState = myOptions.Update(dt, Menu.menuState)
     if Menu.menuState == "title" then soundObjects.back:play() end
   end
   
@@ -113,7 +113,7 @@ function Menu.Draw()
   
   if Menu.menuState == "credits" then myCredits.Draw() end
   
-  if Menu.menuState == "options" then  Menu.myOptions.Draw() end
+  if Menu.menuState == "options" then  myOptions.Draw() end
   
 end
 

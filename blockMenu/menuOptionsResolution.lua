@@ -38,7 +38,7 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
   -- get the dropList item data
   dropListProp.data = myListItems.resolution
   
-  -- get the screen resolution of the display #1
+  -- get the screen resolution of the display #1 to shwo the right list of resolutions
   Resolution.displayScreen[1], Resolution.displayScreen[2] = love.window.getDesktopDimensions(1)
   local i
   for i = #dropListProp.data, 1, -1 do
@@ -48,7 +48,7 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
     end
   end
   
-  -- get the window resolution of the game
+  -- get the window resolution of the game to show the right resolution on selection
   Resolution.window[1], Resolution.window[2], flags = love.window.getMode()
   Resolution.window[4] = flags.fullscreen
   local j
@@ -56,6 +56,8 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
     local item = dropListProp.data[j]
     if item[1] == Resolution.window[1] and item[2] == Resolution.window[2] then
       Resolution.window[3] = j
+      
+      -- if the maximum resolution is choosen, then switch to full screen
       if Resolution.window[1] == Resolution.displayScreen[1] and Resolution.window[2] == Resolution.displayScreen[2] then
         Resolution.window[4] = true
       else Resolution.window[4] = false

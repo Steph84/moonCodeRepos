@@ -1,0 +1,11 @@
+[GraphicsSettings]
+Resolution
+800x600
+Antialiasing
+2
+
+[ControlSettings]
+InvertLook
+No
+Sensitivity
+2.0

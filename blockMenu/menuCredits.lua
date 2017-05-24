@@ -13,7 +13,7 @@ function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
   dataObject = {}
   
   local iteration = 0
-  for line in love.filesystem.lines("menuCreditsData.txt") do
+  for line in love.filesystem.lines("data/dataCredits.txt") do
     table.insert(dataBloc, line)
     iteration = iteration + 1
     
