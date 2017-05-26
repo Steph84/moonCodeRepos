@@ -1,7 +1,7 @@
 local DropList = {}
 DropList.listItems = {} -- list of dropList items
 
-local mouseClicked = {} -- to manage the mouse control
+local myMouse = require("mouseClickControl")
 
 -- picture of the right cursor
 local cursorItem = {}
@@ -24,6 +24,7 @@ local myListItems = require("dropListItems")
 -- create all the dropLists called by the options menu
 function DropList.Load(pTitle, pDataList, pSelected, pAnchorX, pAnchorY, pDropDownWidth, pFontSize)
   local item = {}
+  item.cursor = {}
   
   item.id = #DropList.listItems + 1
   item.x = pAnchorX
@@ -38,23 +39,12 @@ function DropList.Load(pTitle, pDataList, pSelected, pAnchorX, pAnchorY, pDropDo
   item.cursorSize = pFontSize/cursorItem.h
   item.selected = pSelected
   
+  item.cursor.x = item.x + item.w
+  item.cursor.y = item.y
+  item.cursor.w = item.cursorSize * 32
+  item.cursor.h = item.cursorSize * 32
+  
   table.insert(DropList.listItems, item)  
-end
-
--- manage the mouse control
-function love.mousepressed(x, y, button, istouch)
-  if button == 1 then
-    mouseClicked.on = true
-    mouseClicked.x = x
-    mouseClicked.y = y
-  end
-end
-function love.mousereleased(x, y, button, istouch)
-  if button == 1 then
-    mouseClicked.on = false
-    mouseClicked.x = nil
-    mouseClicked.y = nil
-  end
 end
 
 function DropList.Update(dt, pData)
@@ -64,15 +54,12 @@ function DropList.Update(dt, pData)
     local thatDropList = DropList.listItems[i]
     
     -- manage the dropList opening
-    if thatDropList.isOpen == false and mouseClicked.on == true then
-      if mouseClicked.x > thatDropList.x and             -- (   allow to click on the cursor too     ) 
-         mouseClicked.x < thatDropList.x + thatDropList.w + (thatDropList.cursorSize * thatDropList.h) then
-           if mouseClicked.y > thatDropList.y and
-              mouseClicked.y < thatDropList.y + thatDropList.h then
-                thatDropList.isOpen = true
-                mouseClicked.on = false -- avoid mouse click repeat
-            end
-        end
+    if thatDropList.isOpen == false then
+      local dropOpening1 = myMouse.ClickOnObject(thatDropList)
+      local dropOpening2 = myMouse.ClickOnObject(thatDropList.cursor)
+      if dropOpening1 == true or dropOpening2 == true then
+        thatDropList.isOpen = true
+      end
     end
     
     -- manage the opened dropList
@@ -89,11 +76,11 @@ function DropList.Update(dt, pData)
           selection.position = math.floor((selection.y - thatDropList.y) / thatDropList.h)
           
           -- manage to select the new item in the list and close the dropList
-          if mouseClicked.on == true then
+          if myMouse.clicked == true then
             thatDropList.selected = selection.position + 1
             pData = thatDropList.selected
             thatDropList.isOpen = false
-            mouseClicked.on = false -- avoid stay open if click on the actual selection
+            myMouse.clicked = false -- avoid stay open if click on the actual selection
           end
           
       else selection.highlight = false
@@ -123,7 +110,7 @@ function DropList.Draw()
     
     -- draw the cursor
     love.graphics.draw(cursorItem.src,
-                       thisDropList.x + thisDropList.w + 2, thisDropList.y,
+                       thisDropList.cursor.x + 2, thisDropList.cursor.y,
                        0,
                        thisDropList.cursorSize, thisDropList.cursorSize)
 

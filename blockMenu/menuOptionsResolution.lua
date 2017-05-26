@@ -11,7 +11,6 @@ local bgPic = {}
 local dropListProp = {}
 
 local myDropList = require("dropList")
-local myValidate = require("menuOptionsValidate")
 
 -- load the data for the dropLists
 local myListItems = require("dropListItems")
@@ -69,8 +68,6 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
   -- create the resolution dropList object
   myDropList.Load("Resolution", dropListProp.data, Resolution.window[3],
                   resolutionProp.anchorX, resolutionProp.anchorY, resolutionProp.dropDownWidth, fontSize)
-                
-  myValidate.Load(windowWidth, windowHeight, fontSize)
   
 end
 
@@ -90,7 +87,6 @@ end
 function Resolution.Draw()
   love.graphics.draw(bgPic.src, 0, 0, 0, 1/bgPic.ratioW, 1/bgPic.ratioH)
   myDropList.Draw()
-  myValidate.Draw()
 end
 
 return Resolution
