@@ -48,8 +48,9 @@ function Credits.Draw()
                            windowWidth, "left")
     end
   end
-  
-  love.graphics.printf("To get back, press escape ", 0, windowHeight - fontSize, windowWidth, "right")
+  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
+  -- TODO add arrow icon
+  love.graphics.printf("Esc ", 0, 0, windowWidth - fontSize * 0.5, "right")
   
 end
 

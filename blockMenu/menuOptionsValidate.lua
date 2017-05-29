@@ -2,9 +2,10 @@ local Validate = {}
 
 local windoww, windowh, fontSize, x, y, buttonw
 local valButton = {}
+local isValidate = false
+local timeElapsed = 0
 
 local myMouse = require("mouseControls")
-local bioshock = false
 
 function Validate.Load(pWindoww, pWindowh, pFontSize)
   windoww = pWindoww
@@ -19,27 +20,37 @@ function Validate.Load(pWindoww, pWindowh, pFontSize)
 end
 
 
-function Validate.Update(dt)
-  if myMouse.clicked == true then
-    bioshock = myMouse.ClickOnObject(valButton)
+function Validate.Update(dt, pGameState)
+  
+  if love.mouse.isDown(1) then
+    isValidate = myMouse.HoverOnObject(valButton)
   end
+  
+  if isValidate == true then
+    timeElapsed = timeElapsed + dt
+    if timeElapsed > 0.7 then pGameState = "title" end
+    -- TODO write into text then reload
+  end
+  
+  return pGameState
 end
 
 function Validate.Draw()
   -- draw the black background
-  love.graphics.setColor(0, 0, 0)
+  if isValidate == false then love.graphics.setColor(0, 0, 0)
+  elseif isValidate == true then love.graphics.setColor(255, 255, 255) end
   love.graphics.rectangle("fill", valButton.x, valButton.y, valButton.w, valButton.h)
   
   -- draw the white outline
-  love.graphics.setColor(255, 255, 255)
+  if isValidate == false then love.graphics.setColor(255, 255, 255)
+  elseif isValidate == true then love.graphics.setColor(0, 0, 0) end
   love.graphics.rectangle("line", valButton.x, valButton.y, valButton.w, valButton.h)
   
   love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
   
   love.graphics.printf("Validate", valButton.x, valButton.y - 2 + valButton.h/6, valButton.w, "center")
   
-  love.graphics.print(tostring(bioshock), love.mouse.getX(), love.mouse.getY())
-  love.graphics.circle("fill", valButton.x, valButton.y, 10)
+  love.graphics.setColor(255, 255, 255)
   
 end
 

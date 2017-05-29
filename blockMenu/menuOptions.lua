@@ -26,7 +26,7 @@ function Options.Update(dt, pGameState)
   if love.keyboard.isDown("escape") then pGameState = "title" end
   
   myResolution.Update(dt)
-  myValidate.Update(dt)
+  pGameState = myValidate.Update(dt, pGameState)
   
   return pGameState
 end
@@ -35,6 +35,10 @@ end
 function Options.Draw()
   myResolution.Draw()
   myValidate.Draw()
+  
+  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
+  -- TODO add arrow icon
+  love.graphics.printf("To get back, press escape ", 0, windowHeight - fontSize * 1.5, windowWidth - fontSize * 0.5, "right")
 end
 
 return Options
