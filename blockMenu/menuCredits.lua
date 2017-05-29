@@ -6,6 +6,8 @@ local dataObject = {} -- all the credits
 local dataBloc = {} -- bloc of credits
 local dataNumberLines = 3 -- title, name, url
 
+local myPicture = require("loadPictures")
+
 function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
@@ -48,9 +50,12 @@ function Credits.Draw()
                            windowWidth, "left")
     end
   end
+  
+  -- draw the back instructions
+  love.graphics.setColor(255, 255, 255)
+  myPicture.Draw(myPicture.backArrow.src, windowWidth*0.01, windowHeight*0.01, 32/myPicture.backArrow.w, 32/myPicture.backArrow.h)
   love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
-  -- TODO add arrow icon
-  love.graphics.printf("Esc ", 0, 0, windowWidth - fontSize * 0.5, "right")
+  love.graphics.print("Esc ", windowWidth*0.06, windowHeight*0.01)
   
 end
 

@@ -12,7 +12,7 @@ function Validate.Load(pWindoww, pWindowh, pFontSize)
   windowh = pWindowh
   fontSize = pFontSize
   
-  valButton.w = fontSize * 8 * 0.6
+  valButton.w = fontSize * 8 * 0.6 -- 8 is for number of letters
   valButton.x = pWindoww - valButton.w - 50
   valButton.y = pWindowh - 50 - fontSize
   valButton.h = fontSize * 1.5
@@ -28,7 +28,10 @@ function Validate.Update(dt, pGameState)
   
   if isValidate == true then
     timeElapsed = timeElapsed + dt
-    if timeElapsed > 0.7 then pGameState = "title" end
+    if timeElapsed > 0.7 then
+      pGameState = "title"
+      isValidate = false
+    end
     -- TODO write into text then reload
   end
   

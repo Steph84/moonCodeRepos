@@ -7,7 +7,6 @@ local windowWidth, windowHeight, fontSize, resolutionProp
 Resolution.displayScreen = { 0, 0 }
 Resolution.window = { 0, 0, 0, false} -- width, height, selection, fullscreen
 
-local bgPic = {}
 local dropListProp = {}
 
 local myDropList = require("dropList")
@@ -20,20 +19,6 @@ function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp
   windowHeight = pWindowHeight
   fontSize = pFontSize
   resolutionProp = pResolutionProp
-  
-  -- manage the scale of the background picture
-  bgPic.src = love.graphics.newImage("pictures/back.png")
-  bgPic.width = bgPic.src:getWidth()
-  bgPic.height = bgPic.src:getHeight()
-  bgPic.ratioW = bgPic.width/windowWidth
-  bgPic.ratioH = bgPic.height/windowHeight
-  local w = bgPic.ratioW
-  local h = bgPic.ratioH
-  if w > h and w > 1 and h > 1 then
-    w = h
-  elseif w < h and w > 1 and h > 1 then
-    h = w
-  end
   
   -- get the dropList item data
   dropListProp.data = myListItems.resolution
@@ -85,7 +70,6 @@ function Resolution.Update(dt)
 end
 
 function Resolution.Draw()
-  love.graphics.draw(bgPic.src, 0, 0, 0, 1/bgPic.ratioW, 1/bgPic.ratioH)
   myDropList.Draw()
 end
 

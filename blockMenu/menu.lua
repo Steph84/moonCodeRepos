@@ -7,6 +7,7 @@ local selectionItems = {}
 local itemFonts = {}
 local soundObjects = {}
 
+local myPicture = require("loadPictures")
 local myCredits = require("menuCredits")
 local myOptions = require("menuOptions")
 
@@ -22,7 +23,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   itemFonts.selections = itemFonts.fontSize * 1
   itemFonts.version = itemFonts.fontSize * 0.75
   itemFonts.credits = itemFonts.fontSize * 0.75
-  itemFonts.options = itemFonts.fontSize
+  itemFonts.options = itemFonts.fontSize * 0.75
   
   anchorTitleY = windowHeight*0.05
   anchorSelectionY = windowHeight*0.5
@@ -33,6 +34,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   selectionItems.itemSelected = 1
 
   -- load the different parts of the menu block
+  myPicture.Load()
   myOptions.Load(windowWidth, windowHeight, itemFonts.options)
   myCredits.Load(windowWidth, windowHeight, itemFonts.credits)
   
