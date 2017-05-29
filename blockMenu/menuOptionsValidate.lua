@@ -3,7 +3,7 @@ local Validate = {}
 local windoww, windowh, fontSize, x, y, buttonw
 local valButton = {}
 
-local myMouse = require("mouseClickControl")
+local myMouse = require("mouseControls")
 local bioshock = false
 
 function Validate.Load(pWindoww, pWindowh, pFontSize)

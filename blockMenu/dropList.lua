@@ -1,7 +1,7 @@
 local DropList = {}
 DropList.listItems = {} -- list of dropList items
 
-local myMouse = require("mouseClickControl")
+local myMouse = require("mouseControls")
 
 -- picture of the right cursor
 local cursorItem = {}
@@ -64,25 +64,24 @@ function DropList.Update(dt, pData)
     
     -- manage the opened dropList
     if thatDropList.isOpen == true then
-      selection.x, selection.y = love.mouse.getPosition()
       
-      if selection.x > thatDropList.x and
-         selection.x < thatDropList.x + thatDropList.w and
-         selection.y > thatDropList.y and
-         selection.y < thatDropList.y + #thatDropList.listValues * thatDropList.h then -- drop all the item in the list
-          
-          -- manage to higlight the selection
-          selection.highlight = true
-          selection.position = math.floor((selection.y - thatDropList.y) / thatDropList.h)
-          
-          -- manage to select the new item in the list and close the dropList
-          if myMouse.clicked == true then
-            thatDropList.selected = selection.position + 1
-            pData = thatDropList.selected
-            thatDropList.isOpen = false
-            myMouse.clicked = false -- avoid stay open if click on the actual selection
-          end
-          
+      thatDropList.h = thatDropList.h * #thatDropList.listValues -- extend the height of the item
+      local isHovering = false
+      isHovering, selection.x, selection.y = myMouse.HoverOnObject(thatDropList)
+      thatDropList.h = thatDropList.h / #thatDropList.listValues -- item height back to normal
+      
+      if isHovering == true then
+        selection.highlight = true
+        selection.position = math.floor((selection.y - thatDropList.y) / thatDropList.h)
+        
+        -- manage to select the new item in the list and close the dropList
+        if myMouse.clicked == true then
+          thatDropList.selected = selection.position + 1
+          pData = thatDropList.selected
+          thatDropList.isOpen = false
+          myMouse.clicked = false -- avoid stay open if click on the actual selection
+        end
+        
       else selection.highlight = false
       end
     end

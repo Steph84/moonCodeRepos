@@ -11,8 +11,8 @@ end
 function love.mousereleased(x, y, button, istouch)
   if button == 1 then
     MouseControls.clicked = false
-    MouseControls.x = nil
-    MouseControls.y = nil
+    MouseControls.x = 0
+    MouseControls.y = 0
   end
 end
 
@@ -32,13 +32,15 @@ function MouseControls.ClickOnObject(pObject)
 end
 
 function MouseControls.HoverOnObject(pObject)
-  if MouseControls.x > pObject.x and
-     MouseControls.x < pObject.x + pObject.w and
-     MouseControls.y > pObject.y and
-     MouseControls.y < pObject.y + pObject.h then
-    return true
+  MouseControls.currentX, MouseControls.currentY = love.mouse.getPosition()
+  
+  if MouseControls.currentX > pObject.x and
+     MouseControls.currentX < pObject.x + pObject.w and
+     MouseControls.currentY > pObject.y and
+     MouseControls.currentY < pObject.y + pObject.h then
+    return true, MouseControls.currentX, MouseControls.currentY
   end
-  return false
+  return false, MouseControls.currentX, MouseControls.currentY
 end
 
 return MouseControls
