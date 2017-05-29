@@ -8,8 +8,8 @@ function LoadPictures.Load()
   
   LoadPictures.backGround = {}
   LoadPictures.backGround.src = love.graphics.newImage("pictures/backGround.png")
-  LoadPictures.backGround.w = LoadPictures.backArrow.src:getWidth()
-  LoadPictures.backGround.h = LoadPictures.backArrow.src:getHeight()
+  LoadPictures.backGround.w = LoadPictures.backGround.src:getWidth()
+  LoadPictures.backGround.h = LoadPictures.backGround.src:getHeight()
 end
 
 function LoadPictures.Draw(pPicture, pX, pY, pScaleX, pScaleY)

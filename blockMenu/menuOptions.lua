@@ -7,6 +7,7 @@ local wScale, hScale
 local myResolution = require("menuOptionsResolution")
 local myValidate = require("menuOptionsValidate")
 local myPicture = require("loadPictures")
+local myScale = require("scaleBackGround")
 
 -- TODO make a validate button with a lua file dedicated
 
@@ -24,24 +25,7 @@ function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   -- manage the scale of the background picture
   wScale = myPicture.backGround.w/windowWidth
   hScale = myPicture.backGround.h/windowHeight
-  if wScale > hScale and wScale > 1 and hScale > 1 then
-    wScale = hScale
-  elseif wScale < hScale and wScale > 1 and hScale > 1 then
-    hScale = wScale
-  elseif wScale > hScale and wScale < 1 and hScale < 1 then
-    hScale = wScale
-  elseif wScale < hScale and wScale < 1 and hScale < 1 then
-    wScale = hScale
-  elseif wScale > hScale and wScale > 1 and hScale < 1 then
-    hScale = wScale
-  elseif wScale < hScale and wScale > 1 and hScale < 1 then
-    wScale = hScale
-  elseif wScale > hScale and wScale < 1 and hScale > 1 then
-    hScale = wScale
-  elseif wScale < hScale and wScale < 1 and hScale > 1 then
-    wScale = hScale
-  end
-  
+  wScale, hScale = myScale.Load(wScale, hScale)
   
 end
 
@@ -59,7 +43,6 @@ function Options.Draw()
   -- draw the background picture
   love.graphics.setColor(255, 255, 255)
   myPicture.Draw(myPicture.backGround.src, 0, 0, wScale, hScale)
-  
   
   myResolution.Draw()
   myValidate.Draw()

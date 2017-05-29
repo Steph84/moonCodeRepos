@@ -10,9 +10,7 @@ Resolution.window = { 0, 0, 0, false} -- width, height, selection, fullscreen
 local dropListProp = {}
 
 local myDropList = require("dropList")
-
--- load the data for the dropLists
-local myListItems = require("dropListItems")
+local myListItems = require("dropListItems") -- load the data for the dropLists
 
 function Resolution.Load(pWindowWidth, pWindowHeight, pFontSize, pResolutionProp)
   windowWidth = pWindowWidth
@@ -66,7 +64,6 @@ function Resolution.Update(dt)
     Resolution.window[1] = dropListProp.data[Resolution.window[3]][1]
     Resolution.window[2] = dropListProp.data[Resolution.window[3]][2]
   end
-  
 end
 
 function Resolution.Draw()

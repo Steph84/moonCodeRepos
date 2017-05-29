@@ -19,7 +19,6 @@ function Validate.Load(pWindoww, pWindowh, pFontSize)
   
 end
 
-
 function Validate.Update(dt, pGameState)
   
   if love.mouse.isDown(1) then
@@ -49,8 +48,8 @@ function Validate.Draw()
   elseif isValidate == true then love.graphics.setColor(0, 0, 0) end
   love.graphics.rectangle("line", valButton.x, valButton.y, valButton.w, valButton.h)
   
+  -- draw the text in the button
   love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
-  
   love.graphics.printf("Validate", valButton.x, valButton.y - 2 + valButton.h/6, valButton.w, "center")
   
   love.graphics.setColor(255, 255, 255)

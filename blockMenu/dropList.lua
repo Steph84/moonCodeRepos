@@ -85,9 +85,7 @@ function DropList.Update(dt, pData)
       else selection.highlight = false
       end
     end
-  
   end
-  
   
   return pData
 end
@@ -129,7 +127,6 @@ function DropList.Draw()
           thisDropList.x, thisDropList.y - 2,
           thisDropList.w, "center")
       end
-      
     end
     
     -- manage the draw when the dropList is opened
@@ -164,13 +161,9 @@ function DropList.Draw()
                                thisDropList.x, thisDropList.y - 2 + thisDropList.h * (j - 1),
                                thisDropList.w, "center")
         end
-        
       end
-      
     end
-    
   end
-  
 end
 
 return DropList

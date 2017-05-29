@@ -36,7 +36,6 @@ function Credits.Draw()
   
   love.graphics.setColor(255, 255, 255)
   love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", fontSize * 2))
-  
   love.graphics.printf("The Credits", 0, windowHeight * 0.05, windowWidth, "center")
   
   love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
