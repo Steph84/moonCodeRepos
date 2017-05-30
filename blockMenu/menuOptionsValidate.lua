@@ -6,6 +6,7 @@ local isValidate = false
 local timeElapsed = 0
 
 local myMouse = require("mouseControls")
+local myReload = require("menuOptionsSetSettings")
 
 function Validate.Load(pWindoww, pWindowh, pFontSize)
   windoww = pWindoww
@@ -19,7 +20,7 @@ function Validate.Load(pWindoww, pWindowh, pFontSize)
   
 end
 
-function Validate.Update(dt, pGameState)
+function Validate.Update(dt)
   
   if love.mouse.isDown(1) then
     isValidate = myMouse.HoverOnObject(valButton)
@@ -30,6 +31,7 @@ function Validate.Update(dt, pGameState)
     if timeElapsed > 0.7 then
       pGameState = "title"
       isValidate = false
+      myReload.Load()
     end
     -- TODO write into text then reload
   end
