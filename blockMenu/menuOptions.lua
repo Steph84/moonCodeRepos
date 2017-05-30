@@ -7,7 +7,6 @@ local wScale, hScale
 local myResolution = require("menuOptionsResolution")
 local myValidate = require("menuOptionsValidate")
 local myPicture = require("loadPictures")
-local myScale = require("scaleBackGround")
 
 -- TODO make a validate button with a lua file dedicated
 
@@ -23,9 +22,8 @@ function Options.Load(pWindowWidth, pWindowHeight, pFontSize)
   myValidate.Load(windowWidth, windowHeight, fontSize)
   
   -- manage the scale of the background picture
-  wScale = myPicture.backGround.w/windowWidth
-  hScale = myPicture.backGround.h/windowHeight
-  wScale, hScale = myScale.Load(wScale, hScale)
+  wScale = windowWidth/myPicture.backGround.w
+  hScale = windowHeight/myPicture.backGround.h
   
 end
 
