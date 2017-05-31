@@ -6,7 +6,7 @@ local isValidate = false
 local timeElapsed = 0
 
 local myMouse = require("mouseControls")
-local myReload = require("menuOptionsSetSettings")
+local mySetSettings = require("menuOptionsSetSettings")
 
 function Validate.Load(pWindoww, pWindowh, pFontSize)
   windoww = pWindoww
@@ -31,7 +31,8 @@ function Validate.Update(dt, pGameState)
     if timeElapsed > 0.7 then
       pGameState = "title"
       isValidate = false
-      myReload.Load()
+      timeElapsed = 0
+      mySetSettings.Load()
     end
     -- TODO write into text then reload
   end
