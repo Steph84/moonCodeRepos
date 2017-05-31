@@ -1,6 +1,5 @@
 local SetSettings = {}
 
-local settingFile = io.open("data/dataSettings.txt", "r") -- open the data file
 local setFileLines = {}
 local restOfFile
 local lineCount = 1
@@ -8,6 +7,7 @@ local lineCount = 1
 local myOptionsResolution = require("menuOptionsResolution")
 
 function SetSettings.Load()
+  local settingFile = io.open("data/dataSettings.txt", "r") -- open the data file
   for line in settingFile:lines() do
     if(lineCount == 3) then -- 3 for resolution
       setFileLines[#setFileLines + 1] = myOptionsResolution.window[1].."x"..myOptionsResolution.window[2]
@@ -27,7 +27,8 @@ function SetSettings.Load()
   settingFile:write(restOfFile)
   settingFile:close()
   
-  love.load()
+  
+  print("hello")
   
 end
 

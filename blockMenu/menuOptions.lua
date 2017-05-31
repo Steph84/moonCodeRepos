@@ -31,7 +31,7 @@ function Options.Update(dt, pGameState)
   if love.keyboard.isDown("escape") then pGameState = "title" end
   
   myResolution.Update(dt)
-  myValidate.Update(dt)
+  pGameState = myValidate.Update(dt, pGameState)
   
   return pGameState
 end

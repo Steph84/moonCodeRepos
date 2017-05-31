@@ -1,6 +1,9 @@
 [GraphicsSettings]
 Resolution
 800x600
+800x600
+Resolution
+1280x720
 Antialiasing
 2
 

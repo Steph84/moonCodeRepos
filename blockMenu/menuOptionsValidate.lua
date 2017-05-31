@@ -20,7 +20,7 @@ function Validate.Load(pWindoww, pWindowh, pFontSize)
   
 end
 
-function Validate.Update(dt)
+function Validate.Update(dt, pGameState)
   
   if love.mouse.isDown(1) then
     isValidate = myMouse.HoverOnObject(valButton)
