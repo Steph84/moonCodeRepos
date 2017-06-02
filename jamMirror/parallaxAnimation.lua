@@ -12,17 +12,18 @@ end
 function CreateBelt(pLayer, oBackGround, pWindowWidth)
   local item = {}
   
-  item.layer = pLayer
-  item.scale = oBackGround.scaleH
-  local firstPicWidth = oBackGround.w * item.scale
+  item.layer = pLayer -- 1 is the farest, 3 is the nearest
+  item.scale = oBackGround.scaleH -- the height dominate
+  item.picWidth = oBackGround.w * item.scale
+  item.speed = pLayer * 100
+  item.nbPic = math.ceil(pWindowWidth/item.picWidth * 2) -- determine the minimum number of pics
   
-  item.nbPic = math.ceil(pWindowWidth/firstPicWidth * 2)
-  
+  -- coordinates of all the pics
   item.coord = {}
   local i
   for i = 1, item.nbPic do
     item.coord[i] = {}
-    item.coord[i].x = 0 + (i-1) * firstPicWidth
+    item.coord[i].x = 0 + (i-1) * item.picWidth
     item.coord[i].y = 0
   end
   
@@ -46,18 +47,31 @@ function Parallax.Load(pWindowWidth, pWindowHeight)
 end
 
 function Parallax.Update(dt)
-  -- TODO change the x coordinate along specific speed
-end
-
-function Parallax.Draw()
+  
   local i, j
   for i = 1, #animationBelts do
     local thisBelt = animationBelts[i]
     for j = 1, #thisBelt.coord do
       local thisPic = thisBelt.coord[j]
       
-      love.graphics.draw(backGroundPic[i].src, thisPic.x, thisPic.y, 0, thisBelt.scale, thisBelt.scale)
+      -- make the belts moving
+      thisPic.x = thisPic.x - thisBelt.speed * dt
       
+      -- when the first pic disapears, it moves to the end
+      if (thisPic.x + thisBelt.picWidth) < 0 then thisPic.x = thisPic.x + 3 * thisBelt.picWidth end 
+      
+    end
+  end
+end
+
+function Parallax.Draw()
+  
+  local i, j
+  for i = 1, #animationBelts do
+    local thisBelt = animationBelts[i]
+    for j = 1, #thisBelt.coord do
+      local thisPic = thisBelt.coord[j]
+      love.graphics.draw(backGroundPic[i].src, thisPic.x, thisPic.y, 0, thisBelt.scale, thisBelt.scale)
     end
   end
   
