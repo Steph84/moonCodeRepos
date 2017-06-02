@@ -6,7 +6,6 @@ local windowWidth = 800
 local windowHeight = 600
 
 local gameState = "menu"
-local reload = false
 
 local myMenu = require("menu")
 

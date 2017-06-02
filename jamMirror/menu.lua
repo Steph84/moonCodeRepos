@@ -69,40 +69,40 @@ function Menu.Update(dt)
     if Menu.menuState == "title" then soundObjects.back:play() end
   end
   
-	-- using keypressed function ponctual action
-	function love.keypressed(key, isRepeat)
-	  if Menu.menuState == "title" then
-		-- manage the looping navigation through the menu
-		if key == "up" then
-		  soundObjects.selectionMove:stop() -- avoid to overlap the sounds
-		  soundObjects.selectionMove:play()
-		  selectionItems.itemSelected = selectionItems.itemSelected - 1
-		end
-		if key == "down" then
-		  soundObjects.selectionMove:stop() -- avoid to overlap the sounds
-		  soundObjects.selectionMove:play()
-		  selectionItems.itemSelected = selectionItems.itemSelected + 1
-		end
-		
-		-- manage the selection
-		if key == "return" then
-		  
-		  -- avoid to overlap the sounds
-		  soundObjects.selectionMove:stop()
-		  soundObjects.selectionValidate:stop()
-		  soundObjects.selectionValidate:play()
-		  
-		  if selectionItems.itemSelected == 1 then Menu.menuState = "game" end -- start a new game
-		  if selectionItems.itemSelected == #selectionItems.data then
-			love.timer.sleep(0.6) -- wait a moment to heard the sound effect
-			love.event.quit() -- exit the game
-		  end
-		  
-		  -- if itemSelected == 2 then gameState = "loadGame" end
-		  if selectionItems.itemSelected == 2 then Menu.menuState = "credits" end
-		end
-	  end
-	end
+  -- using keypressed function ponctual action
+  function love.keypressed(key, isRepeat)
+    if Menu.menuState == "title" then
+      -- manage the looping navigation through the menu
+      if key == "up" then
+        soundObjects.selectionMove:stop() -- avoid to overlap the sounds
+        soundObjects.selectionMove:play()
+        selectionItems.itemSelected = selectionItems.itemSelected - 1
+      end
+      if key == "down" then
+        soundObjects.selectionMove:stop() -- avoid to overlap the sounds
+        soundObjects.selectionMove:play()
+        selectionItems.itemSelected = selectionItems.itemSelected + 1
+      end
+      
+      -- manage the selection
+      if key == "return" then
+        
+        -- avoid to overlap the sounds
+        soundObjects.selectionMove:stop()
+        soundObjects.selectionValidate:stop()
+        soundObjects.selectionValidate:play()
+        
+        if selectionItems.itemSelected == 1 then Menu.menuState = "game" end -- start a new game
+        if selectionItems.itemSelected == #selectionItems.data then
+          love.timer.sleep(0.6) -- wait a moment to heard the sound effect
+          love.event.quit() -- exit the game
+        end
+        
+        -- if itemSelected == 2 then gameState = "loadGame" end
+        if selectionItems.itemSelected == 2 then Menu.menuState = "credits" end
+      end
+    end
+  end
   
 end
 
@@ -144,4 +144,6 @@ function Menu.Draw()
   
 end
 
+  
+  
 return Menu

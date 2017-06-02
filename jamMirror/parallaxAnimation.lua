@@ -1,4 +1,5 @@
 local Parallax = {}
+Parallax.fullSpeed = false
 
 local windowWidth, windowHeight
 local backGroundPic = {}
@@ -15,7 +16,7 @@ function CreateBelt(pLayer, oBackGround, pWindowWidth)
   item.layer = pLayer -- 1 is the farest, 3 is the nearest
   item.scale = oBackGround.scaleH -- the height dominate
   item.picWidth = oBackGround.w * item.scale
-  item.speed = pLayer * 100
+  item.speed = 0 -- pLayer * 70
   item.nbPic = math.ceil(pWindowWidth/item.picWidth * 2) -- determine the minimum number of pics
   
   -- coordinates of all the pics
@@ -56,6 +57,10 @@ function Parallax.Update(dt)
       
       -- make the belts moving
       thisPic.x = thisPic.x - thisBelt.speed * dt
+      if thisBelt.speed < (70 * thisBelt.layer/3) then
+        thisBelt.speed = thisBelt.speed + thisBelt.layer * dt * 5
+      else Parallax.fullSpeed = true
+      end
       
       -- when the first pic disapears, it moves to the end
       if (thisPic.x + thisBelt.picWidth) < 0 then thisPic.x = thisPic.x + 3 * thisBelt.picWidth end 
