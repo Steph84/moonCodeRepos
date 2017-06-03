@@ -5,6 +5,7 @@ local windowWidth, windowHeight, fontSize
 local dataObject = {} -- all the credits
 local dataBloc = {} -- bloc of credits
 local dataNumberLines = 3 -- title, name, url
+local itemFonts = {}
 
 local myPicture = require("loadPictures")
 
@@ -12,6 +13,10 @@ function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   fontSize = pFontSize
+  
+  itemFonts.credits1 = love.graphics.newFont("fonts/Capture_it.ttf", fontSize * 2)
+  itemFonts.credits2 = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize)
+  
   dataObject = {}
   
   local iteration = 0
@@ -35,10 +40,10 @@ end
 function Credits.Draw()
   
   love.graphics.setColor(255, 255, 255)
-  love.graphics.setFont(love.graphics.newFont("fonts/Capture_it.ttf", fontSize * 2))
+  love.graphics.setFont(itemFonts.credits1)
   love.graphics.printf("The Credits", 0, windowHeight * 0.05, windowWidth, "center")
   
-  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
+  love.graphics.setFont(itemFonts.credits2)
   local i, j
   for i = 1, #dataObject do
     for j = 1, #dataObject[i] do
@@ -53,7 +58,7 @@ function Credits.Draw()
   -- draw the back instructions
   love.graphics.setColor(255, 255, 255)
   myPicture.Draw(myPicture.backArrow.src, windowWidth*0.01, windowHeight*0.01, 32/myPicture.backArrow.w, 32/myPicture.backArrow.h)
-  love.graphics.setFont(love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize))
+  love.graphics.setFont(itemFonts.credits2)
   love.graphics.print("Esc ", windowWidth*0.06, windowHeight*0.01)
   
 end
