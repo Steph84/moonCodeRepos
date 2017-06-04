@@ -24,8 +24,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   sizeFonts.version = sizeFonts.fontSize * 0.75
   sizeFonts.credits = sizeFonts.fontSize * 0.75
   
-  itemFonts.titles = love.graphics.newFont("fonts/Capture_it.ttf", sizeFonts.titles)
-  itemFonts.subTitles = love.graphics.newFont("fonts/AlexBrush-Regular.ttf", sizeFonts.titles)
+  itemFonts.titles = love.graphics.newFont("fonts/Pacifico.ttf", sizeFonts.titles)
   itemFonts.selections = love.graphics.newFont("fonts/Pacifico.ttf", sizeFonts.selections)
   itemFonts.version = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", sizeFonts.version)
   
@@ -116,14 +115,11 @@ end
 function Menu.Draw()
   
   if Menu.menuState == "title" then
-    -- draw the title and subtitle
+    -- draw the title
     love.graphics.setColor(0, 0, 255)
     love.graphics.setFont(itemFonts.titles)
-    love.graphics.printf("SALEM", 0, anchorTitleY, windowWidth, "center")
+    love.graphics.printf("Into The Mirror", 0, anchorTitleY, windowWidth, "center")
     
-    love.graphics.setColor(255, 0, 255)
-    love.graphics.setFont(itemFonts.subTitles)
-    love.graphics.printf("Story", 0, anchorTitleY + sizeFonts.titles, windowWidth, "center")
     
     -- draw the menu selection
     love.graphics.setFont(itemFonts.selections)
