@@ -17,7 +17,7 @@ function CreateBelt(pLayer, oBackGround, pWindowWidth)
   item.scale = oBackGround.scaleH -- the height dominate
   item.picWidth = oBackGround.w * item.scale
   item.speed = 0 -- pLayer * 70
-  item.nbPic = math.ceil(pWindowWidth/item.picWidth * 2) -- determine the minimum number of pics
+  item.nbPic = math.ceil(pWindowWidth/item.picWidth) + 1 -- determine the minimum number of pics
   
   -- coordinates of all the pics
   item.coord = {}
@@ -63,7 +63,7 @@ function Parallax.Update(dt)
       end
       
       -- when the first pic disapears, it moves to the end
-      if (thisPic.x + thisBelt.picWidth) < 0 then thisPic.x = thisPic.x + 3 * thisBelt.picWidth end 
+      if (thisPic.x + thisBelt.picWidth) < 0 then thisPic.x = thisPic.x + thisBelt.nbPic * thisBelt.picWidth end 
       
     end
   end

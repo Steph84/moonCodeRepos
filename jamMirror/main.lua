@@ -22,7 +22,7 @@ function love.load()
   
   myParallax.Load(windowWidth, windowHeight)
   myMenu.Load(windowWidth, windowHeight)
-  myGame.load(windowWidth, windowHeight)
+  myGame.Load(windowWidth, windowHeight)
   
 end
 
