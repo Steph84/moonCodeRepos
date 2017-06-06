@@ -53,11 +53,13 @@ function Scenario.Draw()
   local i, j
   for i = 1, endOfText do -- foreach block
     for j = 1, #dataObject[i] do -- foreach line in each block
-      love.graphics.printf(dataObject[i][j],
-                           0,
-                           -- offset 10%       + offset between 2 blocks        + offset between 2 lines in the same block
-                           windowHeight * 0.1 + (i - 1) * scenarFont.size * 5 + (j - 1) * scenarFont.size,
-                           windowWidth, "center")
+      love.graphics.printf(
+                            dataObject[i][j],
+                            0,
+                            -- offset 10%       + offset between 2 blocks        + offset between 2 lines in the same block
+                            windowHeight * 0.1 + (i - 1) * scenarFont.size * 5 + (j - 1) * scenarFont.size,
+                            windowWidth, "center"
+                          )
     end
   end
   

@@ -16,7 +16,7 @@ local drawParallax, drawMenu = true, false
 
 function love.load()
   
-  --love.window.setFullscreen(true)
+  love.window.setFullscreen(true)
   windowWidth, windowHeight = love.graphics.getDimensions()
   love.window.setTitle("Into the Mirror")
   
