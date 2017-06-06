@@ -1,0 +1,4 @@
+local MapGen = {}
+
+
+return MapGen
