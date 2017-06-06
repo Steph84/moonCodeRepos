@@ -5,7 +5,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 local windowWidth, windowHeight
 
-local gameState = "menu"
+local appState = "game"
 
 local myParallax = require("parallaxAnimation")
 local myMenu = require("menu")
@@ -16,7 +16,7 @@ local drawParallax, drawMenu = true, false
 
 function love.load()
   
-  love.window.setFullscreen(true)
+  --love.window.setFullscreen(true)
   windowWidth, windowHeight = love.graphics.getDimensions()
   love.window.setTitle("Into the Mirror")
   
@@ -28,7 +28,7 @@ end
 
 function love.update(dt)
   
-  if gameState == "menu" then
+  if appState == "menu" then
     
     if myMenu.menuState == "title" then
       drawParallax = true
@@ -45,18 +45,18 @@ function love.update(dt)
     if drawParallax == true then myParallax.Update(dt) end
     if drawMenu == true then myMenu.Update(dt) end
     
-    if myMenu.menuState == "game" then gameState = "game" end
+    if myMenu.menuState == "game" then appState = "game" end
   end
   
-  if gameState == "game" then
-    gameState = myGame.Update(dt, gameState)
+  if appState == "game" then
+    myGame.Update(dt)
   end
   
 end
 
 function love.draw()
   
-  if gameState == "menu" then
+  if appState == "menu" then
     if drawParallax == true then myParallax.Draw() end
     if drawMenu == true then myMenu.Draw() end
   else 
@@ -64,7 +64,7 @@ function love.draw()
     drawParallax = false
   end
   
-  if gameState == "game" then
+  if appState == "game" then
     myGame.Draw()
   end
   

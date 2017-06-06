@@ -116,7 +116,7 @@ function Menu.Draw()
   
   if Menu.menuState == "title" then
     -- draw the title
-    love.graphics.setColor(0, 0, 255)
+    love.graphics.setColor(0, 0, 0)
     love.graphics.setFont(itemFonts.titles)
     love.graphics.printf("Into The Mirror", 0, anchorTitleY, windowWidth, "center")
     
