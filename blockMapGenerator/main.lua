@@ -1,3 +1,4 @@
+math.randomseed(os.time())
 io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -17,7 +18,7 @@ function love.load()
 end
 
 function love.update(dt)
-  myMapGen.Update(dt)
+  
 end
 
 function love.draw()
