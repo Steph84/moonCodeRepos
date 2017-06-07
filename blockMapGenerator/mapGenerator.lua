@@ -4,6 +4,7 @@ local mapSize = {}
 mapSize.width = 0
 mapSize.height = 0
 local TILE_SIZE = 32
+local MAX_ITERATION = 500
 
 local tileSheet = {}
 local tileTextures = {}
@@ -15,18 +16,37 @@ function CreateTile(pId, pLin, pCol, pIdLeft, pIdUp)
   thisTile.id = pId
   thisTile.x = (pCol - 1) * TILE_SIZE
   thisTile.y = (pLin - 1) * TILE_SIZE
-  if pId == 1 then
-    thisTile.idTile = 1 --math.random(1, 48)
-  else
-    if pIdLeft ~= 1 then
-      thisTile.idTile = myMapping[pIdLeft][math.random(#myMapping[pIdLeft])]
-    elseif pIdUp ~= 0 then
-      
-    elseif pIdLeft ~= 0 and pIdUp ~= 0 then
   
+  -- first tile
+  if pId == 1 then thisTile.idTile = math.random(1, 48)
+  
+  -- tiles from the first column
+  elseif pCol == 1 then
+  thisTile.idTile = myMapping.up[pIdUp][math.random(#myMapping.up[pIdUp])]
+  
+  -- tiles with a tile up and a tile left
+  elseif pIdLeft ~= 0 and pIdLeft ~= nil and pIdUp ~= 0 and pIdUp ~= nil then
+    local tempLeft, tempUp, iteration = -1, 0, 0
+    while tempLeft ~= tempUp and iteration < MAX_ITERATION do
+      iteration = iteration + 1
+      tempLeft = myMapping.left[pIdLeft][math.random(#myMapping.left[pIdLeft])]
+      tempUp = myMapping.up[pIdUp][math.random(#myMapping.up[pIdUp])]
     end
-  end
+    if iteration == MAX_ITERATION then thisTile.idTile = 0
+    else thisTile.idTile = tempLeft end
   
+  -- tiles with just a tile left
+  elseif pIdLeft ~= 0 and pIdLeft ~= nil then
+    thisTile.idTile = myMapping.left[pIdLeft][math.random(#myMapping.left[pIdLeft])]
+  
+  -- tiles with just a tile up
+  elseif pIdUp ~= 0 and pIdUp ~= nil then
+    thisTile.idTile = myMapping.up[pIdUp][math.random(#myMapping.up[pIdUp])]
+  
+  -- tile random when no up or left
+  elseif pIdLeft == 0 and pIdUp == 0 then thisTile.idTile = math.random(1, 48)
+  
+  end
   
   return thisTile
 end
@@ -35,7 +55,6 @@ end
 function MapGen.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
-  
   
   -- get all the tiles in the tile sheet
   tileSheet.src = love.graphics.newImage("tileSets/terrainTiles32x32.png")
@@ -77,16 +96,27 @@ end
 
 
 function MapGen.Draw()
+  local voidCount, voidPercent = 0, 0
+  
   for l = 1, mapSize.height do
     for c = 1, mapSize.width do
       local t = MapGen[l][c]
       local texQuad = tileTextures[t.idTile] -- gather the texture of this id
+      if t.idTile == 0 then
+        voidCount = voidCount + 1
+        love.graphics.draw(tileSheet.src, tileTextures[17], t.x, t.y) -- ground if void
+      end
       if texQuad ~= nil then
         love.graphics.draw(tileSheet.src, texQuad, t.x, t.y)
       end
       --love.graphics.rectangle("fill", t.x + 1, t.y + 1, TILE_SIZE - 2, TILE_SIZE - 2)
     end
   end
+  
+  voidPercent = (voidCount/(mapSize.width * mapSize.height)) * 100
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.printf("void : "..voidCount.." and percent : "..voidPercent.." %", 0, windowHeight - 32, windowWidth, "center")
+  
 end
 
 return MapGen
