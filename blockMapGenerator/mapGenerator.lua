@@ -104,7 +104,7 @@ function MapGen.Draw()
       local texQuad = tileTextures[t.idTile] -- gather the texture of this id
       if t.idTile == 0 then
         voidCount = voidCount + 1
-        love.graphics.draw(tileSheet.src, tileTextures[17], t.x, t.y) -- ground if void
+        --love.graphics.draw(tileSheet.src, tileTextures[17], t.x, t.y) -- ground if void
       end
       if texQuad ~= nil then
         love.graphics.draw(tileSheet.src, texQuad, t.x, t.y)
