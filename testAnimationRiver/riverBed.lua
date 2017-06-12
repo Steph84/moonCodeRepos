@@ -4,39 +4,11 @@ local windowWidth, windowHeight
 RiverBed.elements = {}
 local riverWidth = 200
 
-function StraigthHorizontal(pId, pXStart, pYStart, pXEnd, pYEnd)
+function RiverElement(pId, pCoords)
   local item = {}
   item.id = pId
-  item.x = pXStart
-  item.y = pYStart
-  item.w = pXEnd - pXStart
-  item.h = pYEnd - pYStart
-  table.insert(RiverBed.elements, item)
-end
-
-function StraigthVertical(pId, pXStart, pYStart, pXEnd, pYEnd)
-  local item = {}
-  item.id = pId
-  item.x = pXStart
-  item.y = pYStart
-  item.w = pXEnd - pXStart
-  item.h = pYEnd - pYStart
-  table.insert(RiverBed.elements, item)
-end
-
-function StraigthDiagonal(pId, pXStart, pYStart, pXEnd, pYEnd, pGranularity, pWindowWidth, pWindowHeight, pRiverWidth)
-  local item = {}
-  local itemPart = {}
-  local j
-  for j = 1, (pYEnd - pYStart - pRiverWidth) do
-    itemPart.id = j
-    itemPart.x = pXStart
-    itemPart.y = pYStart
-    itemPart.w = windowWidth/2
-    itemPart.h = riverWidth
-    table.insert(item, itemPart)
-  end
-  item.id = pId
+  item.coords = pCoords
+  item.coeffDir = (pCoords[6] - pCoords[4]) / (pCoords[5] - pCoords[3])
   
   table.insert(RiverBed.elements, item)
 end
@@ -45,19 +17,24 @@ function RiverBed.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   
-  --StraigthHorizontal(1, 0, 0, windowWidth - riverWidth, riverWidth)
-  --StraigthVertical(2, windowWidth - riverWidth, 0, windowWidth, windowHeight)
-  StraigthDiagonal(3, 0, 0, windowWidth, windowHeight, windowHeight/2, windowWidth, windowHeight, riverWidth)
+  local firstElement = {0, 0,
+                        0 + riverWidth, 0,
+                        windowWidth, windowHeight,
+                        windowWidth - riverWidth, windowHeight}
+  RiverElement(1, firstElement)
   
 end
 
 function RiverBed.Draw()
   love.graphics.setColor(0, 0, 255)
-  local i
+  local i, j
   for i = 1, #RiverBed.elements do
     local e = RiverBed.elements[i]
-    love.graphics.rectangle("fill", e.x, e.y, e.w, e.h)
+    love.graphics.polygon("fill", e.coords)
   end
+  
+  
+  
 end
 
 
