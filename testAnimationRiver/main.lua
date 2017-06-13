@@ -18,7 +18,7 @@ function love.load()
 end
 
 function love.update(dt)
-
+  myBed.Update(dt)
 end
 
 function love.draw()

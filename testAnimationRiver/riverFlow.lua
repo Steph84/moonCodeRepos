@@ -6,6 +6,7 @@ local listTides = {}
 listTides.initNb = 10
 listTides.maxNb = 100
 listTides.maxSpeed = 3
+local bedElements
 
 function CreateTide(pId, windowWidth, windowHeight, pBedElements)
   local item = {}
@@ -26,20 +27,33 @@ end
 function RiverFlow.Load(pWindowWidth, pWindowHeight, pBedElements)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
+  bedElements = pBedElements
   
   local i, j
   for i = 1, listTides.initNb do
     for j = 1, #pBedElements do
-      CreateTide(i, windowWidth, windowHeight, pBedElements[j])
+      CreateTide(i, windowWidth, windowHeight, bedElements[j])
     end
   end
   
 end
 
 function RiverFlow.Update(dt)
-  local j
-  for j = 1, #listTides do
-    
+  local i, j
+  for i = #listTides, 1, -1 do
+    for j = 1, #bedElements do
+      local a = listTides[i]
+      a.x = a.x + listTides.maxSpeed
+      a.y = a.y + bedElements[j].averCoeffDir * listTides.maxSpeed
+      
+      if a.x > windowWidth or a.y > windowHeight then table.remove(listTides, i) end
+      
+      --[[
+      if #listTides < listTides.maxNb then
+        createTide(#listTides + 1, riverCoord.y, riverSize.w/pWindowWidth * 100, riverSize.h)
+      end
+      --]]
+    end
   end
 end
 

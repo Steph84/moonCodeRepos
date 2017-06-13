@@ -14,7 +14,7 @@ function RiverElement(pId, pCoords)
   item.rightBankCoeffDir = (pCoords[8] - pCoords[2]) / (pCoords[7] - pCoords[1])
   item.leftBankOrdo = pCoords[4] - item.leftBankCoeffDir * pCoords[3]
   item.rightBankOrdo = pCoords[2] - item.rightBankCoeffDir * pCoords[1]
-  item.averageCoeffDir = (item.leftBankCoeffDir + item.rightBankCoeffDir) /2
+  item.averCoeffDir = (item.leftBankCoeffDir + item.rightBankCoeffDir) /2
   
   table.insert(RiverBed.elements, item)
 end
@@ -31,6 +31,10 @@ function RiverBed.Load(pWindowWidth, pWindowHeight)
   
   myFlow.Load(windowWidth, windowHeight, RiverBed.elements)
   
+end
+
+function RiverBed.Update(dt)
+  myFlow.Update(dt)
 end
 
 function RiverBed.Draw()
