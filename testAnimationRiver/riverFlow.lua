@@ -3,7 +3,7 @@ local RiverFlow = {}
 
 local windowWidth, windowHeight
 local listTides = {}
-listTides.initNb = 10
+listTides.initNb = 100
 listTides.maxNb = 100
 listTides.maxSpeed = 3
 local bedElements
@@ -12,7 +12,7 @@ function CreateTide(pId, windowWidth, windowHeight, pBedElements)
   local item = {}
   
   item.id = pId
-  item.x = math.random(1, windowWidth)
+  item.x = math.random(1, windowWidth * 0.2)
   item.y = -1
   local leftBankY = pBedElements.leftBankCoeffDir * item.x + pBedElements.leftBankOrdo
   local rightBankY = pBedElements.rightBankCoeffDir * item.x + pBedElements.rightBankOrdo 
@@ -44,7 +44,9 @@ function RiverFlow.Update(dt)
     for j = 1, #bedElements do
       local a = listTides[i]
       a.x = a.x + listTides.maxSpeed
-      a.y = a.y + bedElements[j].averCoeffDir * listTides.maxSpeed
+      local averYTheo = a.x * bedElements[j].averCoeffDir + bedElements[j].averOrdo
+      if averYTheo < a.y then a.y = a.y + bedElements[j].rightBankCoeffDir * listTides.maxSpeed end
+      if averYTheo > a.y then a.y = a.y + bedElements[j].leftBankCoeffDir * listTides.maxSpeed end
       
       if a.x > windowWidth or a.y > windowHeight then table.remove(listTides, i) end
       

@@ -15,6 +15,7 @@ function RiverElement(pId, pCoords)
   item.leftBankOrdo = pCoords[4] - item.leftBankCoeffDir * pCoords[3]
   item.rightBankOrdo = pCoords[2] - item.rightBankCoeffDir * pCoords[1]
   item.averCoeffDir = (item.leftBankCoeffDir + item.rightBankCoeffDir) /2
+  item.averOrdo = (item.leftBankOrdo + item.rightBankOrdo) /2
   
   table.insert(RiverBed.elements, item)
 end
