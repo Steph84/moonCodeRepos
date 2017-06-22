@@ -33,21 +33,26 @@ function Map.Load(pWindowWidth, pWindowHeight)
   
   Map.size = { (2 * windowWidth)/TILE_SIZE, (windowHeight - (2 * TILE_SIZE))/TILE_SIZE}
   local lin, col
+  local idGrid = 0
   for lin = 1, Map.size[2] do
     Map.grid[lin] = {}
     for col = 1, Map.size[1] do
+      idGrid = idGrid + 1
       if lin == Map.size[2] then
         if col == 1 then
-          Map.grid[lin][col] = "ground1"
+          Map.grid[lin][col] = {id = idGrid, x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE, idText = 1, texture = "ground"}
         elseif col == Map.size[1] then
-          Map.grid[lin][col] = "ground3"
-        else Map.grid[lin][col] = "ground2"
+          Map.grid[lin][col] = {id = idGrid, x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE, idText = 3, texture = "ground"}
+        else Map.grid[lin][col] = {id = idGrid, x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE, idText = 2, texture = "ground"}
         end
         
-      else Map.grid[lin][col] = "void" end
+      else Map.grid[lin][col] = {id = idGrid, x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE, idText = -1, texture = "void"} end
     end
   end
   
+end
+
+function Map.Update(dt)
   
 end
 
@@ -55,13 +60,9 @@ function Map.Draw()
   local lin, col
   for lin = 1, Map.size[2] do
     for col = 1, Map.size[1] do
-      if Map.grid[lin][col] == "ground2" then
-        love.graphics.draw(Map.TileSheet, Map.tileTextures[2],  (col-1)*TILE_SIZE, (lin-1)*TILE_SIZE)
-      elseif Map.grid[lin][col] == "ground1" then
-        love.graphics.draw(Map.TileSheet, Map.tileTextures[1],  (col-1)*TILE_SIZE, (lin-1)*TILE_SIZE)
-      elseif Map.grid[lin][col] == "ground3" then
-        love.graphics.draw(Map.TileSheet, Map.tileTextures[3],  (col-1)*TILE_SIZE, (lin-1)*TILE_SIZE)
-      else Map.grid[lin][col] = "void" end
+      local g = Map.grid[lin][col]
+      if g.texture == "void" then
+      else love.graphics.draw(Map.TileSheet, Map.tileTextures[g.idText],  g.x, g.y) end
     end
   end
 end

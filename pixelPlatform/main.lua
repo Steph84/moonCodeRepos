@@ -22,7 +22,7 @@ function love.load()
 end
 
 function love.update(dt)
-
+  myHero.Update(dt)
 end
 
 function love.draw()
