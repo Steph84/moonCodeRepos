@@ -32,7 +32,7 @@ function Map.Load(pWindowWidth, pWindowHeight)
   end
   
   Map.size = { w = (2 * windowWidth)/Map.TILE_SIZE, h = (windowHeight - (2 * Map.TILE_SIZE))/Map.TILE_SIZE,
-               pixW = 2 * windowWidth, pixH = windowHeight - (2 * Map.TILE_SIZE)}
+               pixW = 2 * windowWidth, pxH = windowHeight - (2 * Map.TILE_SIZE)}
 
   local lin, col
   local idGrid = 0
@@ -54,20 +54,31 @@ function Map.Load(pWindowWidth, pWindowHeight)
   
 end
 
-function Map.Update(dt, pHeroX)
+function Map.Update(dt, pHero)
   
-  if pHeroX > windowWidth * 0.6 then
-  
+  if pHero.x > windowWidth * pHero.wall
+  and (Map.grid[Map.size.h][Map.size.w].x + Map.TILE_SIZE) > windowWidth
+  and pHero.isWalking == true then
     local lin, col
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        
-        g.x = g.x - 100 * dt
+        g.x = g.x - pHero.speedWalk * dt
       end
     end
-    
   end
+  if pHero.x < windowWidth * (1-pHero.wall)
+  and Map.grid[1][1].x < 0
+  and pHero.isWalking == true then
+    local lin, col
+    for lin = 1, Map.size.h do
+      for col = 1, Map.size.w do
+        local g = Map.grid[lin][col]
+        g.x = g.x + pHero.speedWalk * dt
+      end
+    end
+  end
+  
 end
 
 function Map.Draw()

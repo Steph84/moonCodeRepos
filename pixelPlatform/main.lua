@@ -27,9 +27,3 @@ function love.draw()
   myBackGround.Draw()
   myHero.Draw()
 end
-
-function love.keypressed(key)
-  
-  print(key)
-  
-end
