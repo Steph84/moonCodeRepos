@@ -10,7 +10,7 @@ function Map.Load(pWindowWidth, pWindowHeight)
   windowHeight = pWindowHeight
   
   -- load the tile sheet
-  Map.TileSheet = love.graphics.newImage("pictures/groundBLocks.png")
+  Map.TileSheet = love.graphics.newImage("pictures/groundBlocks.png")
   local nbColumns = Map.TileSheet:getWidth() / Map.TILE_SIZE
   local nbLines = Map.TileSheet:getHeight() / Map.TILE_SIZE
   
@@ -31,24 +31,31 @@ function Map.Load(pWindowWidth, pWindowHeight)
     end
   end
   
+  -- initialize the size of the map
   Map.size = { w = (2 * windowWidth)/Map.TILE_SIZE, h = (windowHeight - (2 * Map.TILE_SIZE))/Map.TILE_SIZE,
                pixW = 2 * windowWidth, pxH = windowHeight - (2 * Map.TILE_SIZE)}
 
+  -- building the map
   local lin, col
   local idGrid = 0
   for lin = 1, Map.size.h do
     Map.grid[lin] = {}
     for col = 1, Map.size.w do
       idGrid = idGrid + 1
+      -- initialize the map
+      Map.grid[lin][col] = {id = idGrid, x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE, idText = -1, texture = "void"}
+      
       if lin == Map.size.h then
+        Map.grid[lin][col].texture = "ground"
         if col == 1 then
-          Map.grid[lin][col] = {id = idGrid, x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE, idText = 1, texture = "ground"}
+          Map.grid[lin][col].idText = 1
         elseif col == Map.size.w then
-          Map.grid[lin][col] = {id = idGrid, x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE, idText = 3, texture = "ground"}
-        else Map.grid[lin][col] = {id = idGrid, x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE, idText = 2, texture = "ground"}
+          Map.grid[lin][col].idText = 3
+        else 
+          Map.grid[lin][col].idText = 2
         end
-        
-      else Map.grid[lin][col] = {id = idGrid, x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE, idText = -1, texture = "void"} end
+      end
+      
     end
   end
   
@@ -56,6 +63,7 @@ end
 
 function Map.Update(dt, pHero)
   
+  -- manage the map movement
   if pHero.x > windowWidth * pHero.wall
   and (Map.grid[Map.size.h][Map.size.w].x + Map.TILE_SIZE) > windowWidth
   and pHero.isWalking == true then
