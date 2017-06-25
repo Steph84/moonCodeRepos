@@ -8,6 +8,7 @@ Map.TILE_SIZE = 32
 function Map.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
+  local build = false
   
   -- load the tile sheet
   Map.TileSheet = love.graphics.newImage("pictures/groundBlocks.png")
@@ -55,8 +56,23 @@ function Map.Load(pWindowWidth, pWindowHeight)
           Map.grid[lin][col].idText = 2
         end
       end
-      
     end
+  end
+  
+  -- test for a platform
+  if build == false then
+    local azerty = math.random(Map.size.w/4, Map.size.w/2)
+    local myline = Map.size.h - 4
+    Map.grid[myline][azerty].idText = 1
+    Map.grid[myline][azerty].texture = "ground"
+    local it
+    for it = 1, 3 do
+      Map.grid[myline][azerty + it].idText = 2
+      Map.grid[myline][azerty + it].texture = "ground"
+    end
+    Map.grid[myline][azerty + 4].idText = 3
+    Map.grid[myline][azerty + 4].texture = "ground"
+    build = true
   end
   
 end
