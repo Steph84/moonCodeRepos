@@ -33,7 +33,7 @@ function Map.Load(pWindowWidth, pWindowHeight)
   
   -- initialize the size of the map
   Map.size = { w = (2 * windowWidth)/Map.TILE_SIZE, h = (windowHeight - (2 * Map.TILE_SIZE))/Map.TILE_SIZE,
-               pixW = 2 * windowWidth, pxH = windowHeight - (2 * Map.TILE_SIZE)}
+               pixW = 2 * windowWidth, pixH = windowHeight - (2 * Map.TILE_SIZE)}
 
   -- building the map
   local lin, col
@@ -71,7 +71,7 @@ function Map.Update(dt, pHero)
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x - pHero.speedWalk * dt
+        g.x = g.x - pHero.vx * dt
       end
     end
   end
@@ -82,7 +82,7 @@ function Map.Update(dt, pHero)
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x + pHero.speedWalk * dt
+        g.x = g.x + pHero.vx * dt
       end
     end
   end

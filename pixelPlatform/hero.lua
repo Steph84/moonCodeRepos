@@ -7,18 +7,24 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   myMap.Load(windowWidth, windowHeight)
-  
   Hero.pic = love.graphics.newImage("pictures/char01Stand.png") -- standing pic
-  Hero.x = 200
-  Hero.y = 500
   Hero.w = Hero.pic:getWidth()
   Hero.h = Hero.pic:getHeight()
-  Hero.speedWalk = 100 -- speed to move
-  Hero.walkAnimSpeed = 10 -- speed to anim the walking
+  Hero.x = 200
+  Hero.y = myMap.size.pixH - Hero.h - (32 - 1)
+  Hero.vx = 100
+  Hero.vy = 0
+  
   Hero.wall = 0.7 -- threshold to stop the character and moving the map
+  
+  Hero.walkAnimSpeed = 10 -- speed to anim the walking
   Hero.isWalking = false
   Hero.picCurrent = 1 -- for walking animation
   Hero.walkAnim = {}
+  
+  Hero.gravity = 9.81 * 105
+  Hero.jumpSpeed = Hero.gravity/2
+  Hero.jumping = false
   
   -- load the animation walking tile
   Hero.anim = love.graphics.newImage("pictures/char01Walk.png")
@@ -56,9 +62,21 @@ function Hero.Update(dt)
   Hero.linFeet = math.ceil(Hero.yFeet / myMap.TILE_SIZE)
   Hero.colFeet = math.ceil((Hero.xFeet - myMap.grid[1][1].x) / myMap.TILE_SIZE)
   
-  -- while the feet arn't on the ground, gravity fall
-  if myMap.grid[Hero.linFeet][Hero.colFeet].texture ~= "ground" then
-    Hero.y = Hero.y + 9.81 * dt * 10
+  -- manage the jump
+  if love.keyboard.isDown("space") and Hero.jumping == false then
+    Hero.vy = Hero.jumpSpeed
+    Hero.jumping = true
+  end
+  if Hero.jumping == true then
+    Hero.y = Hero.y - Hero.vy * dt
+    Hero.vy = Hero.vy - Hero.gravity * dt
+  end
+  if myMap.grid[Hero.linFeet][Hero.colFeet].texture == "ground" then
+    Hero.vy = 0
+    Hero.jumping = false
+    if Hero.y > myMap.size.pixH - Hero.h - (32 - 1) then
+      Hero.y = myMap.size.pixH - Hero.h - (32 - 1)
+    end
   end
   
   -- manage the left direction
@@ -66,7 +84,7 @@ function Hero.Update(dt)
     Hero.isWalking = true
     if Hero.x > windowWidth*(1-Hero.wall) -- if the hero is after the left threshold
     or (myMap.grid[1][1].x > -1 and Hero.x > 10) then -- if the map stop to move
-      Hero.x = Hero.x - Hero.speedWalk * dt
+      Hero.x = Hero.x - Hero.vx * dt
     end
   end
   -- manage the right direction
@@ -74,7 +92,7 @@ function Hero.Update(dt)
     Hero.isWalking = true
     if Hero.x < windowWidth*Hero.wall  -- if the hero is before the right threshold
     or (myMap.grid[1][1].x < (windowWidth - myMap.size.pixW) and (Hero.x + Hero.w) < windowWidth) then  -- if the map stop to move
-      Hero.x = Hero.x + Hero.speedWalk * dt
+      Hero.x = Hero.x + Hero.vx * dt
     end
   end
   
@@ -91,12 +109,16 @@ function Hero.Draw()
     love.graphics.draw(Hero.pic, Hero.x, Hero.y)
   end
 
-  love.graphics.print(Hero.linFeet, 500, 500)
-  love.graphics.print(Hero.colFeet, 500, 550)
+  love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 10, windowWidth, "left")
+  
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.x, Hero.y + Hero.h/2, 2)
   love.graphics.circle("fill", Hero.xFeet, Hero.y, 2)
   love.graphics.circle("fill", Hero.x + Hero.w, Hero.y + Hero.h/2, 2)
+  
+  -- standard jump
+  --love.graphics.line(0, myMap.size.pixH - (32 - 1) - (4*32), windowWidth, myMap.size.pixH - (32 - 1) - (4*32))
+  
   
   if Hero.isWalking == true then
     love.graphics.draw(Hero.anim, Hero.walkAnim[math.floor(Hero.picCurrent)],Hero.x, Hero.y)
