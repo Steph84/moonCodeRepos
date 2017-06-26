@@ -20,9 +20,13 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   
   Hero.mov = "stand"
   Hero.dir = "right"
+  Hero.sign = 1
   Hero.speed = {}
   Hero.speed.walk = 5
   Hero.speed.animWalk = 10
+  Hero.speed.impuls = 7
+  Hero.speed.jump = Hero.speed.impuls
+  Hero.speed.fall = 0
   
   Hero.animWalkSpeed = 10 -- speed to anim the walking
   Hero.isWalking = false
@@ -45,13 +49,11 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.animWalk[0] = nil
   for l = 1, nbLines do
     for c = 1, nbColumns do
-    Hero.animWalk[id] = love.graphics.newQuad(
-                                              (c-1)*Hero.w,
+    Hero.animWalk[id] = love.graphics.newQuad((c-1)*Hero.w,
                                               (l-1)*Hero.h,
                                               Hero.w,
                                               Hero.h,
-                                              Hero.anim:getDimensions()
-                                              )
+                                              Hero.anim:getDimensions())
     id = id + 1
     end
   end
@@ -59,61 +61,81 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
 end
 
 function Hero.Update(dt)
+  
   myMap.Update(dt, Hero)
-  
-  -- condition for correct orientation
-  if love.keyboard.isDown("right") and Hero.dir == "left" then
-    Hero.dir = "right"
-  elseif love.keyboard.isDown("left") and Hero.dir == "right" then
-    print("fuck it")
-    Hero.dir = "left"
-    print(Hero.dir)
-  end
-  
-  -- condition for walking
-  if love.keyboard.isDown("right") and Hero.dir == "right" then
-    Hero.mov = "walk"
-    Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) -- using the delta time
-    Hero.x = Hero.x + Hero.speed.walk
-  elseif love.keyboard.isDown("left") and Hero.dir == "left" then
-    Hero.mov = "walk"
-    Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) -- using the delta time
-    Hero.x = Hero.x - Hero.speed.walk
-  
-  -- condition for standing
-  elseif Hero.dir == "right" or Hero.dir == "left" then
-    Hero.mov = "stand"
-  end
-  
-  if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
-  
-  
   -- calculate the position of the feet in pixel
-  Hero.xFeet = Hero.x + (Hero.w/2)
+  Hero.xFeet = Hero.x + Hero.w/2 - Hero.w/2
   Hero.yFeet = Hero.y + Hero.h
   -- calculate the position of the feet in line and columns
   Hero.linFeet = math.ceil(Hero.yFeet / myMap.TILE_SIZE)
   Hero.colFeet = math.ceil((Hero.xFeet - myMap.grid[1][1].x) / myMap.TILE_SIZE)
   
-  -- manage the jump
-  --[[
-  if love.keyboard.isDown("space") and Hero.jumping == false then
-    Hero.vy = Hero.jumpSpeed
-    Hero.jumping = true
+  local textureSeen = myMap.grid[Hero.linFeet][Hero.colFeet].texture
+  
+  -- condition for correct orientation
+  if (love.keyboard.isDown("right") and Hero.dir == "left") then
+    Hero.dir = "right"
+    Hero.sign = 1
+  elseif (love.keyboard.isDown("left") and Hero.dir == "right") then
+    Hero.dir = "left"
+    Hero.sign = -1
   end
-  if Hero.jumping == true then
-    Hero.y = Hero.y - Hero.vy * dt
-    Hero.vy = Hero.vy - Hero.gravity * dt
-  end
-  if myMap.grid[Hero.linFeet][Hero.colFeet].texture == "ground" then
-    Hero.vy = 0
-    Hero.jumping = false
-    Hero.falling = false
-    if Hero.y > myMap.size.pixH - Hero.h - (32 - 1) then
-      Hero.y = myMap.size.pixH - Hero.h - (32 - 1)
+  
+  -- condition for walking/standing
+  if textureSeen == "ground" then
+    if love.keyboard.isDown("right") and Hero.dir == "right"
+    or love.keyboard.isDown("left") and Hero.dir == "left" then
+      Hero.mov = "walk"
+    else Hero.mov = "stand"
     end
   end
   
+  if Hero.mov == "stand" or Hero.mov == "walk" then
+    Hero.speed.fall = 0 -- reinitialize fall speed
+    if textureSeen == "void" then Hero.mov = "fall" end -- fall when no more ground
+    --[[
+    if Hero.y > myMap.size.pixH - Hero.h - (32 - 1) then
+      Hero.y = myMap.size.pixH - Hero.h - (32 - 1) -- put the Hero on top of the ground
+    end
+    --]]
+    if textureSeen == "ground" then
+      Hero.y = myMap.grid[Hero.linFeet][Hero.colFeet].y - Hero.h + 5 -- put the Hero on top of the ground
+    end
+  end
+  -- manage the walking
+  if Hero.mov == "walk" then
+    Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) -- using the delta time
+    Hero.x = Hero.x + Hero.speed.walk * Hero.sign
+  end
+  if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
+  
+  -- condition for jumping
+  if love.keyboard.isDown("space")
+  and (Hero.mov == "walk" or Hero.mov == "stand") then -- avoid jumping while in void
+    Hero.mov = "jump"
+    Hero.speed.jump = Hero.speed.impuls -- initialize jump speed
+  end
+  
+  if Hero.mov == "jump" then
+    Hero.y = Hero.y - Hero.speed.jump
+    Hero.speed.jump = Hero.speed.jump - dt*9.81
+    if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
+      Hero.x = Hero.x + Hero.speed.walk * Hero.sign -- allow to move during jumping
+    end
+    if Hero.speed.jump < 0 then
+      Hero.mov = "fall" -- change the status for the sprite
+    end
+  end
+  
+  if Hero.mov == "fall" then
+    Hero.y = Hero.y - Hero.speed.fall
+    Hero.speed.fall = Hero.speed.fall - dt*9.81
+    if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
+      Hero.x = Hero.x + Hero.speed.walk * Hero.sign -- allow to move during falling
+    end
+  end
+  
+  --[[
   -- manage the left direction
   if love.keyboard.isDown("left") then
   
@@ -146,27 +168,29 @@ function Hero.Update(dt)
     
   end
 
-  
-  
+
 end
 
 function Hero.Draw()
   myMap.Draw()
   
-  if Hero.mov == "stand" then
-    love.graphics.draw(Hero.pic, Hero.x, Hero.y, 0, 1, 1, Hero.w/2, 1)
+  if Hero.mov == "stand" or Hero.mov == "jump" or Hero.mov == "fall" then
+    if Hero.dir == "right" then
+      love.graphics.draw(Hero.pic, Hero.x, Hero.y, 0, 1, 1, Hero.w/2, 1)
+    elseif Hero.dir == "left" then
+      love.graphics.draw(Hero.pic, Hero.x, Hero.y, 0, -1, 1, Hero.w/2, 1)
+    end
   end
 
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 10, windowWidth, "left")
   
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
-  love.graphics.circle("fill", Hero.x, Hero.y + Hero.h/2, 2)
+  love.graphics.circle("fill", Hero.x - Hero.w/2, Hero.y + Hero.h/2, 2)
   love.graphics.circle("fill", Hero.xFeet, Hero.y, 2)
-  love.graphics.circle("fill", Hero.x + Hero.w, Hero.y + Hero.h/2, 2)
+  love.graphics.circle("fill", Hero.x + Hero.w - Hero.w/2, Hero.y + Hero.h/2, 2)
   
   -- standard jump
   --love.graphics.line(0, myMap.size.pixH - (32 - 1) - (4*32), windowWidth, myMap.size.pixH - (32 - 1) - (4*32))
-  
   
   if Hero.mov == "walk" then
     if Hero.dir == "right" then
@@ -174,10 +198,8 @@ function Hero.Draw()
     elseif Hero.dir == "left" then
       love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],Hero.x, Hero.y, 0, -1, 1, Hero.w/2, 1)
     end
-    print(Hero.dir)
   end
   
-
 end
 
 
