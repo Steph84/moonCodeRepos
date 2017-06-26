@@ -44,7 +44,10 @@ function Map.Load(pWindowWidth, pWindowHeight)
     for col = 1, Map.size.w do
       idGrid = idGrid + 1
       -- initialize the map
-      Map.grid[lin][col] = {id = idGrid, x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE, idText = -1, texture = "void"}
+      Map.grid[lin][col] = {id = idGrid,
+                            x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE,
+                            w = Map.TILE_SIZE, h = Map.TILE_SIZE, 
+                            idText = -1, texture = "void"}
       
       if lin == Map.size.h then
         Map.grid[lin][col].texture = "ground"
@@ -61,7 +64,7 @@ function Map.Load(pWindowWidth, pWindowHeight)
   
   -- test for a platform
   if build == false then
-    local azerty = math.random(Map.size.w/4, Map.size.w/2)
+    local azerty = 20 --math.random(Map.size.w/4, Map.size.w/2)
     local myline = Map.size.h - 4
     Map.grid[myline][azerty].idText = 1
     Map.grid[myline][azerty].texture = "ground"
@@ -71,7 +74,6 @@ function Map.Load(pWindowWidth, pWindowHeight)
       Map.grid[myline][azerty + it].texture = "ground"
     end
     Map.grid[myline][azerty + 4].idText = 3
-    Map.grid[myline][azerty + 4].texture = "ground"
     build = true
   end
   
@@ -112,7 +114,7 @@ function Map.Draw()
       local g = Map.grid[lin][col]
       --love.graphics.rectangle("line", g.x, g.y, 32, 32)
       --love.graphics.print(lin..", "..col, g.x + 5, g.y + 5, 0, 0.7, 0.7)
-      if g.texture == "void" then
+      if g.texture == "void" and g.idText ~= 3 then
       else love.graphics.draw(Map.TileSheet, Map.tileTextures[g.idText],  g.x, g.y) end
     end
   end
