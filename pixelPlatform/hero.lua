@@ -12,9 +12,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.w = Hero.pic:getWidth()
   Hero.h = Hero.pic:getHeight()
   Hero.x = 200
-  Hero.y = myMap.size.pixH - Hero.h - (32 - 1)
-  Hero.vx = 100
-  Hero.vy = 0
+  Hero.y = 200
   
   Hero.wall = 0.7 -- threshold to stop the Hero and moving the map
   
@@ -32,11 +30,6 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.isWalking = false
   Hero.picCurrent = 1 -- for walking animation
   Hero.animWalk = {}
-  
-  Hero.gravity = 9.81 * 105
-  Hero.jumpSpeed = Hero.gravity/2
-  Hero.jumping = false
-  Hero.falling = false
   
   -- load the animation walking tile
   Hero.anim = love.graphics.newImage("pictures/char01Walk.png")
@@ -69,8 +62,12 @@ function Hero.Update(dt)
   -- calculate the position of the feet in line and columns
   Hero.linFeet = math.ceil(Hero.yFeet / myMap.TILE_SIZE)
   Hero.colFeet = math.ceil((Hero.xFeet - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  -- calculate the position of the head in line and columns
+  Hero.linHead = math.ceil(Hero.y / myMap.TILE_SIZE)
+  Hero.colHead = math.ceil((Hero.x - myMap.grid[1][1].x) / myMap.TILE_SIZE)
   
-  local textureSeen = myMap.grid[Hero.linFeet][Hero.colFeet].texture
+  local textureUnder = myMap.grid[Hero.linFeet][Hero.colFeet].texture
+  local textureAbove = myMap.grid[Hero.linHead][Hero.colHead].texture
   
   -- condition for correct orientation
   if (love.keyboard.isDown("right") and Hero.dir == "left") then
@@ -82,7 +79,7 @@ function Hero.Update(dt)
   end
   
   -- condition for walking/standing
-  if textureSeen == "ground" then
+  if textureUnder == "ground" then
     if love.keyboard.isDown("right") and Hero.dir == "right"
     or love.keyboard.isDown("left") and Hero.dir == "left" then
       Hero.mov = "walk"
@@ -92,20 +89,23 @@ function Hero.Update(dt)
   
   if Hero.mov == "stand" or Hero.mov == "walk" then
     Hero.speed.fall = 0 -- reinitialize fall speed
-    if textureSeen == "void" then Hero.mov = "fall" end -- fall when no more ground
-    --[[
-    if Hero.y > myMap.size.pixH - Hero.h - (32 - 1) then
-      Hero.y = myMap.size.pixH - Hero.h - (32 - 1) -- put the Hero on top of the ground
-    end
-    --]]
-    if textureSeen == "ground" then
+    if textureUnder == "void" then Hero.mov = "fall" end -- fall when no more ground
+    if textureUnder == "ground" then
       Hero.y = myMap.grid[Hero.linFeet][Hero.colFeet].y - Hero.h + 5 -- put the Hero on top of the ground
     end
   end
   -- manage the walking
   if Hero.mov == "walk" then
+    if ((Hero.x > windowWidth*(1-Hero.wall) -- if the hero is after the left threshold
+        or (myMap.grid[1][1].x > -1 and Hero.x > 10)) -- if the map stop to move
+        and love.keyboard.isDown("left"))
+        or
+        ((Hero.x < windowWidth*Hero.wall  -- if the hero is before the right threshold
+        or (myMap.grid[1][1].x < (windowWidth - myMap.size.pixW) and (Hero.x + Hero.w) < windowWidth)) -- if the map stop to move
+        and love.keyboard.isDown("right")) then
+      Hero.x = Hero.x + Hero.speed.walk * Hero.sign
+    end
     Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) -- using the delta time
-    Hero.x = Hero.x + Hero.speed.walk * Hero.sign
   end
   if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
   
@@ -117,14 +117,19 @@ function Hero.Update(dt)
   end
   
   if Hero.mov == "jump" then
-    Hero.y = Hero.y - Hero.speed.jump
-    Hero.speed.jump = Hero.speed.jump - dt*9.81
-    if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
-      Hero.x = Hero.x + Hero.speed.walk * Hero.sign -- allow to move during jumping
+    if textureAbove == "void" then
+      Hero.y = Hero.y - Hero.speed.jump
+      Hero.speed.jump = Hero.speed.jump - dt*9.81
+      if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
+        Hero.x = Hero.x + Hero.speed.walk * Hero.sign -- allow to move during jumping
+      end
+    elseif textureAbove == "ground" then
+      Hero.speed.jump = -0.1
     end
     if Hero.speed.jump < 0 then
       Hero.mov = "fall" -- change the status for the sprite
     end
+    
   end
   
   if Hero.mov == "fall" then
@@ -135,24 +140,7 @@ function Hero.Update(dt)
     end
   end
   
-  --[[
-  -- manage the left direction
-  if love.keyboard.isDown("left") then
   
-    if Hero.x > windowWidth*(1-Hero.wall) -- if the hero is after the left threshold
-    or (myMap.grid[1][1].x > -1 and Hero.x > 10) then -- if the map stop to move
-      Hero.x = Hero.x - Hero.vx * dt
-    end
-  end
-  -- manage the right direction
-  if love.keyboard.isDown("right") then
-  
-    if Hero.x < windowWidth*Hero.wall  -- if the hero is before the right threshold
-    or (myMap.grid[1][1].x < (windowWidth - myMap.size.pixW) and (Hero.x + Hero.w) < windowWidth) then  -- if the map stop to move
-      Hero.x = Hero.x + Hero.vx * dt
-    end
-  end
-  --]]
   
   
   

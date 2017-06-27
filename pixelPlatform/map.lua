@@ -84,23 +84,23 @@ function Map.Update(dt, pHero)
   -- manage the map movement
   if pHero.x > windowWidth * pHero.wall
   and (Map.grid[Map.size.h][Map.size.w].x + Map.TILE_SIZE) > windowWidth
-  and pHero.isWalking == true then
+  and pHero.mov == "walk" then
     local lin, col
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x - pHero.vx * dt
+        g.x = g.x - pHero.speed.walk * dt * 20
       end
     end
   end
   if pHero.x < windowWidth * (1-pHero.wall)
   and Map.grid[1][1].x < 0
-  and pHero.isWalking == true then
+  and pHero.mov == "walk" then
     local lin, col
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x + pHero.vx * dt
+        g.x = g.x + pHero.speed.walk * dt * 20
       end
     end
   end
