@@ -4,6 +4,7 @@ Map.grid = {}
 
 local windowWidth, windowHeight
 Map.TILE_SIZE = 32
+local speedAdjust = 35
 
 function Map.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
@@ -89,7 +90,7 @@ function Map.Update(dt, pHero)
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x - pHero.speed.walk * dt * 20
+        g.x = g.x - pHero.speed.walk * dt * speedAdjust
       end
     end
   end
@@ -100,11 +101,10 @@ function Map.Update(dt, pHero)
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x + pHero.speed.walk * dt * 20
+        g.x = g.x + pHero.speed.walk * dt * speedAdjust
       end
     end
   end
-  
 end
 
 function Map.Draw()
