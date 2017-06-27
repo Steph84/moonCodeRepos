@@ -83,17 +83,20 @@ end
 function Map.Update(dt, pHero)
   
   -- manage the map movement
-  if pHero.x > windowWidth * pHero.wall - 5
+  if Map.mov == true then
+  --[[
+  pHero.x > windowWidth * pHero.wall - 5
   and (Map.grid[Map.size.h][Map.size.w].x + Map.TILE_SIZE) > windowWidth
-  and (pHero.mov == "walk" or pHero.mov == "jump" or pHero.mov == "fall") then
+  and (pHero.mov == "walk" or pHero.mov == "jump" or pHero.mov == "fall") then --]]
     local lin, col
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x - pHero.speed.walk * dt * speedAdjust
+        g.x = g.x - pHero.sign * pHero.speed.walk * dt * speedAdjust
       end
     end
   end
+  --[[
   if pHero.x < windowWidth * (1-pHero.wall)
   and Map.grid[1][1].x < 0
   and (pHero.mov == "walk" or pHero.mov == "jump" or pHero.mov == "fall") then
@@ -105,6 +108,7 @@ function Map.Update(dt, pHero)
       end
     end
   end
+  --]]
 end
 
 function Map.Draw()

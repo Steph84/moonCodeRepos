@@ -13,6 +13,8 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.h = Hero.pic:getHeight()
   Hero.x = 200
   Hero.y = 200
+  Hero.jumpPic = love.graphics.newImage("pictures/char01Jump.png")
+  Hero.fallPic = love.graphics.newImage("pictures/char01Fall.png")
   
   Hero.wall = 0.7 -- threshold to stop the Hero and moving the map
   
@@ -117,11 +119,17 @@ function Hero.Update(dt)
   -- manage the movement along x
   if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
      --       hero after left threshold      map stop move to right       hero left boundary
-    and ( (Hero.x > windowWidth*(1-Hero.wall) or (myMap.grid[1][1].x > -1 and Hero.x > 10)) and love.keyboard.isDown("left") )
+    and ( ( (Hero.x > windowWidth*(1-Hero.wall) or (myMap.grid[1][1].x > -1 and Hero.x > 10)) and love.keyboard.isDown("left") )
      --    hero before right threshold                 map stop move to left                              hero right boundary
-    or ( (Hero.x < windowWidth*Hero.wall or (myMap.grid[1][1].x < (windowWidth - myMap.size.pixW) and (Hero.x + Hero.w) < windowWidth)) and love.keyboard.isDown("right") ) then
-      Hero.x = Hero.x + Hero.speed.walk * Hero.sign
+    or ( (Hero.x < windowWidth*Hero.wall or (myMap.grid[1][1].x < (windowWidth - myMap.size.pixW) and (Hero.x + Hero.w) < windowWidth)) and love.keyboard.isDown("right") ) ) then
+      --if (Hero.x - Hero.w/2) > 0 and (Hero.x - Hero.w/2) < (windowWidth - Hero.w) then
+        Hero.x = Hero.x + Hero.speed.walk * Hero.sign
+      --end
+      myMap.mov = false
+  else
+    myMap.mov = true
   end
+  if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
   
   -- manage the movement along y
   if Hero.mov == "jump" or Hero.mov == "fall" then
@@ -137,13 +145,9 @@ end
 function Hero.Draw()
   myMap.Draw()
   
-  if Hero.mov == "stand" or Hero.mov == "jump" or Hero.mov == "fall" then
-    if Hero.dir == "right" then
-      love.graphics.draw(Hero.pic, Hero.x, Hero.y, 0, 1, 1, Hero.w/2, 1)
-    elseif Hero.dir == "left" then
-      love.graphics.draw(Hero.pic, Hero.x, Hero.y, 0, -1, 1, Hero.w/2, 1)
-    end
-  end
+  if Hero.mov == "stand" then love.graphics.draw(Hero.pic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
+  if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
+  if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
 
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 10, windowWidth, "left")
   
