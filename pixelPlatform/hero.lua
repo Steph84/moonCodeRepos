@@ -71,15 +71,18 @@ function Hero.Update(dt)
   
   -- condition for correct orientation
   if (love.keyboard.isDown("right") and Hero.dir == "left") then
+    print("orientation right")
     Hero.dir = "right"
     Hero.sign = 1
   elseif (love.keyboard.isDown("left") and Hero.dir == "right") then
+    print("orientation left")
     Hero.dir = "left"
     Hero.sign = -1
   end
   
   -- condition for walking/standing
   if textureUnder == "ground" then
+    print("condition == ground")
     if love.keyboard.isDown("right") and Hero.dir == "right"
     or love.keyboard.isDown("left") and Hero.dir == "left" then
       Hero.mov = "walk"
@@ -88,6 +91,7 @@ function Hero.Update(dt)
   end
   
   if Hero.mov == "stand" or Hero.mov == "walk" then
+    print("stand and walk")
     Hero.speed.fall = 0 -- reinitialize fall speed
     if textureUnder == "void" then Hero.mov = "fall" end -- fall when no more ground
     if textureUnder == "ground" then
@@ -96,6 +100,7 @@ function Hero.Update(dt)
   end
   -- manage the walking
   if Hero.mov == "walk" then
+    print("walking")
     if ((Hero.x > windowWidth*(1-Hero.wall) -- if the hero is after the left threshold
         or (myMap.grid[1][1].x > -1 and Hero.x > 10)) -- if the map stop to move
         and love.keyboard.isDown("left"))
@@ -112,11 +117,13 @@ function Hero.Update(dt)
   -- condition for jumping
   if love.keyboard.isDown("space")
   and (Hero.mov == "walk" or Hero.mov == "stand") then -- avoid jumping while in void
+  print("jumping condition")
     Hero.mov = "jump"
     Hero.speed.jump = Hero.speed.impuls -- initialize jump speed
   end
   
   if Hero.mov == "jump" then
+    print("jumping")
     if textureAbove == "void" then
       Hero.y = Hero.y - Hero.speed.jump
       Hero.speed.jump = Hero.speed.jump - dt*9.81
@@ -133,6 +140,7 @@ function Hero.Update(dt)
   end
   
   if Hero.mov == "fall" then
+    --print("falling")
     Hero.y = Hero.y - Hero.speed.fall
     Hero.speed.fall = Hero.speed.fall - dt*9.81
     if love.keyboard.isDown("right") or love.keyboard.isDown("left") then
