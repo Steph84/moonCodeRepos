@@ -115,16 +115,13 @@ function Hero.Update(dt)
   -- manage the walking animation
   if Hero.mov == "walk" then Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) end
   if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
-  
   -- manage the movement along x
   if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
-     --       hero after left threshold      map stop move to right       hero left boundary
-    and ( ( (Hero.x > windowWidth*(1-Hero.wall) or (myMap.grid[1][1].x > -1 and Hero.x > 10)) and love.keyboard.isDown("left") )
+     --       hero after left threshold      map stop move to right               hero left boundary
+    and ( ( (Hero.x > windowWidth*(1-Hero.wall) or ((Hero.x - Hero.w/2) > 0)) and love.keyboard.isDown("left") )
      --    hero before right threshold                 map stop move to left                              hero right boundary
-    or ( (Hero.x < windowWidth*Hero.wall or (myMap.grid[1][1].x < (windowWidth - myMap.size.pixW) and (Hero.x + Hero.w) < windowWidth)) and love.keyboard.isDown("right") ) ) then
-      --if (Hero.x - Hero.w/2) > 0 and (Hero.x - Hero.w/2) < (windowWidth - Hero.w) then
-        Hero.x = Hero.x + Hero.speed.walk * Hero.sign
-      --end
+    or ( (Hero.x < windowWidth*Hero.wall or ((Hero.x + Hero.w/2) < windowWidth)) and love.keyboard.isDown("right") ) ) then
+      Hero.x = Hero.x + Hero.speed.walk * Hero.sign
       myMap.mov = false
   else
     myMap.mov = true
