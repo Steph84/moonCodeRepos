@@ -3,6 +3,7 @@ local Hero = {}
 local windowWidth, windowHeight
 local myMap = require("map")
 local myCollision = require("collisionManage")
+local timeElapsed = 0
 
 function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   windowWidth = pWindowWidth
@@ -11,7 +12,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.pic = love.graphics.newImage("pictures/char01Stand.png") -- standing pic
   Hero.w = Hero.pic:getWidth()
   Hero.h = Hero.pic:getHeight()
-  Hero.x = 200
+  Hero.x = windowWidth/2
   Hero.y = 200
   Hero.jumpPic = love.graphics.newImage("pictures/char01Jump.png")
   Hero.fallPic = love.graphics.newImage("pictures/char01Fall.png")
@@ -117,14 +118,39 @@ function Hero.Update(dt)
   if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
   -- manage the movement along x
   if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
-     --       hero after left threshold      map stop move to right               hero left boundary
-    and ( ( (Hero.x > windowWidth*(1-Hero.wall) or ((Hero.x - Hero.w/2) > 0)) and love.keyboard.isDown("left") )
-     --    hero before right threshold                 map stop move to left                              hero right boundary
-    or ( (Hero.x < windowWidth*Hero.wall or ((Hero.x + Hero.w/2) < windowWidth)) and love.keyboard.isDown("right") ) ) then
-      Hero.x = Hero.x + Hero.speed.walk * Hero.sign
-      myMap.mov = false
+      and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
+          and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
+              or ( (Hero.x - Hero.w/2) > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > 0 ) -- hero left part
+              or ( (Hero.x + Hero.w/2) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < windowWidth ) ) ) -- hero in the right part
+      or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
+      or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
+      
+  then
+    Hero.x = Hero.x + Hero.speed.walk * Hero.sign
+    myMap.mov = false
   else
     myMap.mov = true
+  end
+  timeElapsed = timeElapsed + dt
+  if timeElapsed > 0.05 then
+    
+  --print("action action", Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall")
+  --print("keyboard", love.keyboard.isDown("left") or love.keyboard.isDown("right"))
+  --print("center center", Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall)
+  --print("left part", (Hero.x - Hero.w/2) > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > 0)
+  --print("right part", (Hero.x + Hero.w/2) < windowWidth and Hero.x > windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x > windowWidth)
+  --print("left wall", Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left"))
+  --print("right wall", Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right"))
+  
+  
+  
+  --print("center", Hero.x > windowWidth*(1-Hero.wall), Hero.x < windowWidth*Hero.wall)
+  print("left part", (Hero.x - Hero.w/2) > 0, Hero.x <= windowWidth*(1-Hero.wall), myMap.grid[1][1].x > 0)
+  print("right part", (Hero.x + Hero.w/2) < windowWidth, Hero.x >= windowWidth*Hero.wall, myMap.grid[myMap.size.h][myMap.size.w].x < windowWidth)
+  --print("left wall", Hero.x >= Hero.wall*windowWidth, love.keyboard.isDown("left"))
+  --print("right wall", Hero.x <= (1-Hero.wall)*windowWidth, love.keyboard.isDown("right"))
+  
+  timeElapsed = 0
   end
   if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
   
@@ -163,7 +189,6 @@ function Hero.Draw()
       love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],Hero.x, Hero.y, 0, -1, 1, Hero.w/2, 1)
     end
   end
-  
 end
 
 
