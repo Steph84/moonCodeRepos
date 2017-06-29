@@ -89,8 +89,8 @@ function Hero.Update(dt)
   -- if there is ground under
   if textureUnder == "ground" then
     Hero.speed.alongY = 0
-    if love.keyboard.isDown("right") and Hero.dir == "right"
-    or love.keyboard.isDown("left") and Hero.dir == "left" then
+    if (love.keyboard.isDown("right") and Hero.dir == "right")
+        or (love.keyboard.isDown("left") and Hero.dir == "left") then
       Hero.mov = "walk"
     else Hero.mov = "stand"
     end
@@ -101,8 +101,7 @@ function Hero.Update(dt)
     Hero.speed.alongY = - 0.5 -- initialize under 0 to avoid stick on the platform
   end
   -- condition for jumping
-  if love.keyboard.isDown("space")
-  and (Hero.mov == "walk" or Hero.mov == "stand") then -- avoid jumping while in void
+  if love.keyboard.isDown("space") and (Hero.mov == "walk" or Hero.mov == "stand") then -- avoid jumping while in void
     Hero.mov = "jump"
     Hero.speed.alongY = Hero.speed.impuls -- initialize jump speed
   end
@@ -116,6 +115,7 @@ function Hero.Update(dt)
   -- manage the walking animation
   if Hero.mov == "walk" then Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) end
   if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
+  
   -- manage the movement along x
   if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
       and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
@@ -124,42 +124,17 @@ function Hero.Update(dt)
               or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < windowWidth ) ) ) -- hero in the right part
       or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
       or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
-      
   then
-    Hero.x = Hero.x + Hero.speed.walk * Hero.sign
+    if Hero.x > 10 and (Hero.x + Hero.w/2) < (windowWidth - 10) 
+       or ( Hero.x <= 10 and love.keyboard.isDown("right") )
+       or ( (Hero.x + Hero.w/2) >= (windowWidth - 10) and love.keyboard.isDown("left") )
+    then Hero.x = Hero.x + Hero.speed.walk * Hero.sign end
     myMap.mov = false
   else
     myMap.mov = true
   end
-  timeElapsed = timeElapsed + dt
-  if timeElapsed > 0.02 then
-    --[[
-    print(( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
-      and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
-          and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
-              or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > 0 ) -- hero left part
-              or ( (Hero.x + Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < windowWidth ) ) ) -- hero in the right part
-      or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
-      or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")))
-      --]]
-  --print("action action", Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall")
-  --print("keyboard", love.keyboard.isDown("left") or love.keyboard.isDown("right"))
-  --print("center center", Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall)
-  --print("left part", (Hero.x - Hero.w/2) > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > 0)
-  --print("right part", ( (Hero.x + Hero.w/2) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < windowWidth ) )
-  --print("left wall", Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left"))
-  --print("right wall", Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right"))
   
-  
-  
-  --print("center", Hero.x > windowWidth*(1-Hero.wall), Hero.x < windowWidth*Hero.wall)
-  --print("left part", Hero.x > 0, Hero.x <= windowWidth*(1-Hero.wall), myMap.grid[1][1].x > 0)
-  --print("right part", (Hero.x - Hero.w) <= windowWidth, Hero.x >= windowWidth*Hero.wall, myMap.grid[myMap.size.h][myMap.size.w].x < windowWidth )
-  --print("left wall", Hero.x >= Hero.wall*windowWidth, love.keyboard.isDown("left"))
-  --print("right wall", Hero.x <= (1-Hero.wall)*windowWidth, love.keyboard.isDown("right"))
-  
-  timeElapsed = 0
-  end
+  -- stop the map when no arrow key is pressed
   if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
   
   -- manage the movement along y
