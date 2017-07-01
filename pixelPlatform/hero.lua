@@ -109,7 +109,7 @@ function Hero.Update(dt)
   if Hero.mov == "stand" or Hero.mov == "walk" then
     if textureUnder == "void" then Hero.mov = "fall" end -- fall when no more ground
     if textureUnder == "ground" then
-      Hero.y = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].y - Hero.h + 5 -- put the Hero on top of the ground
+      Hero.y = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].y - Hero.h + 1 -- put the Hero on top of the ground
     end
   end
   -- manage the walking animation
