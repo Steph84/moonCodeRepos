@@ -12,14 +12,11 @@ function Map.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   
-  Map.myBuilding.Load(windowWidth, windowHeight)
-  
+  Map.myBuilding.Load(windowWidth, windowHeight, Map.TILE_SIZE)
 end
 
 function Map.Update(dt, pHero)
-  
-  Map.myScrolling.Update(dt, pHero, Map.myBuilding, Map.mov)
-  
+  Map.myScrolling.Update(dt, pHero, Map)
 end
 
 function Map.Draw()
