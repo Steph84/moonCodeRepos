@@ -35,9 +35,9 @@ function love.load()
   listColors[1].color = {64, 0, 192} -- violet
   listColors[2].color = {0, 0, 255} -- blue
   
-  listColors[3].color = {0, 128, 128} -- teal
-  listColors[4].color = {0, 255, 0} -- green
-  listColors[5].color = {128, 255, 0} -- chartreuse
+  listColors[3].color = {0, 64, 128} -- teal
+  listColors[4].color = {0, 128, 0} -- green
+  listColors[5].color = {128, 192, 0} -- chartreuse
   
 end
 
