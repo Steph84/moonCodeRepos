@@ -18,7 +18,7 @@ TileSetMapping.left =
     {1, 2, 3},                   -- 13
     {4, 5, 15},                  -- 14
     
-    {4, 5, 6, 8, 10, 12, 13, 15} -- 15
+    {4, 5, 6, 10, 15} -- 15
   }
 
 TileSetMapping.bottom =
@@ -39,7 +39,7 @@ TileSetMapping.bottom =
     {6, 10, 15},                 -- 13
     {7, 11, 15},                 -- 14
     
-    {6, 7, 8, 9, 10, 11, 12, 15} -- 15
+    {12, 15} -- 15
   }
 
 return  TileSetMapping

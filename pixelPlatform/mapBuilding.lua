@@ -4,6 +4,8 @@ MapBuilding.grid = {}
 
 local windowWidth, windowHeight
 local TILE_SIZE = 32
+local MAX_ITERATION = 500
+local myMapping = require("tileSetMapping")
 
 function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -54,26 +56,36 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
         MapBuilding.grid[lin][col].texture = "ground"
         MapBuilding.grid[lin][col].idText = math.random(1, 3)
       end
-      if lin == (MapBuilding.size.h - 2) then
-        MapBuilding.grid[lin][col].idText = math.random(4, 5)
+      if lin <= (MapBuilding.size.h - 2) then
+        if col == 1 then
+          local downIdText = MapBuilding.grid[lin+1][col].idText
+          MapBuilding.grid[lin][col].idText = myMapping.bottom[downIdText][math.random(#myMapping.bottom[downIdText])]
+        else
+        local downIdText = MapBuilding.grid[lin+1][col].idText
+        local leftIdText = MapBuilding.grid[lin][col-1].idText
+        if downIdText == -1 then downIdText = 15 end
+        if leftIdText == -1 then leftIdText = 15 end
+        
+        local tempLeft, tempDown, iteration = -1, 0, 0
+        while tempLeft ~= tempDown and iteration < MAX_ITERATION do
+          iteration = iteration + 1
+          tempLeft = myMapping.left[leftIdText][math.random(#myMapping.left[leftIdText])]
+          tempDown = myMapping.bottom[downIdText][math.random(#myMapping.bottom[downIdText])]
+        end
+        if iteration == MAX_ITERATION then MapBuilding.grid[lin][col].idText = -1
+        else
+          MapBuilding.grid[lin][col].idText = tempLeft
+          if tempLeft == 1 or tempLeft == 2 or tempLeft == 3 then
+            MapBuilding.grid[lin][col].texture = "ground"
+          end
+        end
+        
+        end
       end
     end
   end
   
-  -- test for a platform
-  if build == false then
-    local azerty = 20 --math.random(MapBuilding.size.w/4, MapBuilding.size.w/2)
-    local myline = MapBuilding.size.h - 4
-    MapBuilding.grid[myline][azerty].idText = 1
-    MapBuilding.grid[myline][azerty].texture = "ground"
-    local it
-    for it = 1, 3 do
-      MapBuilding.grid[myline][azerty + it].idText = 2
-      MapBuilding.grid[myline][azerty + it].texture = "ground"
-    end
-    MapBuilding.grid[myline][azerty + 4].idText = 3
-    build = true
-  end
+  
   
 end
 
