@@ -72,7 +72,8 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
           tempLeft = myMapping.left[leftIdText][math.random(#myMapping.left[leftIdText])]
           tempDown = myMapping.bottom[downIdText][math.random(#myMapping.bottom[downIdText])]
         end
-        if iteration == MAX_ITERATION then MapBuilding.grid[lin][col].idText = -1
+        if iteration == MAX_ITERATION then
+          MapBuilding.grid[lin][col].idText = -1
         else
           MapBuilding.grid[lin][col].idText = tempLeft
           if tempLeft == 1 or tempLeft == 2 or tempLeft == 3 then

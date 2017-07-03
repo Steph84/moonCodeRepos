@@ -24,7 +24,7 @@ function Map.Draw()
   for lin = 1, Map.myBuilding.size.h do
     for col = 1, Map.myBuilding.size.w do
       local g = Map.myBuilding.grid[lin][col]
-      if g.idText == -1 then love.graphics.rectangle("fill", g.x, g.y, 32, 32)
+      if g.idText == -1 or g.idText == nil then love.graphics.rectangle("fill", g.x, g.y, 32, 32)
       else
         love.graphics.draw(Map.myBuilding.TileSheet, Map.myBuilding.tileTextures[g.idText],  g.x, g.y)
       end
