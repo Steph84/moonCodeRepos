@@ -14,7 +14,7 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
   local build = false
   
   -- load the tile sheet
-  MapBuilding.TileSheet = love.graphics.newImage("pictures/platFormTileSet01_32x32.png")
+  MapBuilding.TileSheet = love.graphics.newImage("pictures/platFormTileSet02_32x32.png")
   local nbColumns = MapBuilding.TileSheet:getWidth() / TILE_SIZE
   local nbLines = MapBuilding.TileSheet:getHeight() / TILE_SIZE
   
@@ -50,12 +50,14 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
       MapBuilding.grid[lin][col] = {id = idGrid,
                             x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE,
                             w = TILE_SIZE, h = TILE_SIZE, 
-                            idText = 15, texture = "void"}
+                            idText = 28, texture = "void"}
       
       if lin == MapBuilding.size.h or lin == (MapBuilding.size.h - 1) then
         MapBuilding.grid[lin][col].texture = "ground"
         MapBuilding.grid[lin][col].idText = math.random(1, 3)
       end
+      
+      --[[
       if lin <= (MapBuilding.size.h - 2) then
         if col == 1 then
           local downIdText = MapBuilding.grid[lin+1][col].idText
@@ -80,9 +82,8 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
             MapBuilding.grid[lin][col].texture = "ground"
           end
         end
-        
-        end
       end
+        --]]
     end
   end
   
