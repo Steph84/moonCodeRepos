@@ -120,14 +120,15 @@ function Hero.Update(dt)
   if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
       and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
           and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
-              or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.myBuilding.grid[1][1].x > 0 ) -- hero left part
-              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.myBuilding.grid[myMap.myBuilding.size.h][myMap.myBuilding.size.w].x < windowWidth ) ) ) -- hero in the right part
+              or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.myBuilding.grid[1][1].x > -1 ) -- hero left part
+              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.myBuilding.grid[myMap.myBuilding.size.h][myMap.myBuilding.size.w].x < (windowWidth - myMap.TILE_SIZE) ) ) ) -- hero in the right part
       or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
       or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
   then
-    if Hero.x > 10 and (Hero.x + Hero.w/2) < (windowWidth - 10) 
-       or ( Hero.x <= 10 and love.keyboard.isDown("right") )
-       or ( (Hero.x + Hero.w/2) >= (windowWidth - 10) and love.keyboard.isDown("left") )
+    local threShold = Hero.w/5
+    if Hero.x > threShold and Hero.x < (windowWidth - threShold) 
+       or ( Hero.x <= threShold and love.keyboard.isDown("right") )
+       or ( Hero.x >= (windowWidth - threShold) and love.keyboard.isDown("left") )
     then Hero.x = Hero.x + Hero.speed.walk * Hero.sign end
     myMap.mov = false
   else
@@ -155,7 +156,7 @@ function Hero.Draw()
   if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
   if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
 
-  love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 10, windowWidth, "left")
+  love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 50, windowWidth, "left")
   
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.x - Hero.w/2, Hero.y + Hero.h/2, 2)

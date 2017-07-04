@@ -3,7 +3,7 @@ io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
-local windowWidth = 800 --1280 -- 32x32px sprites value (40 columns)
+local windowWidth = 1280 -- 32x32px sprites value (40 columns)
 local windowHeight = 672 -- 32x32px sprites value (21 lines)
 
 local myBackGround = require("backGround")
@@ -26,4 +26,5 @@ end
 function love.draw()
   myBackGround.Draw()
   myHero.Draw()
+  love.graphics.printf("width : "..windowWidth.." / height : "..windowHeight, 10, 10, windowWidth, "left")
 end

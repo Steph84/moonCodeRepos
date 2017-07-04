@@ -1,10 +1,11 @@
+math.randomseed(os.time())
 local MapBuilding = {}
 MapBuilding.tileTextures = {}
 MapBuilding.grid = {}
 
 local windowWidth, windowHeight
 local TILE_SIZE = 32
-local MAX_ITERATION = 500
+local MAX_ITERATION = 5000
 local myMapping = require("tileSetMapping")
 
 function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
@@ -56,32 +57,32 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
         MapBuilding.grid[lin][col].texture = "ground"
         MapBuilding.grid[lin][col].idText = math.random(1, 3)
       end
-      
       --[[
       if lin <= (MapBuilding.size.h - 2) then
         if col == 1 then
           local downIdText = MapBuilding.grid[lin+1][col].idText
-          MapBuilding.grid[lin][col].idText = myMapping.bottom[downIdText][math.random(#myMapping.bottom[downIdText])]
+          MapBuilding.grid[lin][col].idText = myMapping.down[downIdText][math.random(#myMapping.down[downIdText])]
         else
         local downIdText = MapBuilding.grid[lin+1][col].idText
         local leftIdText = MapBuilding.grid[lin][col-1].idText
-        if downIdText == -1 then downIdText = 15 end
-        if leftIdText == -1 then leftIdText = 15 end
+        if downIdText == -1 then downIdText = 28 end
+        if leftIdText == -1 then leftIdText = 28 end
         
         local tempLeft, tempDown, iteration = -1, 0, 0
         while tempLeft ~= tempDown and iteration < MAX_ITERATION do
           iteration = iteration + 1
           tempLeft = myMapping.left[leftIdText][math.random(#myMapping.left[leftIdText])]
-          tempDown = myMapping.bottom[downIdText][math.random(#myMapping.bottom[downIdText])]
+          tempDown = myMapping.down[downIdText][math.random(#myMapping.down[downIdText])]
         end
         if iteration == MAX_ITERATION then
           MapBuilding.grid[lin][col].idText = -1
         else
           MapBuilding.grid[lin][col].idText = tempLeft
-          if tempLeft == 1 or tempLeft == 2 or tempLeft == 3 then
+          if MapBuilding.grid[lin][col].idText ~= 28 then
             MapBuilding.grid[lin][col].texture = "ground"
           end
         end
+      end
       end
         --]]
     end

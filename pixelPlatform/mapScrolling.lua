@@ -1,6 +1,6 @@
 local MapScrolling = {}
 
-local speedAdjust = 35
+local speedAdjust = 45
 
 function MapScrolling.Update(dt, pHero, pMap)
 
