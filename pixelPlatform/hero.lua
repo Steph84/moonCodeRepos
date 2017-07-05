@@ -114,7 +114,6 @@ function Hero.Update(dt)
     end
   end
   
-    print(Hero.y)
   -- manage the walking animation
   if Hero.mov == "walk" then Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) end
   if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
@@ -124,7 +123,7 @@ function Hero.Update(dt)
       and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
           and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
               or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.myBuilding.grid[1][1].x > -1 ) -- hero left part
-              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.myBuilding.grid[myMap.myBuilding.size.h][myMap.myBuilding.size.w].x < (windowWidth - myMap.TILE_SIZE) ) ) ) -- hero in the right part
+              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.myBuilding.grid[myMap.myBuilding.size.h][myMap.myBuilding.size.w].x < (windowWidth - myMap.TILE_SIZE + 10) ) ) ) -- hero in the right part
       or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
       or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
   then
