@@ -12,7 +12,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.pic = love.graphics.newImage("pictures/char01Stand.png") -- standing pic
   Hero.w = Hero.pic:getWidth()
   Hero.h = Hero.pic:getHeight()
-  Hero.x = windowWidth/2
+  Hero.x = windowWidth/5
   Hero.y = 200
   Hero.jumpPic = love.graphics.newImage("pictures/char01Jump.png")
   Hero.fallPic = love.graphics.newImage("pictures/char01Fall.png")
@@ -97,7 +97,7 @@ function Hero.Update(dt)
     end
   end
   -- if there is ground above
-  if textureAbove == "ground" then
+  if textureAbove == "ground" or Hero.y < 5 then
     Hero.mov = "fall"
     Hero.speed.alongY = - 0.5 -- initialize under 0 to avoid stick on the platform
   end

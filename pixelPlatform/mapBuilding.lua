@@ -4,9 +4,12 @@ MapBuilding.tileTextures = {}
 MapBuilding.grid = {}
 
 local windowWidth, windowHeight
-local TILE_SIZE = 32
-local MAX_ITERATION = 5000
+local TILE_SIZE
+local listPit = {}
+local coefMap = 4
+
 local myMapping = require("tileSetMapping")
+local myEltGen = require("mapEltGen")
 
 function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -37,8 +40,8 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
   end
   
   -- initialize the size of the map
-  MapBuilding.size = { w = (2 * windowWidth)/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
-                       pixW = 2 * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
+  MapBuilding.size = { w = (coefMap * windowWidth)/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
+                       pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
 
   -- building the map
   local lin, col
@@ -60,38 +63,29 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
         MapBuilding.grid[lin][col].texture = "ground"
         MapBuilding.grid[lin][col].idText = math.random(4, 6)
       end
-      --[[
-      if lin <= (MapBuilding.size.h - 2) then
-        if col == 1 then
-          local downIdText = MapBuilding.grid[lin+1][col].idText
-          MapBuilding.grid[lin][col].idText = myMapping.down[downIdText][math.random(#myMapping.down[downIdText])]
-        else
-        local downIdText = MapBuilding.grid[lin+1][col].idText
-        local leftIdText = MapBuilding.grid[lin][col-1].idText
-        if downIdText == -1 then downIdText = 28 end
-        if leftIdText == -1 then leftIdText = 28 end
-        
-        local tempLeft, tempDown, iteration = -1, 0, 0
-        while tempLeft ~= tempDown and iteration < MAX_ITERATION do
-          iteration = iteration + 1
-          tempLeft = myMapping.left[leftIdText][math.random(#myMapping.left[leftIdText])]
-          tempDown = myMapping.down[downIdText][math.random(#myMapping.down[downIdText])]
-        end
-        if iteration == MAX_ITERATION then
-          MapBuilding.grid[lin][col].idText = -1
-        else
-          MapBuilding.grid[lin][col].idText = tempLeft
-          if MapBuilding.grid[lin][col].idText ~= 28 then
-            MapBuilding.grid[lin][col].texture = "ground"
-          end
-        end
-      end
-      end
-        --]]
     end
   end
   
+  local firstPit = myEltGen.pit(windowWidth/32 + 1, 18)
+  table.insert(listPit, firstPit)
+  local secondPit = myEltGen.pit(MapBuilding.size.w/2, 18)
+  table.insert(listPit, secondPit)
   
+  local j
+  for j = 1, #listPit do
+    local p = listPit[j]
+    MapBuilding.grid[p.linY][p.colX - 1].idText = math.random(19, 21)
+    MapBuilding.grid[p.linY + 1][p.colX - 1].idText = math.random(10, 12)
+    local alongH, alongW
+    for alongH = 1, p.h do
+      for alongW = 1, p.w do
+        MapBuilding.grid[p.linY - 1 + alongH][p.colX - 1 + alongW].texture = "void"
+        MapBuilding.grid[p.linY - 1 + alongH][p.colX - 1 + alongW].idText = 28
+      end
+    end
+    MapBuilding.grid[p.linY][p.colX + p.w].idText = math.random(16, 18)
+    MapBuilding.grid[p.linY + 1][p.colX + p.w].idText = math.random(7, 9)
+  end
   
 end
 

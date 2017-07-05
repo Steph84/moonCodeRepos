@@ -1,6 +1,5 @@
 local Map = {}
 
-
 Map.TILE_SIZE = 32
 local windowWidth, windowHeight
 Map.mov = false
