@@ -5,7 +5,8 @@ MapBuilding.grid = {}
 
 local windowWidth, windowHeight
 local TILE_SIZE
-local listPit = {}
+local listPits = {}
+local listHills = {}
 local coefMap = 4
 
 local myMapping = require("tileSetMapping")
@@ -66,14 +67,14 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
     end
   end
   
-  local firstPit = myEltGen.pit(windowWidth/32 + 1, 18)
-  table.insert(listPit, firstPit)
-  local secondPit = myEltGen.pit(MapBuilding.size.w/2, 18)
-  table.insert(listPit, secondPit)
+  local firstPit = myEltGen.pit(MapBuilding.size.w*2/8 + 1, MapBuilding.size.h)
+  table.insert(listPits, firstPit)
+  local secondPit = myEltGen.pit(MapBuilding.size.w*4/8, MapBuilding.size.h)
+  table.insert(listPits, secondPit)
   
   local j
-  for j = 1, #listPit do
-    local p = listPit[j]
+  for j = 1, #listPits do
+    local p = listPits[j]
     MapBuilding.grid[p.linY][p.colX - 1].idText = math.random(19, 21)
     MapBuilding.grid[p.linY + 1][p.colX - 1].idText = math.random(10, 12)
     local alongH, alongW
@@ -85,6 +86,37 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
     end
     MapBuilding.grid[p.linY][p.colX + p.w].idText = math.random(16, 18)
     MapBuilding.grid[p.linY + 1][p.colX + p.w].idText = math.random(7, 9)
+  end
+  
+  local firstHill = myEltGen.hill(MapBuilding.size.w*3/8, MapBuilding.size.h)
+  table.insert(listHills, firstHill)
+  local secondHill = myEltGen.hill(MapBuilding.size.w*6/8, MapBuilding.size.h)
+  table.insert(listHills, secondHill)
+  
+  local k
+  for k = 1, #listHills do
+    local h = listHills[k]
+    MapBuilding.grid[h.linY][h.colX].texture = "ground"
+    MapBuilding.grid[h.linY][h.colX].idText = math.random(16, 18)
+    local alongH, alongW
+    for alongH = 1, h.h + 1 do
+      for alongW = 1, h.w do
+        MapBuilding.grid[h.linY + alongH][h.colX - 1 + alongW].texture = "ground"
+        MapBuilding.grid[h.linY + alongH][h.colX - 1 + alongW].idText = math.random(1, 3)
+        if alongW ~= h.w then
+          MapBuilding.grid[h.linY][h.colX + alongW].texture = "ground"
+          MapBuilding.grid[h.linY][h.colX + alongW].idText = math.random(4, 6)
+        end
+        if alongH ~= h.h + 1 then
+          MapBuilding.grid[h.linY + alongH][h.colX].texture = "ground"
+          MapBuilding.grid[h.linY + alongH][h.colX].idText = math.random(7, 9)
+          MapBuilding.grid[h.linY + alongH][h.colX + h.w - 1].texture = "ground"
+          MapBuilding.grid[h.linY + alongH][h.colX + h.w - 1].idText = math.random(10, 12)
+        end
+      end
+    end
+    MapBuilding.grid[h.linY][h.colX + h.w - 1].texture = "ground"
+    MapBuilding.grid[h.linY][h.colX + h.w - 1].idText = math.random(19, 21)
   end
   
 end

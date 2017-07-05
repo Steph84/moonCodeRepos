@@ -1,11 +1,22 @@
+math.randomseed(os.time())
+
 local MapEltGen = {}
 
-function MapEltGen.pit(pColX, pLinY)
+function MapEltGen.pit(pColX, pMapH)
   local item = {}
-  item.colX = pColX
-  item.linY = pLinY
-  item.w = math.random(2, 4)
+  item.w = math.random(3, 5)
   item.h = 2
+  item.colX = pColX
+  item.linY = pMapH - item.h/2
+  return item
+end
+
+function MapEltGen.hill(pColX, pMapH)
+  local item = {}
+  item.w = math.random(4, 6)
+  item.h = 4
+  item.colX = pColX
+  item.linY = pMapH - item.h * 3/2
   return item
 end
 
