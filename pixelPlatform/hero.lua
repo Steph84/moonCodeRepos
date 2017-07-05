@@ -16,6 +16,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.y = 200
   Hero.jumpPic = love.graphics.newImage("pictures/char01Jump.png")
   Hero.fallPic = love.graphics.newImage("pictures/char01Fall.png")
+  Hero.scale = 2
   
   Hero.wall = 0.7 -- threshold to stop the Hero and moving the map
   
@@ -62,10 +63,10 @@ function Hero.Update(dt)
   myMap.Update(dt, Hero)
   
   -- calculate the position of the feet in pixel
-  Hero.xFeet = Hero.x + Hero.w/2 - Hero.w/2 -- the (- Hero.w/2) is for centered sprite
-  Hero.yFeet = Hero.y + Hero.h
+  Hero.xFeet = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
+  Hero.yFeet = Hero.y + Hero.h * Hero.scale
   -- calculate the position of the head in pixel
-  Hero.xHead = Hero.x + Hero.w/2 - Hero.w/2 -- the (- Hero.w/2) is for centered sprite
+  Hero.xHead = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
   Hero.yHead = Hero.y
   -- calculate the position of the feet in line and columns
   Hero.linFeet = math.ceil(Hero.yFeet / myMap.TILE_SIZE)
@@ -109,9 +110,11 @@ function Hero.Update(dt)
   if Hero.mov == "stand" or Hero.mov == "walk" then
     if textureUnder == "void" then Hero.mov = "fall" end -- fall when no more ground
     if textureUnder == "ground" then
-      Hero.y = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].y - Hero.h + 1 -- put the Hero on top of the ground
+      Hero.y = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].y - (Hero.h * Hero.scale - 8) -- put the Hero on top of the ground
     end
   end
+  
+    print(Hero.y)
   -- manage the walking animation
   if Hero.mov == "walk" then Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) end
   if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
@@ -152,27 +155,33 @@ end
 function Hero.Draw()
   myMap.Draw()
   
-  if Hero.mov == "stand" then love.graphics.draw(Hero.pic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
-  if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
-  if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic, Hero.x, Hero.y, 0, Hero.sign, 1, Hero.w/2, 1) end
-
-  love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 50, windowWidth, "left")
+  if Hero.mov == "stand" then love.graphics.draw(Hero.pic,
+                                                 Hero.x, Hero.y, 0,
+                                                 Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                 Hero.w/2, 1) end
+  if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic,
+                                                Hero.x, Hero.y, 0,
+                                                Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                Hero.w/2, 1) end
+  if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic,
+                                                Hero.x, Hero.y, 0,
+                                                Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                Hero.w/2, 1) end
+  if Hero.mov == "walk" then love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],
+                                                Hero.x, Hero.y, 0,
+                                                Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                Hero.w/2, 1) end
+  
+  love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
   
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
-  love.graphics.circle("fill", Hero.x - Hero.w/2, Hero.y + Hero.h/2, 2)
+  love.graphics.circle("fill", Hero.x - (Hero.w * Hero.scale)/2, Hero.y + (Hero.h * Hero.scale)/2, 2)
   love.graphics.circle("fill", Hero.xFeet, Hero.y, 2)
-  love.graphics.circle("fill", Hero.x + Hero.w - Hero.w/2, Hero.y + Hero.h/2, 2)
+  love.graphics.circle("fill", Hero.x + (Hero.w * Hero.scale) - (Hero.w * Hero.scale)/2, Hero.y + (Hero.h * Hero.scale)/2, 2)
   
   -- standard jump
   --love.graphics.line(0, myMap.size.pixH - (32 - 1) - (4*32), windowWidth, myMap.size.pixH - (32 - 1) - (4*32))
   
-  if Hero.mov == "walk" then
-    if Hero.dir == "right" then
-      love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],Hero.x, Hero.y, 0, 1, 1, Hero.w/2, 1)
-    elseif Hero.dir == "left" then
-      love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],Hero.x, Hero.y, 0, -1, 1, Hero.w/2, 1)
-    end
-  end
 end
 
 

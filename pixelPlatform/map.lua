@@ -31,6 +31,7 @@ function Map.Draw()
     end
   end
   love.graphics.printf("maxLin : "..Map.myBuilding.size.h.." / maxCol : "..Map.myBuilding.size.w, 10, 30, windowWidth, "left")
+  love.graphics.printf("maxHeight : "..Map.myBuilding.size.pixH.." / maxWidth : "..Map.myBuilding.size.pixW, 10, 50, windowWidth, "left")
 end
 
 return Map

@@ -53,9 +53,12 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
                             w = TILE_SIZE, h = TILE_SIZE, 
                             idText = 28, texture = "void"}
       
-      if lin == MapBuilding.size.h or lin == (MapBuilding.size.h - 1) then
+      if lin == MapBuilding.size.h then
         MapBuilding.grid[lin][col].texture = "ground"
         MapBuilding.grid[lin][col].idText = math.random(1, 3)
+      elseif lin == (MapBuilding.size.h - 1) then
+        MapBuilding.grid[lin][col].texture = "ground"
+        MapBuilding.grid[lin][col].idText = math.random(4, 6)
       end
       --[[
       if lin <= (MapBuilding.size.h - 2) then
