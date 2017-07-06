@@ -3,7 +3,7 @@ local Hero = {}
 local windowWidth, windowHeight
 local myMap = require("map")
 local myCollision = require("collisionManage")
-local timeElapsed = 0
+local textureUnder, textureAbove = 0, 0
 
 function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   windowWidth = pWindowWidth
@@ -26,7 +26,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.speed = {}
   Hero.speed.walk = 5
   Hero.speed.animWalk = 10
-  Hero.speed.impuls = 9
+  Hero.speed.impuls = 8
   Hero.speed.jump = Hero.speed.impuls
   Hero.speed.fall = 0
   Hero.speed.alongY = 0
@@ -59,7 +59,6 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
 end
 
 function Hero.Update(dt)
-  --print(dt)
   myMap.Update(dt, Hero)
   
   -- calculate the position of the feet in pixel
@@ -75,8 +74,8 @@ function Hero.Update(dt)
   Hero.linHead = math.ceil(Hero.yHead / myMap.TILE_SIZE)
   Hero.colHead = math.ceil((Hero.xHead - myMap.myBuilding.grid[1][1].x) / myMap.TILE_SIZE)
   
-  local textureUnder = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].texture
-  local textureAbove = myMap.myBuilding.grid[Hero.linHead][Hero.colHead].texture
+  textureUnder = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].texture
+  textureAbove = myMap.myBuilding.grid[Hero.linHead][Hero.colHead].texture
   
   -- condition for correct orientation
   if (love.keyboard.isDown("right") and Hero.dir == "left") then
@@ -139,6 +138,7 @@ function Hero.Update(dt)
   
   -- stop the map when no arrow key is pressed
   if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
+  
   
   -- manage the movement along y
   if Hero.mov == "jump" or Hero.mov == "fall" then

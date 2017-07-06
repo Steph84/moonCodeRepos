@@ -7,7 +7,7 @@ local windowWidth, windowHeight
 local TILE_SIZE
 local listPits = {}
 local listHills = {}
-local coefMap = 5
+local coefMap = 6
 
 local myMapping = require("tileSetMapping")
 local myEltGen = require("mapEltGen")
@@ -67,8 +67,11 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
     end
   end
   
-  
-  local nbPits = math.ceil(coefMap/2)
+  -- calculate th element number to fill the map
+  -- except first screen and last and a half screen
+  local nbElts = coefMap + (coefMap - 4)
+  local nbPits = nbElts/2
+  local nbHills = nbElts/2
   
   local nP
   for nP = 1, nbPits do
@@ -93,7 +96,6 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
   end
   
   
-  local nbHills = coefMap - nbPits
   local nH
   for nH = 1, nbPits do
     local buildingHill = myEltGen.hill(MapBuilding.size.w * (nH * 2 + 1)/(coefMap*2) + 1, MapBuilding.size.h)

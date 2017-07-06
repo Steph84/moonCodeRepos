@@ -23,16 +23,11 @@ end
 
 function love.update(dt)
   myHero.Update(dt)
-  timeElapsed = timeElapsed + dt
-  if timeElapsed > 1 then
-    FPS = 1/dt
-    timeElapsed = 0
-  end
 end
 
 function love.draw()
   myBackGround.Draw()
   myHero.Draw()
   love.graphics.printf("width : "..windowWidth.." / height : "..windowHeight, 10, 10, windowWidth, "left")
-  love.graphics.printf("FPS : "..FPS, 10, 10, windowWidth, "right")
+  love.graphics.printf("FPS : "..love.timer.getFPS(), 0, 10, windowWidth - 10, "right")
 end

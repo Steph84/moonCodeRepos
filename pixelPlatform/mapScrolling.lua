@@ -3,7 +3,6 @@ local MapScrolling = {}
 local speedAdjust = 45
 
 function MapScrolling.Update(dt, pHero, pMap)
-print(dt)
   -- manage the map movement
   if pMap.mov == true then
     local lin, col
