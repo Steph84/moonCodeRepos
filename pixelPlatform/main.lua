@@ -9,6 +9,8 @@ local windowHeight = 672 -- 32x32px sprites value (21 lines)
 local myBackGround = require("backGround")
 local myHero = require("hero")
 
+local FPS, timeElapsed = 0, 0
+
 function love.load()
   
   love.window.setMode(windowWidth, windowHeight)
@@ -21,10 +23,16 @@ end
 
 function love.update(dt)
   myHero.Update(dt)
+  timeElapsed = timeElapsed + dt
+  if timeElapsed > 1 then
+    FPS = 1/dt
+    timeElapsed = 0
+  end
 end
 
 function love.draw()
   myBackGround.Draw()
   myHero.Draw()
   love.graphics.printf("width : "..windowWidth.." / height : "..windowHeight, 10, 10, windowWidth, "left")
+  love.graphics.printf("FPS : "..FPS, 10, 10, windowWidth, "right")
 end

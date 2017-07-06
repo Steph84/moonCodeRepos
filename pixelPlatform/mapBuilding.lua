@@ -7,7 +7,7 @@ local windowWidth, windowHeight
 local TILE_SIZE
 local listPits = {}
 local listHills = {}
-local coefMap = 4
+local coefMap = 5
 
 local myMapping = require("tileSetMapping")
 local myEltGen = require("mapEltGen")
@@ -67,10 +67,14 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
     end
   end
   
-  local firstPit = myEltGen.pit(MapBuilding.size.w*2/8 + 1, MapBuilding.size.h)
-  table.insert(listPits, firstPit)
-  local secondPit = myEltGen.pit(MapBuilding.size.w*4/8, MapBuilding.size.h)
-  table.insert(listPits, secondPit)
+  
+  local nbPits = math.ceil(coefMap/2)
+  
+  local nP
+  for nP = 1, nbPits do
+    local buildingPit = myEltGen.pit(MapBuilding.size.w * (nP * 2)/(coefMap*2) + 1, MapBuilding.size.h)
+    table.insert(listPits, buildingPit)
+  end
   
   local j
   for j = 1, #listPits do
@@ -88,10 +92,13 @@ function MapBuilding.Load(pWindowWidth, pWindowHeight, pTileSize)
     MapBuilding.grid[p.linY + 1][p.colX + p.w].idText = math.random(7, 9)
   end
   
-  local firstHill = myEltGen.hill(MapBuilding.size.w*3/8, MapBuilding.size.h)
-  table.insert(listHills, firstHill)
-  local secondHill = myEltGen.hill(MapBuilding.size.w*6/8, MapBuilding.size.h)
-  table.insert(listHills, secondHill)
+  
+  local nbHills = coefMap - nbPits
+  local nH
+  for nH = 1, nbPits do
+    local buildingHill = myEltGen.hill(MapBuilding.size.w * (nH * 2 + 1)/(coefMap*2) + 1, MapBuilding.size.h)
+    table.insert(listHills, buildingHill)
+  end
   
   local k
   for k = 1, #listHills do

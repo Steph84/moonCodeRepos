@@ -26,7 +26,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.speed = {}
   Hero.speed.walk = 5
   Hero.speed.animWalk = 10
-  Hero.speed.impuls = 7
+  Hero.speed.impuls = 9
   Hero.speed.jump = Hero.speed.impuls
   Hero.speed.fall = 0
   Hero.speed.alongY = 0
@@ -59,7 +59,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
 end
 
 function Hero.Update(dt)
-  
+  --print(dt)
   myMap.Update(dt, Hero)
   
   -- calculate the position of the feet in pixel
