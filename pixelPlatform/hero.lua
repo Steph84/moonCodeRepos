@@ -69,13 +69,13 @@ function Hero.Update(dt)
   Hero.yHead = Hero.y
   -- calculate the position of the feet in line and columns
   Hero.linFeet = math.ceil(Hero.yFeet / myMap.TILE_SIZE)
-  Hero.colFeet = math.ceil((Hero.xFeet - myMap.myBuilding.grid[1][1].x) / myMap.TILE_SIZE)
+  Hero.colFeet = math.ceil((Hero.xFeet - myMap.grid[1][1].x) / myMap.TILE_SIZE)
   -- calculate the position of the head in line and columns
   Hero.linHead = math.ceil(Hero.yHead / myMap.TILE_SIZE)
-  Hero.colHead = math.ceil((Hero.xHead - myMap.myBuilding.grid[1][1].x) / myMap.TILE_SIZE)
+  Hero.colHead = math.ceil((Hero.xHead - myMap.grid[1][1].x) / myMap.TILE_SIZE)
   
-  textureUnder = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].texture
-  textureAbove = myMap.myBuilding.grid[Hero.linHead][Hero.colHead].texture
+  textureUnder = myMap.grid[Hero.linFeet][Hero.colFeet].texture
+  textureAbove = myMap.grid[Hero.linHead][Hero.colHead].texture
   
   -- condition for correct orientation
   if (love.keyboard.isDown("right") and Hero.dir == "left") then
@@ -109,7 +109,7 @@ function Hero.Update(dt)
   if Hero.mov == "stand" or Hero.mov == "walk" then
     if textureUnder == "void" then Hero.mov = "fall" end -- fall when no more ground
     if textureUnder == "ground" then
-      Hero.y = myMap.myBuilding.grid[Hero.linFeet][Hero.colFeet].y - (Hero.h * Hero.scale - 8) -- put the Hero on top of the ground
+      Hero.y = myMap.grid[Hero.linFeet][Hero.colFeet].y - (Hero.h * Hero.scale - 8) -- put the Hero on top of the ground
     end
   end
   
@@ -121,8 +121,8 @@ function Hero.Update(dt)
   if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
       and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
           and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
-              or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.myBuilding.grid[1][1].x > -1 ) -- hero left part
-              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.myBuilding.grid[myMap.myBuilding.size.h][myMap.myBuilding.size.w].x < (windowWidth - myMap.TILE_SIZE + 10) ) ) ) -- hero in the right part
+              or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > -1 ) -- hero left part
+              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < (windowWidth - myMap.TILE_SIZE + 10) ) ) ) -- hero in the right part
       or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
       or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
   then
