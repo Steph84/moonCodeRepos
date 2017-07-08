@@ -4,6 +4,8 @@ Map.grid = {}
 Map.TILE_SIZE = 32
 Map.mov = false
 
+local myTest = false
+
 local windowWidth, windowHeight
 local TileSet = {}
 local TileTextures = {}
@@ -150,13 +152,9 @@ end
 
 local function updateTilesetBatch()
   TileSetBatch:clear()
-  for disLin = 0, tilesDisplayHeight - 3 do
-    if disLin == 16 then
-    print("for Lin : ", disLin)
-    end
-    for disCol = 0, tilesDisplayWidth - 3 do
-      print("for Col : ", disCol)
-      TileSetBatch:add(TileTextures[Map.grid[disLin + math.floor(mapX)][disCol + math.floor(mapY)].idText],
+  for disLin = 0, tilesDisplayHeight - 1 do
+    for disCol = 0, tilesDisplayWidth - 1 do
+      TileSetBatch:add(TileTextures[Map.grid[disLin + 1][disCol + math.floor(mapX)].idText],
         disCol*Map.TILE_SIZE, disLin*Map.TILE_SIZE)
     end
   end
@@ -182,7 +180,13 @@ function Map.Update(dt, pHero)
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
         g.x = g.x - pHero.sign * pHero.speed.walk * dt * speedAdjust
-        moveMap((pHero.sign * 0.2 * dt), 0)
+        --[[
+        if Map.grid[1][1].x < -32 and myTest == false then
+          updateTilesetBatch()
+          myTest = true
+        end
+        --]]
+        moveMap((pHero.sign * pHero.speed.walk * dt / 1000), 0)
       end
     end
   end
