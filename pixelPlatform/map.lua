@@ -107,7 +107,7 @@ function Map.Load(pWindowWidth, pWindowHeight)
   
   
   local nH
-  for nH = 1, nbPits do
+  for nH = 1, nbHills do
     local buildingHill = myEltGen.hill(Map.size.w * (nH * 2 + 1)/(coefMap*2) + 1, Map.size.h)
     table.insert(listHills, buildingHill)
   end
@@ -179,14 +179,16 @@ function Map.Update(dt, pHero)
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
-        g.x = g.x - pHero.sign * pHero.speed.walk * dt * speedAdjust
+        g.x = g.x - pHero.sign * pHero.speed.walk
         --[[
         if Map.grid[1][1].x < -32 and myTest == false then
           updateTilesetBatch()
           myTest = true
         end
         --]]
-        moveMap((pHero.sign * pHero.speed.walk * dt / 1000), 0)
+        moveMap((pHero.sign * pHero.speed.walk * dt / 2330), 0)
+--        moveMap((pHero.sign * pHero.speed.walk * dt / (Map.size.pixW * 0.3125 - 100)), 0)
+
       end
     end
   end
@@ -204,6 +206,7 @@ function Map.Draw()
     end
   end
   --]]
+  
   love.graphics.printf("maxLin : "..Map.size.h.." / maxCol : "..Map.size.w, 10, 30, windowWidth, "left")
   love.graphics.printf("maxHeight : "..Map.size.pixH.." / maxWidth : "..Map.size.pixW, 10, 50, windowWidth, "left")
 end
