@@ -3,7 +3,7 @@ local Hero = {}
 local windowWidth, windowHeight
 local myMap = require("map")
 local myCollision = require("collisionManage")
-local textureUnder, textureAbove = 0, 0
+local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 
 function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   windowWidth = pWindowWidth
@@ -80,9 +80,21 @@ function Hero.Update(dt)
   -- calculate the position of the head in line and columns
   Hero.linHead = math.ceil(Hero.yHead / myMap.TILE_SIZE)
   Hero.colHead = math.ceil((Hero.xHead - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  -- calculate the position of the left in line and columns
+  Hero.linLeft = math.ceil(Hero.yLeft / myMap.TILE_SIZE)
+  Hero.colLeft = math.ceil((Hero.xLeft - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  if Hero.colLeft == 0 or Hero.colLeft == -1 then Hero.colLeft = 1 end -- manage the boundaries
+  -- calculate the position of the right in line and columns
+  Hero.linRight = math.ceil(Hero.yRight / myMap.TILE_SIZE)
+  Hero.colRight = math.ceil((Hero.xRight - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  if Hero.colRight == myMap.size.w + 1
+  or Hero.colRight == myMap.size.w + 2 then
+    Hero.colRight = myMap.size.w end -- manage the boundaries
   
   textureUnder = myMap.grid[Hero.linFeet][Hero.colFeet].texture
   textureAbove = myMap.grid[Hero.linHead][Hero.colHead].texture
+  textureLeft = myMap.grid[Hero.linLeft][Hero.colLeft].texture
+  textureRight = myMap.grid[Hero.linRight][Hero.colRight].texture
   
   -- condition for correct orientation
   if (love.keyboard.isDown("right") and Hero.dir == "left") then
@@ -146,6 +158,11 @@ function Hero.Update(dt)
   -- stop the map when no arrow key is pressed
   if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
   
+  -- manage the lateral ground collision
+  if textureLeft == "ground" and love.keyboard.isDown("left")
+  or textureRight == "ground" and love.keyboard.isDown("right") then
+    Hero.speed.walk = 0
+  else Hero.speed.walk = 5 end
   
   -- manage the movement along y
   if Hero.mov == "jump" or Hero.mov == "fall" then
