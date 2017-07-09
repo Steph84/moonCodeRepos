@@ -14,9 +14,9 @@ end
 function MapEltGen.hill(pColX, pMapH)
   local item = {}
   item.w = math.random(3, 5)
-  item.h = 4
+  item.h = 3
   item.colX = pColX
-  item.linY = pMapH - item.h * 3/2
+  item.linY = pMapH - item.h - 1
   return item
 end
 

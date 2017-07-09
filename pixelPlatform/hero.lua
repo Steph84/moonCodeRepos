@@ -26,7 +26,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.speed = {}
   Hero.speed.walk = 5
   Hero.speed.animWalk = 10
-  Hero.speed.impuls = 8
+  Hero.speed.impuls = 6
   Hero.speed.jump = Hero.speed.impuls
   Hero.speed.fall = 0
   Hero.speed.alongY = 0
@@ -67,6 +67,13 @@ function Hero.Update(dt)
   -- calculate the position of the head in pixel
   Hero.xHead = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
   Hero.yHead = Hero.y
+  -- calculate the postion of the left in pixel
+  Hero.xLeft = Hero.x - (Hero.w * Hero.scale)/2
+  Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
+  -- calculate the postion of the right in pixel
+  Hero.xRight = Hero.x + (Hero.w * Hero.scale)/2
+  Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
+  
   -- calculate the position of the feet in line and columns
   Hero.linFeet = math.ceil(Hero.yFeet / myMap.TILE_SIZE)
   Hero.colFeet = math.ceil((Hero.xFeet - myMap.grid[1][1].x) / myMap.TILE_SIZE)
@@ -174,12 +181,12 @@ function Hero.Draw()
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
   
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
-  love.graphics.circle("fill", Hero.x - (Hero.w * Hero.scale)/2, Hero.y + (Hero.h * Hero.scale)/2, 2)
+  love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)
   love.graphics.circle("fill", Hero.xFeet, Hero.y, 2)
-  love.graphics.circle("fill", Hero.x + (Hero.w * Hero.scale) - (Hero.w * Hero.scale)/2, Hero.y + (Hero.h * Hero.scale)/2, 2)
+  love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
   
   -- standard jump
-  --love.graphics.line(0, myMap.size.pixH - (32 - 1) - (4*32), windowWidth, myMap.size.pixH - (32 - 1) - (4*32))
+  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (4*32), windowWidth, myMap.size.pixH - (32 - 1) - (4*32))
   
 end
 

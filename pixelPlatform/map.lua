@@ -105,29 +105,37 @@ function Map.Load(pWindowWidth, pWindowHeight)
   local k
   for k = 1, #listHills do
     local h = listHills[k]
+    -- sprites for the top of the hill
     Map.grid[h.linY][h.colX].texture = "ground"
     Map.grid[h.linY][h.colX].idText = math.random(16, 18)
-    local alongH, alongW
-    for alongH = 1, h.h + 1 do
-      for alongW = 1, h.w do
-        Map.grid[h.linY + alongH][h.colX - 1 + alongW].texture = "ground"
-        Map.grid[h.linY + alongH][h.colX - 1 + alongW].idText = math.random(1, 3)
-        if alongW ~= h.w then
-          Map.grid[h.linY][h.colX + alongW].texture = "ground"
-          Map.grid[h.linY][h.colX + alongW].idText = math.random(4, 6)
-        end
-        if alongH ~= h.h + 1 then
-          Map.grid[h.linY + alongH][h.colX].texture = "ground"
-          Map.grid[h.linY + alongH][h.colX].idText = math.random(7, 9)
-          Map.grid[h.linY + alongH][h.colX + h.w - 1].texture = "ground"
-          Map.grid[h.linY + alongH][h.colX + h.w - 1].idText = math.random(10, 12)
-        end
-      end
+    local alongWTop
+    for alongWTop = 1, h.w - 1 do
+      Map.grid[h.linY][h.colX + alongWTop].texture = "ground"
+      Map.grid[h.linY][h.colX + alongWTop].idText = math.random(4, 6)
     end
     Map.grid[h.linY][h.colX + h.w - 1].texture = "ground"
     Map.grid[h.linY][h.colX + h.w - 1].idText = math.random(19, 21)
+    
+    -- sprites for the inside of the hill
+    local alongH
+    for alongH = 1, h.h - 1 do
+      Map.grid[h.linY + alongH][h.colX].texture = "ground"
+      Map.grid[h.linY + alongH][h.colX].idText = math.random(7, 9)
+      local alongWInside
+      for alongWInside = 1, h.w - 1 do
+        Map.grid[h.linY + alongH][h.colX + alongWInside].texture = "ground"
+        Map.grid[h.linY + alongH][h.colX + alongWInside].idText = math.random(1, 3)
+      end
+      Map.grid[h.linY + alongH][h.colX + h.w - 1].texture = "ground"
+      Map.grid[h.linY + alongH][h.colX + h.w - 1].idText = math.random(10, 12)
+    end
+    
+    -- sprite for the bottom of the hill
+    local alongWBottom
+    for alongWBottom = 1, h.w do
+      Map.grid[h.linY + h.h][h.colX + alongWBottom - 1].idText = math.random(1, 3)
+    end
   end
-  
 end
 
 function Map.Update(dt, pHero)
