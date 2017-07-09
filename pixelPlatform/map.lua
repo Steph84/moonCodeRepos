@@ -4,18 +4,13 @@ Map.grid = {}
 Map.TILE_SIZE = 32
 Map.mov = false
 
-local myTest = false
-
 local windowWidth, windowHeight
 local TileSet = {}
 local TileTextures = {}
-local TileSetBatch = {}
 local listPits = {}
 local listHills = {}
 local speedAdjust = 45
 local coefMap = 6
-local tilesDisplayWidth, tilesDisplayHeight
-local mapX, mapY = 1, 1
 
 local myEltGen = require("mapEltGen")
 
@@ -49,11 +44,6 @@ function Map.Load(pWindowWidth, pWindowHeight)
   Map.size = { w = (coefMap * windowWidth)/Map.TILE_SIZE, h = (windowHeight - (2 * Map.TILE_SIZE))/Map.TILE_SIZE,
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * Map.TILE_SIZE)}
   
-  tilesDisplayWidth = windowWidth / Map.TILE_SIZE
-  tilesDisplayHeight = (windowHeight - (2 * Map.TILE_SIZE)) / Map.TILE_SIZE
-
-  TileSetBatch = love.graphics.newSpriteBatch(TileSet, tilesDisplayWidth * tilesDisplayHeight)
-
   -- building the map
   local lin, col
   local idGrid = 0
@@ -138,38 +128,6 @@ function Map.Load(pWindowWidth, pWindowHeight)
     Map.grid[h.linY][h.colX + h.w - 1].idText = math.random(19, 21)
   end
   
-  TileSetBatch:clear()
-  for disLin = 0, tilesDisplayHeight - 1 do
-    for disCol = 0, tilesDisplayWidth - 1 do
-      TileSetBatch:add(TileTextures[Map.grid[disLin + 1][disCol + 1].idText],
-        disCol*Map.TILE_SIZE, disLin*Map.TILE_SIZE)
-    end
-  end
-  TileSetBatch:flush()
-  
-end
-
-
-local function updateTilesetBatch()
-  TileSetBatch:clear()
-  for disLin = 0, tilesDisplayHeight - 1 do
-    for disCol = 0, tilesDisplayWidth - 1 do
-      TileSetBatch:add(TileTextures[Map.grid[disLin + 1][disCol + math.floor(mapX)].idText],
-        disCol*Map.TILE_SIZE, disLin*Map.TILE_SIZE)
-    end
-  end
-  TileSetBatch:flush()
-end
-
-local function moveMap(dx, dy)
-  local oldMapX = mapX
-  local oldMapY = mapY
-  mapX = math.max(math.min(mapX + dx, Map.size.w - tilesDisplayWidth), 1)
-  mapY = math.max(math.min(mapY + dy, Map.size.h - tilesDisplayHeight), 1)
-  -- only update if we actually moved
-  if math.floor(mapX) ~= math.floor(oldMapX) or math.floor(mapY) ~= math.floor(oldMapY) then
-    updateTilesetBatch()
-  end
 end
 
 function Map.Update(dt, pHero)
@@ -180,24 +138,12 @@ function Map.Update(dt, pHero)
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
         g.x = g.x - pHero.sign * pHero.speed.walk
-        --[[
-        if Map.grid[1][1].x < -32 and myTest == false then
-          updateTilesetBatch()
-          myTest = true
-        end
-        --]]
-        moveMap((pHero.sign * pHero.speed.walk * dt / 2330), 0)
---        moveMap((pHero.sign * pHero.speed.walk * dt / (Map.size.pixW * 0.3125 - 100)), 0)
-
       end
     end
   end
 end
 
 function Map.Draw()
-  love.graphics.draw(TileSetBatch)
-  
-  --[[
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
@@ -205,7 +151,6 @@ function Map.Draw()
       love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
     end
   end
-  --]]
   
   love.graphics.printf("maxLin : "..Map.size.h.." / maxCol : "..Map.size.w, 10, 30, windowWidth, "left")
   love.graphics.printf("maxHeight : "..Map.size.pixH.." / maxWidth : "..Map.size.pixW, 10, 50, windowWidth, "left")
