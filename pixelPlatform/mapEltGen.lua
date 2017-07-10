@@ -29,4 +29,36 @@ function MapEltGen.platForm(pColX, pMapH)
   return item
 end
 
+function MapEltGen.genPlatForm(pCoefMap, pMapW, pMapH)
+  local paramPlatForm = {} -- list tuples line/column
+  local listFirstRdm, listSecondRdm, listThirdRdm = {}, {}, {}
+  local rand1, rand2, rand3 = 0, 0, 0
+  
+  local i, j
+  for i = 3, 13, 2 do
+    table.insert(listFirstRdm, i/(4 * pCoefMap))
+    table.insert(listThirdRdm, i/(4 * pCoefMap))
+  end
+  for j = 4, 12, 2 do table.insert(listSecondRdm, j/(4 * pCoefMap)) end
+  
+  while #paramPlatForm < pCoefMap do
+    rand1 = math.random(#listFirstRdm)
+    table.insert(paramPlatForm, {lin = pMapH - 5, col = (listFirstRdm[rand1] * pMapW), width = math.random(4, 8})
+    table.remove(listFirstRdm, rand1)
+  end
+  while #paramPlatForm < 2*pCoefMap do
+    rand2 = math.random(#listSecondRdm)
+    table.insert(paramPlatForm, {lin = pMapH - 9, col = (listSecondRdm[rand2] * pMapW), width = math.random(4, 8}})
+    table.remove(listSecondRdm, rand2)
+  end
+  while #paramPlatForm < 3*pCoefMap do
+    rand3 = math.random(#listThirdRdm)
+    table.insert(paramPlatForm, {lin = pMapH - 13, col = (listThirdRdm[rand3] * pMapW), width = math.random(4, 8}})
+    table.remove(listThirdRdm, rand3)
+  end
+  return paramPlatForm
+end
+
+
+
 return MapEltGen

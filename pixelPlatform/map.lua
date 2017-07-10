@@ -10,7 +10,7 @@ local listPits = {}
 local listHills = {}
 local listPlatForms = {}
 local speedAdjust = 45
-local coefMap = 6
+local coefMap = 4
 local TILE_SIZE
 
 local myEltGen = require("mapEltGen")
@@ -57,7 +57,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
       Map.grid[lin][col] = {id = idGrid,
                             x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE,
                             w = TILE_SIZE, h = TILE_SIZE, 
-                            idText = 28, texture = "void"}
+                            idText = 37, texture = "void"}
       
       if lin == Map.size.h then
         Map.grid[lin][col].texture = "ground"
@@ -91,7 +91,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
     for alongH = 1, p.h do
       for alongW = 1, p.w do
         Map.grid[p.linY - 1 + alongH][p.colX - 1 + alongW].texture = "void"
-        Map.grid[p.linY - 1 + alongH][p.colX - 1 + alongW].idText = 28
+        Map.grid[p.linY - 1 + alongH][p.colX - 1 + alongW].idText = 37
       end
     end
     Map.grid[p.linY][p.colX + p.w].idText = math.random(16, 18)
@@ -149,13 +149,15 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   local yoshi
   for yoshi = 20, 24 do
     Map.grid[14][yoshi].texture = "ground"
-    Map.grid[14][yoshi].idText = 4
+    Map.grid[14][yoshi].idText = 31
     Map.grid[10][yoshi + 5].texture = "ground"
-    Map.grid[10][yoshi + 5].idText = 5
+    Map.grid[10][yoshi + 5].idText = 32
     Map.grid[6][yoshi + 10].texture = "ground"
-    Map.grid[6][yoshi + 10].idText = 6
+    Map.grid[6][yoshi + 10].idText = 33
   end
   
+  
+  listPlatForms = myEltGen.genPlatForm(coefMap, Map.size.w, Map.size.h)
   
 end
 
