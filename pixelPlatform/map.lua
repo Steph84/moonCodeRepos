@@ -1,7 +1,6 @@
 local Map = {}
 
 Map.grid = {}
-Map.TILE_SIZE = 32
 Map.mov = false
 
 local windowWidth, windowHeight
@@ -11,17 +10,19 @@ local listPits = {}
 local listHills = {}
 local speedAdjust = 45
 local coefMap = 6
+local TILE_SIZE
 
 local myEltGen = require("mapEltGen")
 
-function Map.Load(pWindowWidth, pWindowHeight)
+function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
+  TILE_SIZE = pTileSize
   
   -- load the tile sheet
   TileSet = love.graphics.newImage("pictures/platFormTileSet02_32x32.png")
-  local nbColumns = TileSet:getWidth() / Map.TILE_SIZE
-  local nbLines = TileSet:getHeight() / Map.TILE_SIZE
+  local nbColumns = TileSet:getWidth() / TILE_SIZE
+  local nbLines = TileSet:getHeight() / TILE_SIZE
   
   -- extract all the tiles in the tile sheet
   local l, c
@@ -30,10 +31,10 @@ function Map.Load(pWindowWidth, pWindowHeight)
   for l = 1, nbLines do
     for c = 1, nbColumns do
     TileTextures[id] = love.graphics.newQuad(
-                              (c-1)*Map.TILE_SIZE,
-                              (l-1)*Map.TILE_SIZE,
-                              Map.TILE_SIZE,
-                              Map.TILE_SIZE,
+                              (c-1)*TILE_SIZE,
+                              (l-1)*TILE_SIZE,
+                              TILE_SIZE,
+                              TILE_SIZE,
                               TileSet:getDimensions()
                               )
     id = id + 1
@@ -41,8 +42,8 @@ function Map.Load(pWindowWidth, pWindowHeight)
   end
   
   -- initialize the size of the map
-  Map.size = { w = (coefMap * windowWidth)/Map.TILE_SIZE, h = (windowHeight - (2 * Map.TILE_SIZE))/Map.TILE_SIZE,
-               pixW = coefMap * windowWidth, pixH = windowHeight - (2 * Map.TILE_SIZE)}
+  Map.size = { w = (coefMap * windowWidth)/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
+               pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
   
   -- building the map
   local lin, col
@@ -53,8 +54,8 @@ function Map.Load(pWindowWidth, pWindowHeight)
       idGrid = idGrid + 1
       -- initialize the map
       Map.grid[lin][col] = {id = idGrid,
-                            x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE,
-                            w = Map.TILE_SIZE, h = Map.TILE_SIZE, 
+                            x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE,
+                            w = TILE_SIZE, h = TILE_SIZE, 
                             idText = 28, texture = "void"}
       
       if lin == Map.size.h then

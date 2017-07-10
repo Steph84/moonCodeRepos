@@ -5,19 +5,22 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 local windowWidth = 1280 -- 32x32px sprites value (40 columns)
 local windowHeight = 672 -- 32x32px sprites value (21 lines)
+local TILE_SIZE = 32
 
 local myBackGround = require("backGround")
 local myHero = require("hero")
 
-local FPS, timeElapsed = 0, 0
-
 function love.load()
+  local displayWidth, displayHeight
+  displayWidth, displayHeight = love.window.getDesktopDimensions()
+  windowWidth = (math.floor(displayWidth/TILE_SIZE) - 2) * TILE_SIZE
+  windowHeight = (math.floor(displayHeight/TILE_SIZE) - 3) * TILE_SIZE
   
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("PixelPlatform")
   
   myBackGround.Load()
-  myHero.Load(windowWidth, windowHeight, myMap)
+  myHero.Load(windowWidth, windowHeight, TILE_SIZE)
   
 end
 

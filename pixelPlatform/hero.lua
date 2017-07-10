@@ -1,14 +1,17 @@
 local Hero = {}
 
-local windowWidth, windowHeight
+local windowWidth, windowHeight, TILE_SIZE
 local myMap = require("map")
 local myCollision = require("collisionManage")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 
-function Hero.Load(pWindowWidth, pWindowHeight, oMap)
+function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
-  myMap.Load(windowWidth, windowHeight)
+  TILE_SIZE = pTileSize
+  
+  myMap.Load(windowWidth, windowHeight, TILE_SIZE)
+  
   Hero.pic = love.graphics.newImage("pictures/char01Stand.png") -- standing pic
   Hero.w = Hero.pic:getWidth()
   Hero.h = Hero.pic:getHeight()
@@ -18,7 +21,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, oMap)
   Hero.fallPic = love.graphics.newImage("pictures/char01Fall.png")
   Hero.scale = 2
   
-  Hero.wall = 0.7 -- threshold to stop the Hero and moving the map
+  Hero.wall = 0.6 -- threshold to stop the Hero and moving the map
   
   Hero.mov = "stand"
   Hero.dir = "right"
@@ -68,25 +71,25 @@ function Hero.Update(dt)
   Hero.xHead = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
   Hero.yHead = Hero.y
   -- calculate the postion of the left in pixel
-  Hero.xLeft = Hero.x - (Hero.w * Hero.scale)/2
+  Hero.xLeft = Hero.x - (Hero.w * 0.6 * Hero.scale)/2 -- 0.6 is for match to the Hero's body and not the sprite
   Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
   -- calculate the postion of the right in pixel
-  Hero.xRight = Hero.x + (Hero.w * Hero.scale)/2
+  Hero.xRight = Hero.x + (Hero.w * 0.6 * Hero.scale)/2
   Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
   
   -- calculate the position of the feet in line and columns
-  Hero.linFeet = math.ceil(Hero.yFeet / myMap.TILE_SIZE)
-  Hero.colFeet = math.ceil((Hero.xFeet - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  Hero.linFeet = math.ceil(Hero.yFeet / TILE_SIZE)
+  Hero.colFeet = math.ceil((Hero.xFeet - myMap.grid[1][1].x) / TILE_SIZE)
   -- calculate the position of the head in line and columns
-  Hero.linHead = math.ceil(Hero.yHead / myMap.TILE_SIZE)
-  Hero.colHead = math.ceil((Hero.xHead - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  Hero.linHead = math.ceil(Hero.yHead / TILE_SIZE)
+  Hero.colHead = math.ceil((Hero.xHead - myMap.grid[1][1].x) / TILE_SIZE)
   -- calculate the position of the left in line and columns
-  Hero.linLeft = math.ceil(Hero.yLeft / myMap.TILE_SIZE)
-  Hero.colLeft = math.ceil((Hero.xLeft - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  Hero.linLeft = math.ceil(Hero.yLeft / TILE_SIZE)
+  Hero.colLeft = math.ceil((Hero.xLeft - myMap.grid[1][1].x) / TILE_SIZE)
   if Hero.colLeft == 0 or Hero.colLeft == -1 then Hero.colLeft = 1 end -- manage the boundaries
   -- calculate the position of the right in line and columns
-  Hero.linRight = math.ceil(Hero.yRight / myMap.TILE_SIZE)
-  Hero.colRight = math.ceil((Hero.xRight - myMap.grid[1][1].x) / myMap.TILE_SIZE)
+  Hero.linRight = math.ceil(Hero.yRight / TILE_SIZE)
+  Hero.colRight = math.ceil((Hero.xRight - myMap.grid[1][1].x) / TILE_SIZE)
   if Hero.colRight == myMap.size.w + 1
   or Hero.colRight == myMap.size.w + 2 then
     Hero.colRight = myMap.size.w end -- manage the boundaries
@@ -141,7 +144,7 @@ function Hero.Update(dt)
       and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
           and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
               or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > -1 ) -- hero left part
-              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < (windowWidth - myMap.TILE_SIZE + 10) ) ) ) -- hero in the right part
+              or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < (windowWidth - TILE_SIZE + 10) ) ) ) -- hero in the right part
       or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
       or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
   then
