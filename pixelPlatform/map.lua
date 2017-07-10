@@ -8,6 +8,7 @@ local TileSet = {}
 local TileTextures = {}
 local listPits = {}
 local listHills = {}
+local listPlatForms = {}
 local speedAdjust = 45
 local coefMap = 6
 local TILE_SIZE
@@ -60,7 +61,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
       
       if lin == Map.size.h then
         Map.grid[lin][col].texture = "ground"
-        Map.grid[lin][col].idText = math.random(1, 3)
+        Map.grid[lin][col].idText = math.random(13, 15)
       elseif lin == (Map.size.h - 1) then
         Map.grid[lin][col].texture = "ground"
         Map.grid[lin][col].idText = math.random(4, 6)
@@ -73,6 +74,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   local nbElts = coefMap + (coefMap - 4)
   local nbPits = nbElts/2
   local nbHills = nbElts/2
+  local nbPlatForms = nbElts
   
   local nP
   for nP = 1, nbPits do
@@ -84,7 +86,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   for j = 1, #listPits do
     local p = listPits[j]
     Map.grid[p.linY][p.colX - 1].idText = math.random(19, 21)
-    Map.grid[p.linY + 1][p.colX - 1].idText = math.random(10, 12)
+    Map.grid[p.linY + 1][p.colX - 1].idText = math.random(25, 27)
     local alongH, alongW
     for alongH = 1, p.h do
       for alongW = 1, p.w do
@@ -93,7 +95,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
       end
     end
     Map.grid[p.linY][p.colX + p.w].idText = math.random(16, 18)
-    Map.grid[p.linY + 1][p.colX + p.w].idText = math.random(7, 9)
+    Map.grid[p.linY + 1][p.colX + p.w].idText = math.random(22, 24)
   end
   
   
@@ -137,6 +139,24 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
       Map.grid[h.linY + h.h][h.colX + alongWBottom - 1].idText = math.random(1, 3)
     end
   end
+  
+  local nPF
+  for nPF = 1, nbPlatForms do
+    local buildingPlatForm = myEltGen.platForm(Map.size.w * (nPF * 2 + 1)/(coefMap*4) + 1, Map.size.h)
+    table.insert(listPlatForms, buildingPlatForm)
+  end
+  
+  local yoshi
+  for yoshi = 20, 24 do
+    Map.grid[14][yoshi].texture = "ground"
+    Map.grid[14][yoshi].idText = 4
+    Map.grid[10][yoshi + 5].texture = "ground"
+    Map.grid[10][yoshi + 5].idText = 5
+    Map.grid[6][yoshi + 10].texture = "ground"
+    Map.grid[6][yoshi + 10].idText = 6
+  end
+  
+  
 end
 
 function Map.Update(dt, pHero)

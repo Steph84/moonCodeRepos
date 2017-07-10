@@ -29,7 +29,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.speed = {}
   Hero.speed.walk = 5
   Hero.speed.animWalk = 10
-  Hero.speed.impuls = 6
+  Hero.speed.impuls = 7
   Hero.speed.jump = Hero.speed.impuls
   Hero.speed.fall = 0
   Hero.speed.alongY = 0
@@ -206,8 +206,10 @@ function Hero.Draw()
   love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
   
   -- standard jump
-  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (4*32), windowWidth, myMap.size.pixH - (32 - 1) - (4*32))
-  
+  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (5*32), windowWidth, myMap.size.pixH - (32 - 1) - (5*32))
+  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (9*32), windowWidth, myMap.size.pixH - (32 - 1) - (9*32))
+  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (13*32), windowWidth, myMap.size.pixH - (32 - 1) - (13*32))
+
 end
 
 
