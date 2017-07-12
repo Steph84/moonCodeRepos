@@ -4,6 +4,7 @@ local windowWidth, windowHeight, TILE_SIZE
 local myMap = require("map")
 local myCollision = require("collisionManage")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
+local heroIsDead = false
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -76,6 +77,19 @@ function Hero.Update(dt)
   -- calculate the postion of the right in pixel
   Hero.xRight = Hero.x + (Hero.w * 0.6 * Hero.scale)/2
   Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
+  
+  -- upperleft corner
+  Hero.xUL = Hero.x - (Hero.w * 0.6 * Hero.scale)/2 -- 0.6 is for match to the Hero's body and not the sprite
+  Hero.yUL = Hero.y
+  -- upperright corner
+  Hero.xUR = Hero.x + (Hero.w * 0.6 * Hero.scale)/2
+  Hero.yUR = Hero.y
+  -- bottomleft corner
+  Hero.xBL = Hero.x - (Hero.w * 0.6 * Hero.scale)/2
+  Hero.yBL = Hero.y + Hero.h * Hero.scale
+  -- bottomright corner
+  Hero.xBR = Hero.x + (Hero.w * 0.6 * Hero.scale)/2
+  Hero.yBR = Hero.y + Hero.h * Hero.scale
   
   -- calculate the position of the feet in line and columns
   Hero.linFeet = math.ceil(Hero.yFeet / TILE_SIZE)
@@ -177,37 +191,50 @@ function Hero.Update(dt)
   -- manage the status along y
   if Hero.speed.alongY > 0 then Hero.mov = "jump"
   elseif Hero.speed.alongY < 0 then Hero.mov = "fall" end
+
+  if Hero.yFeet > myMap.size.pixH - 10 then
+    -- death animation
+    heroIsDead = true
+    Hero.speed.alongY = 0
+    Hero.speed.alongX = 0
+  end
   
 end
 
 function Hero.Draw()
   myMap.Draw()
   
-  if Hero.mov == "stand" then love.graphics.draw(Hero.pic,
-                                                 Hero.x, Hero.y, 0,
-                                                 Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                 Hero.w/2, 1) end
-  if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic,
-                                                Hero.x, Hero.y, 0,
-                                                Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                Hero.w/2, 1) end
-  if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic,
-                                                Hero.x, Hero.y, 0,
-                                                Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                Hero.w/2, 1) end
-  if Hero.mov == "walk" then love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],
-                                                Hero.x, Hero.y, 0,
-                                                Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                Hero.w/2, 1) end
+  if heroIsDead == false then
+    if Hero.mov == "stand" then love.graphics.draw(Hero.pic,
+                                                   Hero.x, Hero.y, 0,
+                                                   Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                   Hero.w/2, 1) end
+    if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic,
+                                                  Hero.x, Hero.y, 0,
+                                                  Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                  Hero.w/2, 1) end
+    if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic,
+                                                  Hero.x, Hero.y, 0,
+                                                  Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                  Hero.w/2, 1) end
+    if Hero.mov == "walk" then love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],
+                                                  Hero.x, Hero.y, 0,
+                                                  Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                  Hero.w/2, 1) end
+  end    
   
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
   
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)
-  love.graphics.circle("fill", Hero.xFeet, Hero.y, 2)
+  love.graphics.circle("fill", Hero.xHead, Hero.yHead, 2)
   love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
   
+  love.graphics.circle("fill", Hero.xUL, Hero.yUL, 2)
+  love.graphics.circle("fill", Hero.xBL, Hero.yBL, 2)
+  love.graphics.circle("fill", Hero.xUR, Hero.yUR, 2)
+  love.graphics.circle("fill", Hero.xBR, Hero.yBR, 2)
+  
 end
-
 
 return Hero
