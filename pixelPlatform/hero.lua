@@ -118,10 +118,12 @@ function Hero.Update(dt)
     end
   end
   -- if there is ground above
-  if textureAbove == "ground" or Hero.y < 5 then
+  if (textureAbove == "ground" or Hero.y < 5) and Hero.mov == "jump" then
     Hero.mov = "fall"
     Hero.speed.alongY = - 0.5 -- initialize under 0 to avoid stick on the platform
+    Hero.speed.alongX = 0
   end
+  
   -- condition for jumping
   if love.keyboard.isDown("space") and (Hero.mov == "walk" or Hero.mov == "stand") then -- avoid jumping while in void
     Hero.mov = "jump"
@@ -205,11 +207,6 @@ function Hero.Draw()
   love.graphics.circle("fill", Hero.xFeet, Hero.y, 2)
   love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
   
-  -- standard jump
-  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (5*32), windowWidth, myMap.size.pixH - (32 - 1) - (5*32))
-  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (9*32), windowWidth, myMap.size.pixH - (32 - 1) - (9*32))
-  love.graphics.line(0, myMap.size.pixH - (32 - 1) - (13*32), windowWidth, myMap.size.pixH - (32 - 1) - (13*32))
-
 end
 
 

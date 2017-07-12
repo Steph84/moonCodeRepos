@@ -140,25 +140,24 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
     end
   end
   
-  local nPF
-  for nPF = 1, nbPlatForms do
-    local buildingPlatForm = myEltGen.platForm(Map.size.w * (nPF * 2 + 1)/(coefMap*4) + 1, Map.size.h)
-    table.insert(listPlatForms, buildingPlatForm)
-  end
-  
-  local yoshi
-  for yoshi = 20, 24 do
-    Map.grid[14][yoshi].texture = "ground"
-    Map.grid[14][yoshi].idText = 31
-    Map.grid[10][yoshi + 5].texture = "ground"
-    Map.grid[10][yoshi + 5].idText = 32
-    Map.grid[6][yoshi + 10].texture = "ground"
-    Map.grid[6][yoshi + 10].idText = 33
-  end
-  
-  
   listPlatForms = myEltGen.genPlatForm(coefMap, Map.size.w, Map.size.h)
-  
+  local k
+  for k = 1, #listPlatForms do
+    local pf = listPlatForms[k]
+    Map.grid[pf.lin][pf.col].texture = "ground"
+    Map.grid[pf.lin][pf.col].idText = math.random(28, 30)
+    
+    local fill
+    for fill = 1, pf.width do
+      Map.grid[pf.lin][pf.col + fill].texture = "ground"
+      Map.grid[pf.lin][pf.col + fill].idText = math.random(31, 33)
+    end
+    
+    Map.grid[pf.lin][pf.col + pf.width].texture = "ground"
+    Map.grid[pf.lin][pf.col + pf.width].idText = math.random(34, 36)
+  end
+    
+    
 end
 
 function Map.Update(dt, pHero)
