@@ -6,6 +6,7 @@ local myCollision = require("collisionManage")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 local heroIsDead = false
 local groundCollision = false
+local timeElapsed = 0
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -22,6 +23,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.jumpPic = love.graphics.newImage("pictures/char01Jump.png")
   Hero.fallPic = love.graphics.newImage("pictures/char01Fall.png")
   Hero.pitDeathPic = love.graphics.newImage("pictures/char01PitDeath.png")
+  Hero.attackPic = love.graphics.newImage("pictures/char01Attack.png")
   Hero.scale = 2
   
   Hero.wall = 0.6 -- threshold to stop the Hero and moving the map
@@ -41,6 +43,8 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.isWalking = false
   Hero.picCurrent = 1 -- for walking animation
   Hero.animWalk = {}
+  
+  Hero.attack = false
   
   -- load the animation walking tile
   Hero.anim = love.graphics.newImage("pictures/char01Walk.png")
@@ -146,6 +150,19 @@ function Hero.Update(dt)
     if Hero.mov == "walk" then Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) end
     if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
     
+    -- manage the attack animation
+    if (Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" or Hero.mov == "stand")
+    and love.keyboard.isDown("e") and Hero.attack == false then
+      Hero.attack = true
+    end
+    if Hero.attack == true then
+      timeElapsed = timeElapsed + dt
+      if timeElapsed > 0.3 then
+        timeElapsed = 0
+        Hero.attack = false
+      end
+    end
+    
     -- manage the movement along x
     if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
         and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
@@ -211,22 +228,29 @@ function Hero.Draw()
   myMap.Draw()
   
   if heroIsDead == false then
-    if Hero.mov == "stand" then love.graphics.draw(Hero.pic,
+    if Hero.attack == true then love.graphics.draw(Hero.attackPic,
                                                    Hero.x, Hero.y, 0,
                                                    Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                   Hero.w/2, 1) end
-    if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic,
-                                                  Hero.x, Hero.y, 0,
-                                                  Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                  Hero.w/2, 1) end
-    if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic,
-                                                  Hero.x, Hero.y, 0,
-                                                  Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                  Hero.w/2, 1) end
-    if Hero.mov == "walk" then love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],
-                                                  Hero.x, Hero.y, 0,
-                                                  Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                  Hero.w/2, 1) end
+                                                   Hero.w/2, 1)
+    else
+      if Hero.mov == "stand" then love.graphics.draw(Hero.pic,
+                                                     Hero.x, Hero.y, 0,
+                                                     Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                     Hero.w/2, 1) end
+      if Hero.mov == "jump" then love.graphics.draw(Hero.jumpPic,
+                                                    Hero.x, Hero.y, 0,
+                                                    Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                    Hero.w/2, 1) end
+      if Hero.mov == "fall" then love.graphics.draw(Hero.fallPic,
+                                                    Hero.x, Hero.y, 0,
+                                                    Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                    Hero.w/2, 1) end
+      if Hero.mov == "walk" then love.graphics.draw(Hero.anim, Hero.animWalk[math.floor(Hero.picCurrent)],
+                                                    Hero.x, Hero.y, 0,
+                                                    Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                    Hero.w/2, 1) end
+    end
+    
   end    
   
   if heroIsDead == true then love.graphics.draw(Hero.pitDeathPic,
