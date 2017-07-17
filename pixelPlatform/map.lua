@@ -57,7 +57,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
       Map.grid[lin][col] = {id = idGrid,
                             x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE,
                             w = TILE_SIZE, h = TILE_SIZE, 
-                            idText = 37, texture = "void"}
+                            idText = 37, texture = "void", scale = 1}
       
       if lin == Map.size.h then
         Map.grid[lin][col].texture = "ground"

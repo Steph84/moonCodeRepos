@@ -5,6 +5,7 @@ local myMap = require("map")
 local myCollision = require("collisionManage")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 local heroIsDead = false
+local groundCollision = false
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -64,7 +65,17 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
 end
 
 function Hero.Update(dt)
+  
   myMap.Update(dt, Hero)
+  
+  local lin, col
+  for lin = 1, myMap.size.h do
+    for col = 1, myMap.size.w do
+      local g = myMap.grid[lin][col]
+      groundCollision = myCollision.Collide(Hero, g, g.texture)
+      if groundCollision == true then break end
+    end
+  end
   
   if heroIsDead == false then
     -- calculate the position of the feet in pixel
@@ -213,11 +224,18 @@ function Hero.Update(dt)
     if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
     
     -- manage the lateral ground collision
+    if groundCollision ~= false then print("boomstick", groundCollision) end
+    if groundCollision == true and (love.keyboard.isDown("left") or love.keyboard.isDown("right")) then
+      print("fuck it")
+      Hero.speed.walk = 0
+    else Hero.speed.walk = 5 end
+    
+    --[[
     if textureLeft == "ground" and love.keyboard.isDown("left")
     or textureRight == "ground" and love.keyboard.isDown("right") then
       Hero.speed.walk = 0
     else Hero.speed.walk = 5 end
-    
+    --]]
     -- manage the movement along y
     if Hero.mov == "jump" or Hero.mov == "fall" then
       Hero.y = Hero.y - Hero.speed.alongY
