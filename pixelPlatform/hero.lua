@@ -68,15 +68,6 @@ function Hero.Update(dt)
   
   myMap.Update(dt, Hero)
   
-  local lin, col
-  for lin = 1, myMap.size.h do
-    for col = 1, myMap.size.w do
-      local g = myMap.grid[lin][col]
-      groundCollision = myCollision.Collide(Hero, g, g.texture)
-      if groundCollision == true then break end
-    end
-  end
-  
   if heroIsDead == false then
     -- calculate the position of the feet in pixel
     Hero.xFeet = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
@@ -85,24 +76,11 @@ function Hero.Update(dt)
     Hero.xHead = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
     Hero.yHead = Hero.y
     -- calculate the postion of the left in pixel
-    Hero.xLeft = Hero.x - (Hero.w * 0.6 * Hero.scale)/2 -- 0.6 is for match to the Hero's body and not the sprite
+    Hero.xLeft = Hero.x - (Hero.w * 0.4 * Hero.scale)/2 -- 0.6 is for match to the Hero's body and not the sprite
     Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
     -- calculate the postion of the right in pixel
-    Hero.xRight = Hero.x + (Hero.w * 0.6 * Hero.scale)/2
+    Hero.xRight = Hero.x + (Hero.w * 0.4 * Hero.scale)/2
     Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
-    
-    -- upperleft corner
-    Hero.xLeftHead = Hero.x - (Hero.w * 0.1 * Hero.scale)
-    Hero.yLeftHead = Hero.y + (Hero.h * 0.05 * Hero.scale)
-    -- upperright corner
-    Hero.xRightHead = Hero.x + (Hero.w * 0.1 * Hero.scale)
-    Hero.yRightHead = Hero.y + (Hero.h * 0.05 * Hero.scale)
-    -- bottomleft corner
-    Hero.xLeftFoot = Hero.x - (Hero.w * 0.1 * Hero.scale)
-    Hero.yLeftFoot = Hero.y + Hero.h * Hero.scale
-    -- bottomright corner
-    Hero.xRightFoot = Hero.x + (Hero.w * 0.1 * Hero.scale)
-    Hero.yRightFoot = Hero.y + Hero.h * Hero.scale
     
     -- calculate the position of the feet in line and columns
     Hero.linFeet = math.ceil(Hero.yFeet / TILE_SIZE)
@@ -120,44 +98,11 @@ function Hero.Update(dt)
     if Hero.colRight == myMap.size.w + 1
     or Hero.colRight == myMap.size.w + 2 then
       Hero.colRight = myMap.size.w end -- manage the boundaries
-      
-    -- upperleft corner
-    Hero.colLeftHead = math.ceil((Hero.xLeftHead - myMap.grid[1][1].x) / TILE_SIZE)
-    Hero.linLeftHead = math.ceil(Hero.yLeftHead / TILE_SIZE)
-    -- upperright corner
-    Hero.colRightHead = math.ceil((Hero.xRightHead - myMap.grid[1][1].x) / TILE_SIZE)
-    Hero.linRightHead = math.ceil(Hero.yRightHead / TILE_SIZE)
-    -- bottomleft corner
-    Hero.colLeftFoot = math.ceil((Hero.xLeftFoot - myMap.grid[1][1].x) / TILE_SIZE)
-    Hero.linLeftFoot = math.ceil(Hero.yLeftFoot / TILE_SIZE)
-    -- bottomright corner
-    Hero.colRightFoot = math.ceil((Hero.xRightFoot - myMap.grid[1][1].x) / TILE_SIZE)
-    Hero.linRightFoot = math.ceil(Hero.yRightFoot / TILE_SIZE)
     
-    --textureUnder = myMap.grid[Hero.linFeet][Hero.colFeet].texture
-    --textureAbove = myMap.grid[Hero.linHead][Hero.colHead].texture
-    --textureLeft = myMap.grid[Hero.linLeft][Hero.colLeft].texture
-    --textureRight = myMap.grid[Hero.linRight][Hero.colRight].texture
-    
-    if myMap.grid[Hero.linLeftFoot][Hero.colLeftFoot].texture == "void"
-    and myMap.grid[Hero.linRightFoot][Hero.colRightFoot].texture == "void" then
-      textureUnder = "void"
-    else textureUnder = "ground" end
-    
-    if myMap.grid[Hero.linLeftHead][Hero.colLeftHead].texture == "void"
-    and myMap.grid[Hero.linRightHead][Hero.colRightHead].texture == "void" then
-      textureAbove = "void"
-    else textureAbove = "ground" end
-    
-    if myMap.grid[Hero.linLeftHead][Hero.colLeftHead].texture == "ground"
-    and myMap.grid[Hero.linLeftFoot][Hero.colLeftFoot].texture == "ground" then
-      textureLeft = "ground"
-    else textureLeft = "void" end
-    
-    if myMap.grid[Hero.linRightHead][Hero.colRightHead].texture == "ground"
-    and myMap.grid[Hero.linRightFoot][Hero.colRightFoot].texture == "ground" then
-      textureRight = "ground"
-    else textureRight = "void" end
+    textureUnder = myMap.grid[Hero.linFeet][Hero.colFeet].texture
+    textureAbove = myMap.grid[Hero.linHead][Hero.colHead].texture
+    textureLeft = myMap.grid[Hero.linLeft][Hero.colLeft].texture
+    textureRight = myMap.grid[Hero.linRight][Hero.colRight].texture
     
     -- condition for correct orientation
     if (love.keyboard.isDown("right") and Hero.dir == "left") then
@@ -224,18 +169,11 @@ function Hero.Update(dt)
     if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
     
     -- manage the lateral ground collision
-    if groundCollision ~= false then print("boomstick", groundCollision) end
-    if groundCollision == true and (love.keyboard.isDown("left") or love.keyboard.isDown("right")) then
-      print("fuck it")
+    if (textureLeft == "ground" and love.keyboard.isDown("left"))
+    or (textureRight == "ground" and love.keyboard.isDown("right")) then
       Hero.speed.walk = 0
     else Hero.speed.walk = 5 end
     
-    --[[
-    if textureLeft == "ground" and love.keyboard.isDown("left")
-    or textureRight == "ground" and love.keyboard.isDown("right") then
-      Hero.speed.walk = 0
-    else Hero.speed.walk = 5 end
-    --]]
     -- manage the movement along y
     if Hero.mov == "jump" or Hero.mov == "fall" then
       Hero.y = Hero.y - Hero.speed.alongY
@@ -302,11 +240,6 @@ function Hero.Draw()
   love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)
   love.graphics.circle("fill", Hero.xHead, Hero.yHead, 2)
   love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
-  
-  love.graphics.circle("fill", Hero.xLeftHead, Hero.yLeftHead, 2)
-  love.graphics.circle("fill", Hero.xLeftFoot, Hero.yLeftFoot, 2)
-  love.graphics.circle("fill", Hero.xRightHead, Hero.yRightHead, 2)
-  love.graphics.circle("fill", Hero.xRightFoot, Hero.yRightFoot, 2)
   
 end
 
