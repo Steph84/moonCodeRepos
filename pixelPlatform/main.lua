@@ -7,7 +7,6 @@ local windowWidth = 1280 -- 32x32px sprites value (40 columns)
 local windowHeight = 672 -- 32x32px sprites value (21 lines)
 local TILE_SIZE = 32
 
-local myBackGround = require("backGround")
 local myHero = require("hero")
 
 function love.load()
@@ -19,7 +18,6 @@ function love.load()
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("PixelPlatform")
   
-  myBackGround.Load()
   myHero.Load(windowWidth, windowHeight, TILE_SIZE)
   
 end
@@ -29,7 +27,6 @@ function love.update(dt)
 end
 
 function love.draw()
-  myBackGround.Draw()
   myHero.Draw()
   love.graphics.printf("width : "..windowWidth.." / height : "..windowHeight, 10, 10, windowWidth, "left")
   love.graphics.printf("FPS : "..love.timer.getFPS(), 0, 10, windowWidth - 10, "right")

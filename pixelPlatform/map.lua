@@ -14,11 +14,13 @@ local coefMap = 4
 local TILE_SIZE
 
 local myEltGen = require("mapEltGen")
+local myParallax = require("parallaxAnimation")
 
 function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
+  
   
   -- load the tile sheet
   TileSet = love.graphics.newImage("pictures/platFormTileSet02_32x32.png")
@@ -45,6 +47,8 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   -- initialize the size of the map
   Map.size = { w = (coefMap * windowWidth)/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
+  
+  myParallax.Load(Map.size.pixW, Map.size.pixH)
   
   -- building the map
   local lin, col
@@ -168,12 +172,16 @@ function Map.Update(dt, pHero)
       for col = 1, Map.size.w do
         local g = Map.grid[lin][col]
         g.x = g.x - pHero.sign * pHero.speed.walk
+        myParallax.Update(dt, pHero.sign, pHero.speed.walk)
       end
     end
   end
 end
 
 function Map.Draw()
+  
+  myParallax.Draw()
+  
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
