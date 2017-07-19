@@ -190,8 +190,10 @@ function Map.Draw()
     end
   end
   
+  love.graphics.setColor(0, 0, 0)
   love.graphics.printf("maxLin : "..Map.size.h.." / maxCol : "..Map.size.w, 10, 30, windowWidth, "left")
   love.graphics.printf("maxHeight : "..Map.size.pixH.." / maxWidth : "..Map.size.pixW, 10, 50, windowWidth, "left")
+  love.graphics.setColor(255, 255, 255)
 end
 
 return Map

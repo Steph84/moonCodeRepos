@@ -258,13 +258,13 @@ function Hero.Draw()
                                                 Hero.sign * Hero.scale, 1 * Hero.scale,
                                                 Hero.w/2, 1) end
   
+  love.graphics.setColor(0, 0, 0)
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
-  
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)
   love.graphics.circle("fill", Hero.xHead, Hero.yHead, 2)
   love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
-  
+  love.graphics.setColor(255, 255, 255)
 end
 
 return Hero
