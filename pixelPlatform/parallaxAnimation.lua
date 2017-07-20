@@ -10,13 +10,13 @@ for i = 1, 3 do
   backGroundPic[i] = {}
 end
 
-function CreateBelt(pLayer, oBackGround, pWindowWidth)
+function CreateBelt(pLayer, oBackGround, pWindowWidth, pCoefMap)
   local item = {}
   
   item.layer = pLayer -- 1 is the farest, 3 is the nearest
   item.scale = oBackGround.scaleH -- the height dominate
   item.picWidth = oBackGround.w * item.scale
-  item.speed = pLayer * 0.004
+  item.speed = pLayer * 0.004/(pCoefMap/4) -- coefMap * 2 => speed / 2
   item.nbPic = math.ceil(pWindowWidth/item.picWidth) + 1 -- determine the minimum number of pics
   
   -- coordinates of all the pics
@@ -31,7 +31,7 @@ function CreateBelt(pLayer, oBackGround, pWindowWidth)
   table.insert(animationBelts, item)
 end
 
-function Parallax.Load(pWindowWidth, pWindowHeight)
+function Parallax.Load(pWindowWidth, pWindowHeight, pCoefMap)
   
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
@@ -42,7 +42,7 @@ function Parallax.Load(pWindowWidth, pWindowHeight)
     backGroundPic[j].w = backGroundPic[j].src:getWidth()
     backGroundPic[j].h = backGroundPic[j].src:getHeight()
     backGroundPic[j].scaleH = windowHeight/backGroundPic[j].h
-    CreateBelt(j, backGroundPic[j], windowWidth)
+    CreateBelt(j, backGroundPic[j], windowWidth, pCoefMap)
   end
   
 end

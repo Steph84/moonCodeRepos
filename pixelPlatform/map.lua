@@ -10,7 +10,7 @@ local listPits = {}
 local listHills = {}
 local listPlatForms = {}
 local speedAdjust = 45
-local coefMap = 4
+local coefMap = 20
 local TILE_SIZE
 local castlePic = {}
 
@@ -27,7 +27,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   Map.size = { w = (coefMap * windowWidth)/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
   
-  myParallax.Load(Map.size.pixW, Map.size.pixH)
+  myParallax.Load(Map.size.pixW, Map.size.pixH, coefMap)
   
   -- load castle pic
   castlePic.src = love.graphics.newImage("pictures/castle01.png")
@@ -156,9 +156,9 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   end
   
   listPlatForms = myEltGen.genPlatForm(coefMap, Map.size.w, Map.size.h)
-  local k
-  for k = 1, #listPlatForms do
-    local pf = listPlatForms[k]
+  local r
+  for r = 1, #listPlatForms do
+    local pf = listPlatForms[r]
     Map.grid[pf.lin][pf.col].texture = "ground"
     Map.grid[pf.lin][pf.col].idText = math.random(28, 30)
     

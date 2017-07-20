@@ -26,11 +26,11 @@ function MapEltGen.genPlatForm(pCoefMap, pMapW, pMapH)
   local rand1, rand2, rand3 = 0, 0, 0
   
   local i, j
-  for i = 3, 13, 2 do
+  for i = 3, (4 * pCoefMap - 3), 2 do
     table.insert(listFirstRdm, i/(4 * pCoefMap))
     table.insert(listThirdRdm, i/(4 * pCoefMap))
   end
-  for j = 4, 12, 4 do table.insert(listSecondRdm, j/(4 * pCoefMap)) end
+  for j = 4, (4 * pCoefMap - 4), 4 do table.insert(listSecondRdm, j/(4 * pCoefMap)) end
   
   while #paramPlatForm < pCoefMap do
     rand1 = math.random(#listFirstRdm)
@@ -38,7 +38,7 @@ function MapEltGen.genPlatForm(pCoefMap, pMapW, pMapH)
     local offSetRdm = ((math.random(1,2)*2)-3) * math.random(1, 2) -- return -2, -1, 1 or 2
     table.insert(paramPlatForm, {
                                   lin = pMapH - 5,
-                                  col = (listFirstRdm[rand1] * pMapW) + offSetRdm,
+                                  col = math.floor((listFirstRdm[rand1] * pMapW)) + offSetRdm,
                                   width = math.random(3, 7)
                                 })
     table.remove(listFirstRdm, rand1)
@@ -48,7 +48,7 @@ function MapEltGen.genPlatForm(pCoefMap, pMapW, pMapH)
     local offSetRdm = ((math.random(1,2)*2)-3) * math.random(1, 2)
     table.insert(paramPlatForm, {
                                   lin = pMapH - 9,
-                                  col = (listSecondRdm[rand2] * pMapW) + offSetRdm,
+                                  col = math.floor((listSecondRdm[rand2] * pMapW)) + offSetRdm,
                                   width = math.random(3, 6)
                                 })
     table.remove(listSecondRdm, rand2)
@@ -58,7 +58,7 @@ function MapEltGen.genPlatForm(pCoefMap, pMapW, pMapH)
     local offSetRdm = ((math.random(1,2)*2)-3) * math.random(1, 2)
     table.insert(paramPlatForm, {
                                   lin = pMapH - 13,
-                                  col = (listThirdRdm[rand3] * pMapW) + offSetRdm,
+                                  col = math.floor((listThirdRdm[rand3] * pMapW)) + offSetRdm,
                                   width = math.random(5, 9)
                                 })
     table.remove(listThirdRdm, rand3)
