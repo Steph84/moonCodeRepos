@@ -12,15 +12,16 @@ local listPlatForms = {}
 local speedAdjust = 45
 local coefMap = 4
 local TILE_SIZE
+local castlePic = {}
 
 local myEltGen = require("mapEltGen")
 local myParallax = require("parallaxAnimation")
+local myColor = require("colorBlock")
 
 function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
-  
   
   -- load the tile sheet
   TileSet = love.graphics.newImage("pictures/platFormTileSet02_32x32.png")
@@ -49,6 +50,13 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
   
   myParallax.Load(Map.size.pixW, Map.size.pixH)
+  
+  -- load castle pic
+  castlePic.src = love.graphics.newImage("pictures/castle01.png")
+  castlePic.x = Map.size.pixW - windowWidth/3
+  castlePic.y = Map.size.pixH - 2 * 32 - castlePic.src:getHeight() + 8
+  castlePic.color = myColor[math.random(1, #myColor)]
+  castlePic.color[4] = castlePic.color[4]/2
   
   -- building the map
   local lin, col
@@ -167,6 +175,7 @@ end
 function Map.Update(dt, pHero)
   -- manage the map movement
   if Map.mov == true then
+    castlePic.x = castlePic.x - pHero.sign * pHero.speed.walk
     local lin, col
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
@@ -181,6 +190,10 @@ end
 function Map.Draw()
   
   myParallax.Draw()
+  
+  love.graphics.setColor(castlePic.color)
+  love.graphics.draw(castlePic.src, castlePic.x, castlePic.y)
+  love.graphics.setColor(255, 255, 255)
   
   local lin, col
   for lin = 1, Map.size.h do
