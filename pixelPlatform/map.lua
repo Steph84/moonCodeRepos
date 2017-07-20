@@ -195,16 +195,20 @@ function Map.Draw()
   
   myParallax.Draw()
   
-  -- change color of the castle via HSL values
-  love.graphics.setColor(myColor.HSL(castlePic.color))
-  love.graphics.draw(castlePic.src, castlePic.x, castlePic.y)
-  love.graphics.setColor(255, 255, 255)
+  if castlePic.x < windowWidth + 32 then
+    -- change color of the castle via HSL values
+    love.graphics.setColor(myColor.HSL(castlePic.color))
+    love.graphics.draw(castlePic.src, castlePic.x, castlePic.y)
+    love.graphics.setColor(255, 255, 255)
+  end
   
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
       local g = Map.grid[lin][col]
-      love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
+      if g.x > (0 - 32) and g.x < (windowWidth + 32) then
+        love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
+      end
     end
   end
   
