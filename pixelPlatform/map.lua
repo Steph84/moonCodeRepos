@@ -9,7 +9,6 @@ local TileTextures = {}
 local listPits = {}
 local listHills = {}
 local listPlatForms = {}
-local speedAdjust = 45
 local coefMap = 20
 local TILE_SIZE
 local castlePic = {}
@@ -17,6 +16,7 @@ local castlePic = {}
 local myEltGen = require("mapEltGen")
 local myParallax = require("parallaxAnimation")
 local myColor = require("colorBlock")
+local myEnemy = require("enemy")
 
 function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -28,6 +28,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
   
   myParallax.Load(Map.size.pixW, Map.size.pixH, coefMap)
+  myEnemy.Load()
   
   -- load castle pic
   castlePic.src = love.graphics.newImage("pictures/castle01.png")
@@ -37,6 +38,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   -- random color in the palette then increase L to pale it
   castlePic.color = myColor.HSLData[math.random(1, #myColor.HSLData)]
+  
   castlePic.color[3] = castlePic.color[3] * 1.5 -- 50% higher for L
   
   -- load the tile sheet
@@ -189,6 +191,9 @@ function Map.Update(dt, pHero)
       end
     end
   end
+  
+  myEnemy.Update(dt)
+  
 end
 
 function Map.Draw()
@@ -211,6 +216,8 @@ function Map.Draw()
       end
     end
   end
+  
+  myEnemy.Draw()
   
   love.graphics.setColor(0, 0, 0)
   love.graphics.printf("maxLin : "..Map.size.h.." / maxCol : "..Map.size.w, 10, 30, windowWidth, "left")
