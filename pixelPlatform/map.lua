@@ -9,7 +9,7 @@ local TileTextures = {}
 local listPits = {}
 local listHills = {}
 local listPlatForms = {}
-local coefMap = 20
+local coefMap = 4
 local TILE_SIZE
 local castlePic = {}
 
@@ -192,7 +192,7 @@ function Map.Update(dt, pHero)
     end
   end
   
-  myEnemy.Update(dt)
+  myEnemy.Update(dt, Map)
   
 end
 

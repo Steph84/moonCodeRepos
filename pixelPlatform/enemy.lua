@@ -1,5 +1,8 @@
 local Enemy = {}
 
+local TILE_SIZE = 32
+local textureUnder
+
 function Enemy.Load()
   Enemy.mov = "stand"
   Enemy.speed = {}
@@ -13,7 +16,7 @@ function Enemy.Load()
   Enemy.w = 32
   Enemy.h = 32
   Enemy.x = 500
-  Enemy.y = 500
+  Enemy.y = 300
   
   -- load the animation walking tile
   Enemy.anim = love.graphics.newImage("pictures/enemy01Walk.png")
@@ -34,10 +37,22 @@ function Enemy.Load()
   end
 end
 
-function Enemy.Update(dt)
+function Enemy.Update(dt, pMap)
   -- manage the walking animation
   if Enemy.mov == "walk" then Enemy.picCurrent = Enemy.picCurrent + (Enemy.speed.animWalk * dt) end
   if math.floor(Enemy.picCurrent) > #Enemy.animWalk then Enemy.picCurrent = 1 end
+  
+  -- calculate the position of the feet in pixel
+  Enemy.xFeet = Enemy.x + (Enemy.w * Enemy.scale)/2 - (Enemy.w * Enemy.scale)/2 -- the (- Enemy.w/2) is for centered sprite
+  Enemy.yFeet = Enemy.y + Enemy.h * Enemy.scale
+  -- calculate the position of the feet in line and columns
+  Enemy.linFeet = math.ceil(Enemy.yFeet / TILE_SIZE)
+  Enemy.colFeet = math.ceil((Enemy.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
+  
+  textureUnder = pMap.grid[Enemy.linFeet][Enemy.colFeet].texture
+  
+  if textureUnder == "ground" then Enemy.mov = "walk" end
+  
 end
 
 function Enemy.Draw()
