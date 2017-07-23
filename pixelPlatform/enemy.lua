@@ -1,13 +1,14 @@
 local Enemy = {}
 
 local TILE_SIZE = 32
-local textureUnder
+local textureUnder, textureBefore, textureAfter
 
 function Enemy.Load()
   Enemy.mov = "stand"
   Enemy.speed = {}
-  Enemy.speed.walk = 5
+  Enemy.speed.walk = 1
   Enemy.speed.animWalk = 10
+  Enemy.speed.alongY = 5
   Enemy.animWalk = {}
   Enemy.picCurrent = 1
   Enemy.mov = "walk"
@@ -50,16 +51,31 @@ function Enemy.Update(dt, pMap)
   Enemy.colFeet = math.ceil((Enemy.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
   
   textureUnder = pMap.grid[Enemy.linFeet][Enemy.colFeet].texture
+  textureBefore = pMap.grid[Enemy.linFeet][Enemy.colFeet - 1].texture
+  textureAfter = pMap.grid[Enemy.linFeet][Enemy.colFeet + 1].texture
+  
   
   if textureUnder == "ground" then Enemy.mov = "walk" end
+  if textureUnder == "void" then Enemy.mov = "fall" end -- fall when no more ground
+  
+  if Enemy.mov == "walk" then
+    Enemy.y = pMap.grid[Enemy.linFeet][Enemy.colFeet].y - (Enemy.h * Enemy.scale - 8) -- put the Enemy on top of the ground
+    Enemy.x = Enemy.x + Enemy.speed.walk
+  end
+  
+  -- manage the movement along y
+  if Enemy.mov == "fall" then
+    Enemy.y = Enemy.y - Enemy.speed.alongY
+    Enemy.speed.alongY = Enemy.speed.alongY - dt*9.81
+  end
   
 end
 
 function Enemy.Draw()
-  if Enemy.mov == "walk" then love.graphics.draw(Enemy.anim, Enemy.animWalk[math.floor(Enemy.picCurrent)],
-                                                 Enemy.x, Enemy.y, 0,
-                                                 Enemy.sign * Enemy.scale, 1 * Enemy.scale,
-                                                 Enemy.w/2, 1) end
+  love.graphics.draw(Enemy.anim, Enemy.animWalk[math.floor(Enemy.picCurrent)],
+                     Enemy.x, Enemy.y, 0,
+                     Enemy.sign * Enemy.scale, 1 * Enemy.scale,
+                     Enemy.w/2, 1)
 end
 
 return Enemy
