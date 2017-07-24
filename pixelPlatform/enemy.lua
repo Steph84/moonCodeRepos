@@ -1,17 +1,22 @@
 local Enemy = {}
 
-local TILE_SIZE = 32
-local textureUnder, textureBefore, textureAfter
+local windowWidth, windowHeight, TILE_SIZE
+local textureUnder, textureBeforeFeet, textureAfterFeet
 
-function Enemy.Load()
+function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
+  windowWidth = pWindowWidth
+  windowHeight = pWindowHeight
+  TILE_SIZE = pTileSize
+  
   Enemy.mov = "stand"
   Enemy.speed = {}
-  Enemy.speed.walk = 1
+  Enemy.speed.walk = 2
   Enemy.speed.animWalk = 10
   Enemy.speed.alongY = 5
   Enemy.animWalk = {}
   Enemy.picCurrent = 1
   Enemy.mov = "walk"
+  Enemy.dir = "right"
   Enemy.sign = 1
   Enemy.scale = 1.5
   Enemy.w = 32
@@ -38,7 +43,7 @@ function Enemy.Load()
   end
 end
 
-function Enemy.Update(dt, pMap)
+function Enemy.Update(dt, pMap, pHero)
   -- manage the walking animation
   if Enemy.mov == "walk" then Enemy.picCurrent = Enemy.picCurrent + (Enemy.speed.animWalk * dt) end
   if math.floor(Enemy.picCurrent) > #Enemy.animWalk then Enemy.picCurrent = 1 end
@@ -51,17 +56,33 @@ function Enemy.Update(dt, pMap)
   Enemy.colFeet = math.ceil((Enemy.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
   
   textureUnder = pMap.grid[Enemy.linFeet][Enemy.colFeet].texture
-  textureBefore = pMap.grid[Enemy.linFeet][Enemy.colFeet - 1].texture
-  textureAfter = pMap.grid[Enemy.linFeet][Enemy.colFeet + 1].texture
-  
+  textureBeforeFeet = pMap.grid[Enemy.linFeet][Enemy.colFeet - 1].texture
+  textureAfterFeet = pMap.grid[Enemy.linFeet][Enemy.colFeet + 1].texture
   
   if textureUnder == "ground" then Enemy.mov = "walk" end
   if textureUnder == "void" then Enemy.mov = "fall" end -- fall when no more ground
   
   if Enemy.mov == "walk" then
     Enemy.y = pMap.grid[Enemy.linFeet][Enemy.colFeet].y - (Enemy.h * Enemy.scale - 8) -- put the Enemy on top of the ground
-    Enemy.x = Enemy.x + Enemy.speed.walk
+    
+    Enemy.x = Enemy.x + Enemy.speed.walk * Enemy.sign
+    if pMap.mov == true then
+      Enemy.x = Enemy.x - pHero.speed.walk * pHero.sign
+    end
+    
+    if Enemy.dir == "right" and (textureAfterFeet == "void" or (Enemy.colFeet + 1) == pMap.size.w) then
+      Enemy.dir = "left"
+      Enemy.sign = -1 * Enemy.sign
+    end
+    
+    if Enemy.dir == "left" and (textureBeforeFeet == "void" or (Enemy.colFeet - 1) == 1) then
+      Enemy.dir = "right"
+      Enemy.sign = -1 * Enemy.sign
+    end
+    
   end
+  
+  
   
   -- manage the movement along y
   if Enemy.mov == "fall" then
@@ -72,10 +93,12 @@ function Enemy.Update(dt, pMap)
 end
 
 function Enemy.Draw()
-  love.graphics.draw(Enemy.anim, Enemy.animWalk[math.floor(Enemy.picCurrent)],
-                     Enemy.x, Enemy.y, 0,
-                     Enemy.sign * Enemy.scale, 1 * Enemy.scale,
-                     Enemy.w/2, 1)
+  if Enemy.x > (0 - 32) and Enemy.x < (windowWidth + 32) then
+    love.graphics.draw(Enemy.anim, Enemy.animWalk[math.floor(Enemy.picCurrent)],
+                       Enemy.x, Enemy.y, 0,
+                       Enemy.sign * Enemy.scale, 1 * Enemy.scale,
+                       Enemy.w/2, 1)
+  end
 end
 
 return Enemy

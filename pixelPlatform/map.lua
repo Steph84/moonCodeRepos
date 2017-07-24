@@ -3,14 +3,13 @@ local Map = {}
 Map.grid = {}
 Map.mov = false
 
-local windowWidth, windowHeight
+local windowWidth, windowHeight, TILE_SIZE
 local TileSet = {}
 local TileTextures = {}
 local listPits = {}
 local listHills = {}
 local listPlatForms = {}
 local coefMap = 4
-local TILE_SIZE
 local castlePic = {}
 
 local myEltGen = require("mapEltGen")
@@ -28,7 +27,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
   
   myParallax.Load(Map.size.pixW, Map.size.pixH, coefMap)
-  myEnemy.Load()
+  myEnemy.Load(windowWidth, windowHeight, TILE_SIZE)
   
   -- load castle pic
   castlePic.src = love.graphics.newImage("pictures/castle01.png")
@@ -192,7 +191,7 @@ function Map.Update(dt, pHero)
     end
   end
   
-  myEnemy.Update(dt, Map)
+  myEnemy.Update(dt, Map, pHero)
   
 end
 
