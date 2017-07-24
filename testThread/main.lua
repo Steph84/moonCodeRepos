@@ -29,7 +29,7 @@ end
 function love.update(dt)
   machin = myChannel:pop() -- retrieve the message from the channel
   -- once it had been read, the message disapeared
-  print(machin)
+  print("machin", machin)
 end
 
 function love.draw()

@@ -45,6 +45,10 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.animWalk = {}
   
   Hero.attack = false
+  Hero.hitted = false
+  Hero.health = 100
+  Hero.ptsAttack = 5
+  Hero.ptsDefense = 2
   
   -- load the animation walking tile
   Hero.anim = love.graphics.newImage("pictures/char01Walk.png")
@@ -69,6 +73,8 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
 end
 
 function Hero.Update(dt)
+  
+  print(Hero.speed.alongY)
   
   myMap.Update(dt, Hero)
   
@@ -259,6 +265,7 @@ function Hero.Draw()
                                                 Hero.w/2, 1) end
   
   love.graphics.setColor(0, 0, 0)
+  love.graphics.printf("health : "..Hero.health, Hero.xHead - 16, Hero.yHead - 16, windowWidth, "left")
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)

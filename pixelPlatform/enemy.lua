@@ -10,7 +10,7 @@ function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   Enemy.mov = "stand"
   Enemy.speed = {}
-  Enemy.speed.walk = 2
+  Enemy.speed.walk = 1
   Enemy.speed.animWalk = 10
   Enemy.speed.alongY = 5
   Enemy.animWalk = {}
@@ -23,6 +23,11 @@ function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
   Enemy.h = 32
   Enemy.x = 500
   Enemy.y = 300
+  
+  Enemy.hitted = false
+  Enemy.health = 100
+  Enemy.ptsAttack = 3
+  Enemy.ptsDefense = 1
   
   -- load the animation walking tile
   Enemy.anim = love.graphics.newImage("pictures/enemy01Walk.png")

@@ -8,6 +8,7 @@ local windowHeight = 672 -- 32x32px sprites value (21 lines)
 local TILE_SIZE = 32
 
 local myHero = require("hero")
+local myCombat = require("combat")
 
 function love.load()
   local displayWidth, displayHeight
@@ -24,6 +25,7 @@ end
 
 function love.update(dt)
   myHero.Update(dt)
+  myCombat.Update(dt)
 end
 
 function love.draw()
