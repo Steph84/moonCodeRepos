@@ -28,9 +28,7 @@ function Combat.Update(dt)
   end
   
   if myHero.hitted == true then
-    myHero.x = myHero.x - 75 * myHero.sign
-    myHero.mov = "jump"
-    myHero.speed.alongY = 7
+    myHero.animHit = true
     myHero.health = myHero.health - (myEnemy.ptsAttack - myHero.ptsDefense)
     myHero.hitted = false
   end
