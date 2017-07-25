@@ -4,7 +4,6 @@ local windowWidth, windowHeight, TILE_SIZE
 local myMap = require("map")
 local myCollision = require("collisionManage")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
-local heroIsDead = false
 local groundCollision = false
 local timeElapsed = 0
 
@@ -15,6 +14,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   myMap.Load(windowWidth, windowHeight, TILE_SIZE)
   
+  Hero.isDead = false
   Hero.pic = love.graphics.newImage("pictures/char01Stand.png") -- standing pic
   Hero.w = Hero.pic:getWidth()
   Hero.h = Hero.pic:getHeight()
@@ -80,7 +80,7 @@ function Hero.Update(dt)
   
   myMap.Update(dt, Hero)
   
-  if heroIsDead == false then
+  if Hero.isDead == false then
     -- calculate the position of the feet in pixel
     Hero.xFeet = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
     Hero.yFeet = Hero.y + Hero.h * Hero.scale
@@ -182,6 +182,7 @@ function Hero.Update(dt)
           or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
           or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
       then
+        
         local threShold = Hero.w/5
         if Hero.x > threShold and Hero.x < (windowWidth - threShold) 
            or ( Hero.x <= threShold and love.keyboard.isDown("right") )
@@ -210,9 +211,9 @@ function Hero.Update(dt)
       if Hero.speed.alongY > 0 then Hero.mov = "jump"
       elseif Hero.speed.alongY < 0 then Hero.mov = "fall" end
 
-      if Hero.yFeet > myMap.size.pixH - 10 and heroIsDead == false then
+      if Hero.yFeet > myMap.size.pixH - 10 and Hero.isDead == false then
         -- death animation
-        heroIsDead = true
+        Hero.isDead = true
         Hero.Dead = {}
         Hero.Dead.x = Hero.x
         Hero.Dead.y = Hero.y
@@ -226,7 +227,7 @@ function Hero.Update(dt)
     
   end
   
-  if heroIsDead == true then
+  if Hero.isDead == true then
     Hero.Dead.y = Hero.Dead.y + Hero.Dead.vy
     Hero.Dead.vy = Hero.Dead.vy + 9.81 * dt
     Hero.Dead.rot = Hero.Dead.rot + 2 * dt
@@ -240,7 +241,7 @@ end
 function Hero.Draw()
   myMap.Draw()
   
-  if heroIsDead == false then
+  if Hero.isDead == false then
     if Hero.animHit == false then
       if Hero.attack == true then love.graphics.draw(Hero.attackPic,
                                                      Hero.x, Hero.y, 0,
@@ -271,7 +272,7 @@ function Hero.Draw()
     end
   end    
   
-  if heroIsDead == true then love.graphics.draw(Hero.pitDeathPic,
+  if Hero.isDead == true then love.graphics.draw(Hero.pitDeathPic,
                                                 Hero.Dead.x, Hero.Dead.y, Hero.Dead.rot,
                                                 Hero.sign * Hero.scale, 1 * Hero.scale,
                                                 Hero.w/2, 1) end

@@ -7,9 +7,9 @@ function Combat.Load()
   
 end
 
-  local yoshi = 0
 function Combat.Update(dt)
   
+  -- detection hero is hitted
   if myHero.attack == false and myHero.hitted == false then
     if ( (myHero.xLeft >= myEnemy.x and myHero.xLeft <= (myEnemy.x + myEnemy.w * myEnemy.scale))
         or (myHero.xRight >= myEnemy.x and myHero.xRight <= (myEnemy.x + myEnemy.w * myEnemy.scale)) )
@@ -19,6 +19,7 @@ function Combat.Update(dt)
     end
   end
   
+  -- detection enemy is hitted
   if myHero.attack == true and myEnemy.hitted == false then
     if ( (myHero.x >= myEnemy.x and myHero.x <= (myEnemy.x + myEnemy.w * myEnemy.scale))
         or ((myHero.x + myHero.w * myHero.scale) >= myEnemy.x and (myHero.x + myHero.w * myHero.scale) <= (myEnemy.x + myEnemy.w * myEnemy.scale)) )
@@ -27,21 +28,26 @@ function Combat.Update(dt)
           myEnemy.hitted = true
     end
   end
+  
+  -- animation and calculus if the hero is hitted
   if myHero.hitted == true then
+    -- to bypass the standard hero animation
     myHero.animHit = true
+    -- bound animation
     myHero.x = myHero.x - myHero.animHitSpeedX * myHero.sign
-      myHero.y = myHero.y - myHero.animHitSpeedY
-      if myHero.animHitSpeedX > 0 then
-        myHero.animHitSpeedX = myHero.animHitSpeedX - dt*6
-      else
-        myHero.animHit = false
-        myHero.animHitSpeedX = 5
-        myHero.animHitSpeedY = 5
-        myHero.hitted = false
-        myHero.health = myHero.health - (myEnemy.ptsAttack - myHero.ptsDefense)
-        yoshi = yoshi + 1
-      end
-      myHero.animHitSpeedY = myHero.animHitSpeedY - dt*9.81
+    myHero.y = myHero.y - myHero.animHitSpeedY
+    
+    if myHero.animHitSpeedX > 0 then
+      myHero.animHitSpeedX = myHero.animHitSpeedX - dt*6
+    else
+      -- reinitialize and calculate the new health
+      myHero.animHit = false
+      myHero.animHitSpeedX = 5
+      myHero.animHitSpeedY = 5
+      myHero.hitted = false
+      myHero.health = myHero.health - (myEnemy.ptsAttack - myHero.ptsDefense)
+    end
+    myHero.animHitSpeedY = myHero.animHitSpeedY - dt*9.81
   end
   
 end
