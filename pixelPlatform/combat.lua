@@ -21,13 +21,12 @@ function Combat.Update(dt)
     end
   end
   
+  
   -- detection enemy is hitted
   if myHero.attack == true and myEnemy.hitted == false then
-    local dx
-    if myHero.sign == 1 then
-      dx = myHero.x - myEnemy.x
-    else dx = myHero.x - myEnemy.x end
+    local dx = myHero.x - myEnemy.x
     local dy = myHero.y - myEnemy.y
+    
     if (math.abs(dx) < (myHero.w + (myEnemy.w / myEnemy.scale))) then
       if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + (myEnemy.h / myEnemy.scale))) then
         myEnemy.hitted = true
@@ -54,6 +53,27 @@ function Combat.Update(dt)
       myHero.health = myHero.health - (myEnemy.ptsAttack - myHero.ptsDefense)
     end
     myHero.animHitSpeedY = myHero.animHitSpeedY - dt*9.81
+  end
+  
+  -- animation and calculus if the hero is hitted
+  if myEnemy.hitted == true then
+    -- to bypass the standard hero animation
+    myEnemy.animHit = true
+    -- bound animation
+    myEnemy.x = myEnemy.x + myEnemy.animHitSpeedX * myHero.sign
+    --myEnemy.y = myEnemy.y - myEnemy.animHitSpeedY
+    
+    if myEnemy.animHitSpeedX > 0 then
+      myEnemy.animHitSpeedX = myEnemy.animHitSpeedX - dt*6
+    else
+      -- reinitialize and calculate the new health
+      myEnemy.animHit = false
+      myEnemy.animHitSpeedX = 5
+      myEnemy.animHitSpeedY = 5
+      myEnemy.hitted = false
+      myEnemy.health = myEnemy.health - (myHero.ptsAttack - myEnemy.ptsDefense)
+    end
+    myEnemy.animHitSpeedY = myEnemy.animHitSpeedY - dt*9.81
   end
   
 end

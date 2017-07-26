@@ -224,7 +224,6 @@ function Hero.Update(dt)
       end
     end
     
-    
   end
   
   if Hero.isDead == true then
