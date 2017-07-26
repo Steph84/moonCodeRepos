@@ -15,7 +15,15 @@ function Combat.Update(dt)
         or (myHero.xRight >= myEnemy.x and myHero.xRight <= (myEnemy.x + myEnemy.w * myEnemy.scale)) )
       and ( (myHero.yHead >= myEnemy.y and myHero.yHead <= (myEnemy.y + myEnemy.h * myEnemy.scale))
         or (myHero.yFeet >= myEnemy.y and myHero.yFeet <= (myEnemy.y + myEnemy.h * myEnemy.scale)) ) then
-          myHero.hitted = true
+          --myHero.hitted = true
+    end
+  end
+  
+  local dx = myHero.xLeft - myEnemy.x
+  local dy = myHero.yHead - myEnemy.y
+  if (math.abs(dx) < ((myHero.xRight - myHero.xLeft) + myEnemy.w / myEnemy.scale)) then
+    if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + myEnemy.h / myEnemy.scale)) then
+      myHero.hitted = true
     end
   end
   
