@@ -8,6 +8,7 @@ local windowHeight = 672 -- 32x32px sprites value (21 lines)
 local TILE_SIZE = 32
 
 local myHero = require("hero")
+local myMap = require("map")
 local myCombat = require("combat")
 
 function love.load()
@@ -20,15 +21,18 @@ function love.load()
   love.window.setTitle("PixelPlatform")
   
   myHero.Load(windowWidth, windowHeight, TILE_SIZE)
+  myMap.Load(windowWidth, windowHeight, TILE_SIZE)
   
 end
 
 function love.update(dt)
   myHero.Update(dt)
+  myMap.Update(dt, myHero)
   myCombat.Update(dt)
 end
 
 function love.draw()
+  myMap.Draw()
   myHero.Draw()
   love.graphics.setColor(0, 0, 0)
   love.graphics.printf("width : "..windowWidth.." / height : "..windowHeight, 10, 10, windowWidth, "left")

@@ -2,7 +2,6 @@ local Hero = {}
 
 local windowWidth, windowHeight, TILE_SIZE
 local myMap = require("map")
-local myCollision = require("collisionManage")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 local groundCollision = false
 local timeElapsed = 0
@@ -11,8 +10,6 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
-  
-  myMap.Load(windowWidth, windowHeight, TILE_SIZE)
   
   Hero.isDead = false
   Hero.pic = love.graphics.newImage("pictures/char01Stand.png") -- standing pic
@@ -77,8 +74,6 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
 end
 
 function Hero.Update(dt)
-  
-  myMap.Update(dt, Hero)
   
   if Hero.isDead == false then
     -- calculate the position of the feet in pixel
@@ -231,14 +226,18 @@ function Hero.Update(dt)
     Hero.Dead.vy = Hero.Dead.vy + 9.81 * dt
     Hero.Dead.rot = Hero.Dead.rot + 2 * dt
     
+    --[[
+    if Hero.Dead.y > windowHeight then 
+      Hero.Load(windowWidth, windowHeight, TILE_SIZE)
+      print("yop")
+    end
     -- if hero dead, load another sreen
-    
+    --]]
   end
   
 end
 
 function Hero.Draw()
-  myMap.Draw()
   
   if Hero.isDead == false then
     if Hero.animHit == false then

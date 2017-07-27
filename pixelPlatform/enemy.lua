@@ -3,11 +3,12 @@ local Enemy = {}
 local windowWidth, windowHeight, TILE_SIZE
 local textureUnder, textureBeforeFeet, textureAfterFeet
 
-function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
+function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
   
+  Enemy.id = pId
   Enemy.isDead = false
   Enemy.mov = "stand"
   Enemy.speed = {}
@@ -53,6 +54,7 @@ function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
     id = id + 1
     end
   end
+  
 end
 
 function Enemy.Update(dt, pMap, pHero)

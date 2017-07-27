@@ -11,6 +11,7 @@ local listHills = {}
 local listPlatForms = {}
 local coefMap = 4
 local castlePic = {}
+local maxEnemiesNb = coefMap * coefMap - 3 - 3
 
 local myEltGen = require("mapEltGen")
 local myParallax = require("parallaxAnimation")
@@ -27,8 +28,11 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
   
   myParallax.Load(Map.size.pixW, Map.size.pixH, coefMap)
-  myEnemy.Load(windowWidth, windowHeight, TILE_SIZE)
   
+  local e
+  for e = 1, maxEnemiesNb do
+    myEnemy.Load(e, windowWidth, windowHeight, TILE_SIZE)
+  end
   -- load castle pic
   castlePic.src = love.graphics.newImage("pictures/castle01.png")
   castlePic.x = Map.size.pixW - windowWidth/3
