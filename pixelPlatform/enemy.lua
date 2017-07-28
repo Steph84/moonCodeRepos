@@ -2,145 +2,158 @@ local Enemy = {}
 
 local windowWidth, windowHeight, TILE_SIZE
 local textureUnder, textureBeforeFeet, textureAfterFeet
+local listEnemies = {}
 
 function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
   
-  Enemy.id = pId
-  Enemy.isDead = false
-  Enemy.mov = "stand"
-  Enemy.speed = {}
-  Enemy.speed.walk = 1
-  Enemy.speed.animWalk = 10
-  Enemy.speed.alongY = 5
-  Enemy.animWalk = {}
-  Enemy.picCurrent = 1
-  Enemy.mov = "walk"
-  Enemy.dir = "right"
-  Enemy.sign = 1
-  Enemy.scale = 1.5
-  Enemy.w = 32
-  Enemy.h = 32
-  Enemy.x = 500
-  Enemy.y = 300
+  local item = {}
   
-  Enemy.animHit = false
-  Enemy.hitted = false
-  Enemy.animHitSpeedX = 5
-  Enemy.animHitSpeedY = 5
-  Enemy.health = 3
-  Enemy.ptsAttack = 3
-  Enemy.ptsDefense = 1
+  item.id = pId
+  item.isDead = false
+  item.mov = "stand"
+  item.speed = {}
+  item.speed.walk = 1
+  item.speed.animWalk = 10
+  item.speed.alongY = 5
+  item.animWalk = {}
+  item.picCurrent = 1
+  item.mov = "walk"
+  item.dir = "right"
+  item.sign = 1
+  item.scale = 1.5
+  item.w = 32
+  item.h = 32
+  item.x = math.random(500, 1000)
+  item.y = 300
   
-  Enemy.Dead = {}
-  Enemy.Dead.rot = 3.14
+  item.animHit = false
+  item.hitted = false
+  item.animHitSpeedX = 5
+  item.animHitSpeedY = 5
+  item.health = 3
+  item.ptsAttack = 3
+  item.ptsDefense = 1
+  
+  item.Dead = {}
+  item.Dead.rot = 3.14
   
   -- load the animation walking tile
-  Enemy.anim = love.graphics.newImage("pictures/enemy01Walk.png")
-  local nbColumns = Enemy.anim:getWidth() / 32
-  local nbLines = Enemy.anim:getHeight() / 32
+  item.anim = love.graphics.newImage("pictures/enemy01Walk.png")
+  local nbColumns = item.anim:getWidth() / 32
+  local nbLines = item.anim:getHeight() / 32
   
   -- extract all the frames in the animation walking tile
   local l, c
   local id = 1
-  Enemy.animWalk[0] = nil
+  item.animWalk[0] = nil
   for l = 1, nbLines do
     for c = 1, nbColumns do
-    Enemy.animWalk[id] = love.graphics.newQuad((c-1)*Enemy.w, (l-1)*Enemy.h,
-                                              Enemy.w, Enemy.h,
-                                              Enemy.anim:getDimensions())
+    item.animWalk[id] = love.graphics.newQuad((c-1)*item.w, (l-1)*item.h,
+                                              item.w, item.h,
+                                              item.anim:getDimensions())
     id = id + 1
     end
   end
+  table.insert(listEnemies, item)
   
 end
 
 function Enemy.Update(dt, pMap, pHero)
   
-  if Enemy.isDead == false then
-    -- manage the walking animation
-    if Enemy.mov == "walk" then Enemy.picCurrent = Enemy.picCurrent + (Enemy.speed.animWalk * dt) end
-    if math.floor(Enemy.picCurrent) > #Enemy.animWalk then Enemy.picCurrent = 1 end
-    
-    -- calculate the position of the feet in pixel
-    Enemy.xFeet = Enemy.x + (Enemy.w * Enemy.scale)/2 - (Enemy.w * Enemy.scale)/2 -- the (- Enemy.w/2) is for centered sprite
-    Enemy.yFeet = Enemy.y + Enemy.h * Enemy.scale
-    -- calculate the position of the feet in line and columns
-    Enemy.linFeet = math.ceil(Enemy.yFeet / TILE_SIZE)
-    Enemy.colFeet = math.ceil((Enemy.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
-    
-    textureUnder = pMap.grid[Enemy.linFeet][Enemy.colFeet].texture
-    textureBeforeFeet = pMap.grid[Enemy.linFeet][Enemy.colFeet - 1].texture
-    textureAfterFeet = pMap.grid[Enemy.linFeet][Enemy.colFeet + 1].texture
+  for item = 1, #listEnemies do
+    local e = listEnemies[item]
   
-    if textureUnder == "ground" then Enemy.mov = "walk" end
-    if textureUnder == "void" then Enemy.mov = "fall" end -- fall when no more ground
-    
-    if Enemy.mov == "walk" then
-      Enemy.y = pMap.grid[Enemy.linFeet][Enemy.colFeet].y - (Enemy.h * Enemy.scale - 8) -- put the Enemy on top of the ground
+    if e.isDead == false then
+      -- manage the walking animation
+      if e.mov == "walk" then e.picCurrent = e.picCurrent + (e.speed.animWalk * dt) end
+      if math.floor(e.picCurrent) > #e.animWalk then e.picCurrent = 1 end
       
-      Enemy.x = Enemy.x + Enemy.speed.walk * Enemy.sign
-      if pMap.mov == true then
-        Enemy.x = Enemy.x - pHero.speed.walk * pHero.sign
+      -- calculate the position of the feet in pixel
+      e.xFeet = e.x + (e.w * e.scale)/2 - (e.w * e.scale)/2 -- the (- e.w/2) is for centered sprite
+      e.yFeet = e.y + e.h * e.scale
+      -- calculate the position of the feet in line and columns
+      e.linFeet = math.ceil(e.yFeet / TILE_SIZE)
+      e.colFeet = math.ceil((e.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
+      
+      textureUnder = pMap.grid[e.linFeet][e.colFeet].texture
+      textureBeforeFeet = pMap.grid[e.linFeet][e.colFeet - 1].texture
+      textureAfterFeet = pMap.grid[e.linFeet][e.colFeet + 1].texture
+    
+      if textureUnder == "ground" then e.mov = "walk" end
+      if textureUnder == "void" then e.mov = "fall" end -- fall when no more ground
+      
+      if e.mov == "walk" then
+        e.y = pMap.grid[e.linFeet][e.colFeet].y - (e.h * e.scale - 8) -- put the e on top of the ground
+        
+        e.x = e.x + e.speed.walk * e.sign
+        if pMap.mov == true then
+          e.x = e.x - pHero.speed.walk * pHero.sign
+        end
+        
+        if e.dir == "right" and (textureAfterFeet == "void" or (e.colFeet + 1) == pMap.size.w) then
+          e.dir = "left"
+          e.sign = -1 * e.sign
+        end
+        
+        if e.dir == "left" and (textureBeforeFeet == "void" or (e.colFeet - 1) == 1) then
+          e.dir = "right"
+          e.sign = -1 * e.sign
+        end
+        
       end
       
-      if Enemy.dir == "right" and (textureAfterFeet == "void" or (Enemy.colFeet + 1) == pMap.size.w) then
-        Enemy.dir = "left"
-        Enemy.sign = -1 * Enemy.sign
+      -- manage the movement along y
+      if e.mov == "fall" then
+        e.y = e.y - e.speed.alongY
+        e.speed.alongY = e.speed.alongY - dt*9.81
+      else
+        e.speed.alongY = 5
       end
       
-      if Enemy.dir == "left" and (textureBeforeFeet == "void" or (Enemy.colFeet - 1) == 1) then
-        Enemy.dir = "right"
-        Enemy.sign = -1 * Enemy.sign
+      -- condition for death
+      if e.health < 0 then
+        e.isDead = true
+        e.Dead.y = e.y
+        e.Dead.x = e.x
       end
-      
     end
     
-    -- manage the movement along y
-    if Enemy.mov == "fall" then
-      Enemy.y = Enemy.y - Enemy.speed.alongY
-      Enemy.speed.alongY = Enemy.speed.alongY - dt*9.81
-    else
-      Enemy.speed.alongY = 5
+    -- death animation
+    if e.isDead == true then
+      e.Dead.y = e.Dead.y - e.speed.alongY
+      e.speed.alongY = e.speed.alongY - dt*9.81
+      if e.Dead.y > windowHeight then e = {} end
     end
-    
-    -- condition for death
-    if Enemy.health < 0 then
-      Enemy.isDead = true
-      Enemy.Dead.y = Enemy.y
-      Enemy.Dead.x = Enemy.x
-    end
-  end
-  
-  -- death animation
-  if Enemy.isDead == true then
-    Enemy.Dead.y = Enemy.Dead.y - Enemy.speed.alongY
-    Enemy.speed.alongY = Enemy.speed.alongY - dt*9.81
-    if Enemy.Dead.y > windowHeight then Enemy = {} end
   end
 end
 
 function Enemy.Draw()
-  if Enemy.isDead == false then
-    if Enemy.x > (0 - 32) and Enemy.x < (windowWidth + 32) then
-      love.graphics.draw(Enemy.anim, Enemy.animWalk[math.floor(Enemy.picCurrent)],
-                         Enemy.x, Enemy.y, 0,
-                         Enemy.sign * Enemy.scale, 1 * Enemy.scale,
-                         Enemy.w/2, 1)
+  
+  for item = 1, #listEnemies do
+    local e = listEnemies[item]
+  
+    if e.isDead == false then
+      if e.x > (0 - 32) and e.x < (windowWidth + 32) then
+        love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
+                           e.x, e.y, 0,
+                           e.sign * e.scale, 1 * e.scale,
+                           e.w/2, 1)
+      end
+      
+      love.graphics.setColor(0, 0, 0)
+      love.graphics.printf("health : "..e.health, e.x - 16, e.y - 16, windowWidth, "left")
+      love.graphics.setColor(255, 255, 255)
     end
     
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.printf("health : "..Enemy.health, Enemy.x - 16, Enemy.y - 16, windowWidth, "left")
-    love.graphics.setColor(255, 255, 255)
-  end
-  
-  if Enemy.isDead == true then
-    love.graphics.draw(Enemy.anim, Enemy.animWalk[math.floor(Enemy.picCurrent)],
-                       Enemy.Dead.x, Enemy.Dead.y, Enemy.Dead.rot,
-                       Enemy.sign * Enemy.scale, 1 * Enemy.scale,
-                       Enemy.w/2, 1)
+    if e.isDead == true then
+      love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
+                         e.Dead.x, e.Dead.y, e.Dead.rot,
+                         e.sign * e.scale, 1 * e.scale,
+                         e.w/2, 1)
+    end
   end
   
 end

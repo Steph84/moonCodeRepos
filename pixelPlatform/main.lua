@@ -28,7 +28,7 @@ end
 function love.update(dt)
   myHero.Update(dt)
   myMap.Update(dt, myHero)
-  myCombat.Update(dt)
+  --myCombat.Update(dt)
 end
 
 function love.draw()
