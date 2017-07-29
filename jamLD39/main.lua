@@ -9,6 +9,7 @@ local gameState = "menu"
 
 local myMenu = require("menu")
 local myGame = require("game")
+local myGameTrans = require("gameTrans")
 
 function love.load()
   local displayWidth, displayHeight
@@ -21,6 +22,7 @@ function love.load()
   
   myMenu.Load(windowWidth, windowHeight)
   myGame.Load(windowWidth, windowHeight, TILE_SIZE)
+  myGameTrans.Load(windowWidth, windowHeight)
   
 end
 
@@ -31,7 +33,11 @@ function love.update(dt)
   end
   
   if myMenu.menuState == "game" then
-    gameState = "game"
+    gameState = "gameTrans"
+  end
+  
+  if gameState == "gameTrans" then
+    gameState = myGameTrans.Update(dt, gameState)
   end
   
   if gameState == "game" then
@@ -46,7 +52,11 @@ function love.draw()
     myMenu.Draw()
   end
   
-  if myMenu.menuState == "game" then
+  if gameState == "gameTrans" then
+    myGameTrans.Draw()
+  end
+  
+  if gameState == "game" then
     myGame.Draw()
   end
   
