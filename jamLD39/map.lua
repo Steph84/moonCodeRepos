@@ -65,8 +65,7 @@ function CreateLevel(pId)
                             x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE,
                             w = TILE_SIZE, h = TILE_SIZE, 
                             idText = 0, texture = "void",
-                            isHidden = true, petrol = false,
-                            rock = false, tree = false, cactus = false}
+                            isHidden = true, petrol = false}
       
       local rdGeneric = math.random(0, 100)
       if rdGeneric < 20 then gridItem[lin][col].idText = pId end
@@ -91,8 +90,9 @@ function CreateLevel(pId)
         end
       end
       
-      if rdGeneric > 48 and rdGeneric < 52 then
+      if rdGeneric > 15 and rdGeneric < 75 then
         gridItem[lin][col].idText = 9 -- petrol
+        gridItem[lin][col].petrol = true
         gridItem[lin][col].texture = "void"
       end
       
