@@ -34,6 +34,7 @@ function love.update(dt)
   
   if myMenu.menuState == "game" then
     gameState = "gameTrans"
+    myMenu.menuState = "void"
   end
   
   if gameState == "gameTrans" then

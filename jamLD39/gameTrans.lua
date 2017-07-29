@@ -3,6 +3,7 @@ local GameTrans = {}
 local windowWidth, windowHeight
 local dataObject = {} -- all the scenario lines
 local dataBloc = {} -- bloc of 3 scenario lines
+local dataNumberLines = 2 -- 3 lines
 local timeElapsed = 0
 local endOfText = 0
 local param = {}
@@ -19,7 +20,7 @@ function GameTrans.Load(pWindowWidth, pWindowHeight)
   for line in love.filesystem.lines("data/dataScenario.txt") do
     table.insert(dataBloc, line)
     iteration = iteration + 1
-    if iteration == 3 then
+    if iteration == dataNumberLines then
       iteration = 0      
       table.insert(dataObject, dataBloc)
       dataBloc = {}
@@ -39,9 +40,9 @@ function GameTrans.Update(dt, pGameState)
   end
   
   if endOfText == #dataObject and timeElapsed > 2 then
-    -- TODO if enter key pressed
-    pGameState = "game"
-    
+    if love.keyboard.isDown("space") then
+      pGameState = "game"
+    end
   end
   return pGameState
 end
@@ -54,15 +55,17 @@ function GameTrans.Draw()
       love.graphics.printf(
                             dataObject[i][j],
                             0,
-                            -- offset 10%       + offset between 2 blocks        + offset between 2 lines in the same block
-                            windowHeight * 0.1 + (i - 1) * param.size * 5 + (j - 1) * param.size,
+                            -- offset 5%       + offset between 2 blocks        + offset between 2 lines in the same block
+                            windowHeight * 0.05 + (i - 1) * param.size * 4 + (j - 1) * param.size,
                             windowWidth, "center"
                           )
     end
   end
   
   if endOfText == #dataObject and timeElapsed > 2 then
-  -- TODO draw press enter to play
+    love.graphics.printf("press space to continue",
+                         0, windowHeight - param.size * 1.5,
+                         windowWidth - param.size, "right")
   end
 end
 
