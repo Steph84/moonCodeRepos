@@ -99,6 +99,15 @@ function CreateLevel(pId)
     end
   end
   
+  if pId == 5 then
+    local rdCol, rdLin
+    repeat
+      rdCol = math.floor(math.random(Map.size.w * 0.8, Map.size.w * 0.95))
+      rdLin = math.floor(math.random(Map.size.h * 0.8, Map.size.h * 0.95))
+    until (gridItem[rdLin][rdCol].texture ~= "block")
+    gridItem[rdLin][rdCol].idText = 11 -- plutonium
+  end
+  
   table.insert(Map.listGrids, gridItem)
   
 end
