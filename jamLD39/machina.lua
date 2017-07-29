@@ -54,7 +54,7 @@ function Machina.Update(dt, pLevel, pMap)
       
       if Machina.action.drill == true then
         if love.keyboard.isDown("d") then
-          pMap[Machina.body.lin][Machina.body.col].idText = 0
+          pMap[Machina.body.lin][Machina.body.col].idText = 10
           pMap[Machina.body.lin][Machina.body.col].petrol = false
           Machina.power = Machina.power - costDrill
           local harvestOil = math.random(myMap.size.w/2, myMap.size.w)
@@ -96,7 +96,18 @@ function Machina.Update(dt, pLevel, pMap)
   if Machina.power > myMap.size.w * 1.5 then
     Machina.action.teleport = true
   else Machina.action.teleport = false
-  end 
+  end
+
+  -- reveal tile from the fog
+  local alongLine, alongColumn
+  for alongLine = -1, 1, 1 do
+    for alongColumn = -1, 1, 1 do
+      if Machina.body.lin + alongLine > 0 and Machina.body.col + alongColumn > 1
+         and Machina.body.lin + alongLine < myMap.size.h + 1 and Machina.body.col + alongColumn < myMap.size.w + 1 then
+             pMap[Machina.body.lin + alongLine][Machina.body.col + alongColumn].isHidden = false
+      end
+    end
+  end
 
   return pLevel
 end

@@ -3,8 +3,9 @@ local Game = {}
 local windowWidth, windowHeight, TILE_SIZE
 local level = 1
 local lvlTrans = false
+local timeElapsed = 0
 
-local beamPic, haloPic
+local beamPic, haloPic, haloScale
 
 local myMap = require("map")
 local myMachina = require("machina")
@@ -19,6 +20,7 @@ function Game.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   beamPic = love.graphics.newImage("pictures/animationLD39_02.png")
   haloPic = love.graphics.newImage("pictures/animationLD39_01.png")
+  haloScale = 1
 end
 
 function Game.Update(dt)
@@ -32,6 +34,11 @@ function Game.Update(dt)
   if oldLevel ~= level then
     lvlTrans = true
   end
+  if lvlTrans == true then
+    timeElapsed = timeElapsed + dt
+    haloScale = haloScale + dt
+  end
+  
   
 end
 
@@ -43,8 +50,7 @@ function Game.Draw()
     myMap.Draw(level - 1)
     love.graphics.draw(haloPic,
                        myMap.listGrids[level-1][myMachina.body.lin][myMachina.body.col].x,
-                       myMap.listGrids[level-1][myMachina.body.lin][myMachina.body.col].y,
-                       0, 1, 1)
+                       myMap.listGrids[level-1][myMachina.body.lin][myMachina.body.col].y)
     --love.graphics.draw(beamPic, myMachina.x, myMachina.y, 0, 1, 1)
   end
   myMachina.Draw()

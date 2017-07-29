@@ -64,7 +64,7 @@ function CreateLevel(pId)
       gridItem[lin][col] = {id = idTile,
                             x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE,
                             w = TILE_SIZE, h = TILE_SIZE, 
-                            idText = 0, texture = "void",
+                            idText = 10, texture = "void",
                             isHidden = true, petrol = false}
       
       local rdGeneric = math.random(0, 100)
@@ -104,18 +104,17 @@ function CreateLevel(pId)
 end
 
 function Map.Draw(pId)
-  
-  love.graphics.setColor(listColors[pId])
-  love.graphics.rectangle("fill", 0, 0, windowWidth, windowHeight - 2*32)
-  love.graphics.setColor(255, 255, 255)
     
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
       local g = Map.listGrids[pId][lin][col]
-      if g.idText ~= 0 then
+      --if g.isHidden == false then
+        love.graphics.setColor(listColors[pId])
+        love.graphics.rectangle("fill", g.x, g.y, TILE_SIZE, TILE_SIZE)
+        love.graphics.setColor(255, 255, 255)
         love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
-      end
+      --end
     end
   end
 end
