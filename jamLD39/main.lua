@@ -52,7 +52,7 @@ function love.update(dt)
   end
   
   if gameState == "endAnimation" then
-    myEndAnimation.Update(dt)
+    myEndAnimation.Update(dt, myMenu.menuState)
   end
   
 end

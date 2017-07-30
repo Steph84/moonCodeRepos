@@ -61,6 +61,8 @@ function LevelAnimation.Update(dt, pMachina, pLvlTrans)
       pLvlTrans = false
       pMachina.isHere = false
       beamInstalled = false
+      beamPic.scale = 1
+      beamPic.extend = 0
     end
   end
   

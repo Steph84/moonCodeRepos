@@ -7,6 +7,7 @@ local powerPart = {}
 local statPart = {}
 
 local myMap = require("map")
+local myMachina = require("machina")
 
 function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -54,6 +55,12 @@ function Hud.Draw(pLevel)
   love.graphics.rectangle("line", instructionPart.x, instructionPart.y, instructionPart.w, instructionPart.h, 10, 10, 5)
   love.graphics.rectangle("line", powerPart.x, powerPart.y, powerPart.w, powerPart.h, 10, 10, 5)
   love.graphics.rectangle("line", statPart.x, statPart.y, statPart.w, statPart.h, 10, 10, 5)
+  
+  -- power part
+  love.graphics.printf("Power", powerPart.x, powerPart.y + 4, powerPart.w, "center")
+  local tempRatio = (powerPart.w - 44)/(myMap.size.w * 20) -- bar width/max power
+  love.graphics.rectangle("line", powerPart.x + 16, powerPart.y + 24, powerPart.w - 32, powerPart.h - 32, 10, 10, 5)
+  love.graphics.rectangle("fill", powerPart.x + 22, powerPart.y + 30, myMachina.power * tempRatio, powerPart.h - 44)
   
   -- statitic part
   love.graphics.printf("Statistics", statPart.x, statPart.y + 4, statPart.w, "center")

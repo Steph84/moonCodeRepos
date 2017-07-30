@@ -6,6 +6,7 @@ local mapNb = 5 -- grass, sand, water, snow, Mars
 local TileSet, TileTextures = {}, {}
 Map.grid = {}
 Map.listGrids = {}
+
 Map.countOil = {}
 Map.fogOutCount = {}
 local iter

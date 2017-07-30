@@ -5,10 +5,16 @@ local windowWidth, windowHeight, TILE_SIZE
 local costDrill = 5
 local costMove = 1
 local costTeleport
+local costExtract
 local harvestOil
-local harvestPlutonium
 
 local rightPic, upPic, downPic = {}, {}, {}
+
+Machina.countOil = {}
+local iter
+for iter = 1, 5 do
+  Machina.countOil[iter] = 0
+end
 
 local myMap = require("map")
 
@@ -25,9 +31,10 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   Machina.action = {right = true, left = true, up = true, down = true,
                     drill = false, teleport = false, extract = false}
   
-  costTeleport = myMap.size.w * 0.75
-  harvestOil = myMap.size.w * 0.1
-  harvestPlutonium = myMap.size.w * 0.5
+  costTeleport = myMap.size.w * 1
+  costDrill = myMap.size.w * 0.5
+  costExtract = myMap.size.w * 1
+  harvestOil = myMap.size.w * 0.5
   
   -- load pictures
   rightPic.src = love.graphics.newImage("pictures/TheMachina_right.png")
@@ -68,18 +75,22 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
         
         if love.keyboard.isDown("right") then
           Machina.body.col = Machina.body.col + 1
+          Machina.power = Machina.power - costMove
           Machina.body.dir = "right"
         end
         if love.keyboard.isDown("left") then
           Machina.body.col = Machina.body.col - 1
+          Machina.power = Machina.power - costMove
           Machina.body.dir = "left"
         end
         if love.keyboard.isDown("up") then
           Machina.body.lin = Machina.body.lin - 1
+          Machina.power = Machina.power - costMove
           Machina.body.dir = "up"
         end
         if love.keyboard.isDown("down") then
           Machina.body.lin = Machina.body.lin + 1
+          Machina.power = Machina.power - costMove
           Machina.body.dir = "down"
         end
         
@@ -88,9 +99,10 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
             pMap[Machina.body.lin][Machina.body.col].idText = 10
             pMap[Machina.body.lin][Machina.body.col].petrol = false
             Machina.power = Machina.power - costDrill
-            local harvestOil = math.random(myMap.size.w/2, myMap.size.w)
+            local harvestOil = math.random(myMap.size.w, myMap.size.w * 1.5)
             Machina.power = Machina.power + harvestOil
             myMap.countOil[pLevel] = myMap.countOil[pLevel] - 1
+            Machina.countOil[pLevel] = Machina.countOil[pLevel] + 1
           end
         end
         
@@ -103,7 +115,7 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
         
         if Machina.action.extract == true then
           if love.keyboard.isDown("e") then
-            Machina.power = Machina.power + harvestPlutonium
+            Machina.power = Machina.power - costExtract
             pMap[Machina.body.lin][Machina.body.col].idText = 10
             pMenuState = "win"
           end
@@ -120,25 +132,24 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
         if backTo == true then
           Machina.body.col = oldCoor[1]
           Machina.body.lin = oldCoor[2]
+          Machina.power = Machina.power + costMove
         end
-        
-        if backTo == false then Machina.power = Machina.power - costMove end
         
       end
     else Machina.keyPressed = false
     end
 
-    if pMap[Machina.body.lin][Machina.body.col].petrol == true then
+    if pMap[Machina.body.lin][Machina.body.col].petrol == true and Machina.power >= costDrill then
       Machina.action.drill = true
     else Machina.action.drill = false
     end
   
-    if pMap[Machina.body.lin][Machina.body.col].idText == 11 then
+    if pMap[Machina.body.lin][Machina.body.col].idText == 11 and Machina.power >= costExtract then
       Machina.action.extract = true
     else Machina.action.extract = false
     end
 
-    if Machina.power > myMap.size.w * 1.5 then
+    if Machina.power >= costTeleport then
       Machina.action.teleport = true
     else Machina.action.teleport = false
     end
