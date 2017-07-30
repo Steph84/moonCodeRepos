@@ -6,6 +6,12 @@ local mapNb = 5 -- grass, sand, water, snow, Mars
 local TileSet, TileTextures = {}, {}
 Map.grid = {}
 Map.listGrids = {}
+Map.countOil = {}
+Map.fogOutCount = {}
+local iter
+for iter = 1, 5 do
+  Map.fogOutCount[iter] = 0
+end
 
 local listColors = {
                     {0, 128, 0},
@@ -53,6 +59,7 @@ end
 
 function CreateLevel(pId)
   local gridItem = {}
+  local tempCount = 0
   -- building the map
   local lin, col
   local idTile = 0
@@ -90,7 +97,8 @@ function CreateLevel(pId)
         end
       end
       
-      if rdGeneric > 15 and rdGeneric < 75 then
+      if rdGeneric > 49 and rdGeneric < 51 then
+        tempCount = tempCount + 1
         gridItem[lin][col].idText = 9 -- petrol
         gridItem[lin][col].petrol = true
         gridItem[lin][col].texture = "void"
@@ -107,9 +115,22 @@ function CreateLevel(pId)
     until (gridItem[rdLin][rdCol].texture ~= "block")
     gridItem[rdLin][rdCol].idText = 11 -- plutonium
   end
-  
+  table.insert(Map.countOil, tempCount)
   table.insert(Map.listGrids, gridItem)
   
+end
+
+function Map.Update(dt, pLevel)
+  Map.fogOutCount[pLevel] = 0
+  local lin, col
+  for lin = 1, Map.size.h do
+    for col = 1, Map.size.w do
+      local case = Map.listGrids[pLevel][lin][col]
+      if case.isHidden == false then
+        Map.fogOutCount[pLevel] = Map.fogOutCount[pLevel] + 1
+      end
+    end
+  end
 end
 
 function Map.Draw(pId)

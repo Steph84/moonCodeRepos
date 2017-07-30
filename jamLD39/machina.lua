@@ -6,6 +6,7 @@ local costDrill = 5
 local costMove = 1
 local costTeleport
 local harvestOil
+local harvestPlutonium
 
 local rightPic, upPic, downPic = {}, {}, {}
 
@@ -25,6 +26,8 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
                     drill = false, teleport = false, extract = false}
   
   costTeleport = myMap.size.w * 0.75
+  harvestOil = myMap.size.w * 0.1
+  harvestPlutonium = myMap.size.w * 0.5
   
   -- load pictures
   rightPic.src = love.graphics.newImage("pictures/TheMachina_right.png")
@@ -48,7 +51,7 @@ function Machina.Spawn(pLevel, pMap)
   return col, lin
 end
 
-function Machina.Update(dt, pLevel, pMap)
+function Machina.Update(dt, pLevel, pMap, pMenuState)
   
   if Machina.body.isHere == false then
     local tempCol, tempLin
@@ -58,7 +61,7 @@ function Machina.Update(dt, pLevel, pMap)
   end
   
   if Machina.body.isHere == true then
-    if love.keyboard.isDown("right", "left", "up", "down", "d", "t") then
+    if love.keyboard.isDown("right", "left", "up", "down", "d", "t", "e") then
       if Machina.keyPressed == false then
         local oldCoor = {Machina.body.col, Machina.body.lin}
         local backTo = false
@@ -87,6 +90,7 @@ function Machina.Update(dt, pLevel, pMap)
             Machina.power = Machina.power - costDrill
             local harvestOil = math.random(myMap.size.w/2, myMap.size.w)
             Machina.power = Machina.power + harvestOil
+            myMap.countOil[pLevel] = myMap.countOil[pLevel] - 1
           end
         end
         
@@ -97,6 +101,14 @@ function Machina.Update(dt, pLevel, pMap)
           end
         end
         
+        if Machina.action.extract == true then
+          if love.keyboard.isDown("e") then
+            Machina.power = Machina.power + harvestPlutonium
+            pMap[Machina.body.lin][Machina.body.col].idText = 10
+            pMenuState = "win"
+          end
+        end
+            
         Machina.keyPressed = true
         
         if Machina.body.lin < 1 or Machina.body.col < 1 or Machina.body.lin > myMap.size.h or Machina.body.col > myMap.size.w then
@@ -142,7 +154,10 @@ function Machina.Update(dt, pLevel, pMap)
       end
     end
   end
-  return pLevel
+  
+  if Machina.power < 1 then pMenuState = "lose" end
+  
+  return pLevel, pMenuState
 end
 
 function Machina.Draw()
@@ -158,12 +173,6 @@ function Machina.Draw()
   end
   
   love.graphics.print(Machina.power, (Machina.body.col-1) * TILE_SIZE + 8, (Machina.body.lin-1) * TILE_SIZE + 8)
-  if Machina.action.drill == true then
-    love.graphics.print("you can drill", 32, windowHeight - 32)
-  end
-  if Machina.action.teleport == true then
-    love.graphics.print("you can teleport", 100, windowHeight - 32)
-  end
 end
 
 return Machina

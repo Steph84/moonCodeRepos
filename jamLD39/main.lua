@@ -10,6 +10,7 @@ local gameState = "game"
 local myMenu = require("menu")
 local myGame = require("game")
 local myGameTrans = require("gameTrans")
+local myEndAnimation = require("endAnim")
 
 function love.load()
   local displayWidth, displayHeight
@@ -23,6 +24,7 @@ function love.load()
   myMenu.Load(windowWidth, windowHeight)
   myGame.Load(windowWidth, windowHeight, TILE_SIZE)
   myGameTrans.Load(windowWidth, windowHeight)
+  myEndAnimation.Load(windowWidth, windowHeight)
   
 end
 
@@ -42,7 +44,15 @@ function love.update(dt)
   end
   
   if gameState == "game" then
-    myGame.Update(dt)
+    myMenu.menuState = myGame.Update(dt, myMenu.menuState)
+  end
+  
+  if myMenu.menuState == "win" or myMenu.menuState == "lose" then
+    gameState = "endAnimation"
+  end
+  
+  if gameState == "endAnimation" then
+    myEndAnimation.Update(dt)
   end
   
 end
@@ -59,6 +69,10 @@ function love.draw()
   
   if gameState == "game" then
     myGame.Draw()
+  end
+  
+  if gameState == "endAnimation" then
+    myEndAnimation.Draw()
   end
   
 end
