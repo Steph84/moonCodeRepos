@@ -1,6 +1,9 @@
-Background picture : 
-Alexander Ovechkin
-http://
-Sound effect : 
-Teemu Selanne
-http://
+Graphic designer / Developer : 
+Kthulhu 1947
+https://kthulhu1947.itch.io
+Language : 
+Lua
+https://www.lua.org
+FrameWork : 
+Love 2D
+https://love2d.org/wiki/Main_Page

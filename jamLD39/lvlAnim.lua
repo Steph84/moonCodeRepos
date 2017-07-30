@@ -56,7 +56,7 @@ function LevelAnimation.Update(dt, pMachina, pLvlTrans)
   
   -- manage the Machina teleportation
   if beamInstalled == true then
-    pMachina.lin = pMachina.lin - dt
+    pMachina.lin = pMachina.lin - dt * 5
     if pMachina.lin < 0 then
       pLvlTrans = false
       pMachina.isHere = false

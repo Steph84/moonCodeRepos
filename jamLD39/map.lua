@@ -91,14 +91,14 @@ function CreateLevel(pId)
       end
       
       if pId == 2 then
-        local rdCactus = math.random(0, 100)
+        local rdCactus = math.random(0, 1000)
         if rdCactus < 5 then
           gridItem[lin][col].idText = 7 -- cactus
           gridItem[lin][col].texture = "block"
         end
       end
       
-      if rdGeneric > 49 and rdGeneric < 51 then
+      if rdGeneric == 7 then -- non significant number
         tempCount = tempCount + 1
         gridItem[lin][col].idText = 9 -- petrol
         gridItem[lin][col].petrol = true
@@ -140,12 +140,12 @@ function Map.Draw(pId)
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
       local g = Map.listGrids[pId][lin][col]
-      --if g.isHidden == false then
+      if g.isHidden == false then
         love.graphics.setColor(listColors[pId])
         love.graphics.rectangle("fill", g.x, g.y, TILE_SIZE, TILE_SIZE)
         love.graphics.setColor(255, 255, 255)
         love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
-      --end
+      end
     end
   end
 end

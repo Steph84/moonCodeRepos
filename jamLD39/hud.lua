@@ -9,6 +9,8 @@ local statPart = {}
 local myMap = require("map")
 local myMachina = require("machina")
 
+local hudFont = love.graphics.newFont("fonts/arial.ttf", 16)
+
 function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
@@ -50,6 +52,7 @@ end
 
 function Hud.Draw(pLevel)
   
+  love.graphics.setFont(hudFont)
   -- draw the frames
   love.graphics.setColor(255, 255, 255)
   love.graphics.rectangle("line", instructionPart.x, instructionPart.y, instructionPart.w, instructionPart.h, 10, 10, 5)
@@ -75,7 +78,7 @@ function Hud.Draw(pLevel)
                        statPart.w/2, "left")
   
   -- instruction part
-  love.graphics.printf("Instrutions", instructionPart.x, instructionPart.y + 4, instructionPart.w, "center")
+  love.graphics.printf("Instructions", instructionPart.x, instructionPart.y + 4, instructionPart.w, "center")
   
   love.graphics.printf("Arrow keys to move",
                        instructionPart.x + 16, instructionPart.y + 24,

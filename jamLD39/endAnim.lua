@@ -53,12 +53,12 @@ end
 function EndAnim.Draw()
   if status == "win" then
     love.graphics.setFont(endFont)
-    love.graphics.printf("YOU WIN !!!", coorStatus.x, coorStatus.y, windowWidth, "center")
+    love.graphics.printf("You discover the plutonium bar !!!", coorStatus.x, coorStatus.y, windowWidth, "center")
   end
   
   if status == "lose" then
     love.graphics.setFont(endFont)
-    love.graphics.printf("YOU LOSE ...", coorStatus.x, coorStatus.y, windowWidth, "center")
+    love.graphics.printf("You running out of power...", coorStatus.x, coorStatus.y, windowWidth, "center")
   end
   
   local i

@@ -27,14 +27,13 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   tempCol, tempLin = Machina.Spawn(1, myMap)
   
   Machina.body = {col = tempCol, lin = tempLin, dir = "right", isHere = true}
-  Machina.power = myMap.size.w
+  Machina.power = myMap.size.w * 2
   Machina.action = {right = true, left = true, up = true, down = true,
                     drill = false, teleport = false, extract = false}
   
-  costTeleport = myMap.size.w * 1
-  costDrill = myMap.size.w * 0.5
+  costTeleport = myMap.size.w * 0.5
+  costDrill = myMap.size.w * 0.25
   costExtract = myMap.size.w * 1
-  harvestOil = myMap.size.w * 0.5
   
   -- load pictures
   rightPic.src = love.graphics.newImage("pictures/TheMachina_right.png")
@@ -149,16 +148,16 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
     else Machina.action.extract = false
     end
 
-    if Machina.power >= costTeleport then
+    if Machina.power >= costTeleport and pLevel < 5 then
       Machina.action.teleport = true
     else Machina.action.teleport = false
     end
 
     -- reveal tile from the fog
     local alongLine, alongColumn
-    for alongLine = -1, 1, 1 do
-      for alongColumn = -1, 1, 1 do
-        if Machina.body.lin + alongLine > 0 and Machina.body.col + alongColumn > 1
+    for alongLine = -2, 2, 1 do
+      for alongColumn = -2, 2, 1 do
+        if Machina.body.lin + alongLine > 0 and Machina.body.col + alongColumn > 0
            and Machina.body.lin + alongLine < myMap.size.h + 1 and Machina.body.col + alongColumn < myMap.size.w + 1 then
                pMap[Machina.body.lin + alongLine][Machina.body.col + alongColumn].isHidden = false
         end
@@ -182,8 +181,6 @@ function Machina.Draw()
   elseif Machina.body.dir == "down" then
     love.graphics.draw(downPic.src, (Machina.body.col-1) * TILE_SIZE - 4, (Machina.body.lin-1) * TILE_SIZE - 4)
   end
-  
-  love.graphics.print(Machina.power, (Machina.body.col-1) * TILE_SIZE + 8, (Machina.body.lin-1) * TILE_SIZE + 8)
 end
 
 return Machina
