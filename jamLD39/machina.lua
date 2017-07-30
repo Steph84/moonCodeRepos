@@ -7,6 +7,8 @@ local costMove = 1
 local costTeleport
 local harvestOil
 
+local rightPic, upPic, downPic = {}, {}, {}
+
 local myMap = require("map")
 
 function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
@@ -23,6 +25,11 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
                     drill = false, teleport = false, extract = false}
   
   costTeleport = myMap.size.w * 0.75
+  
+  -- load pictures
+  rightPic.src = love.graphics.newImage("pictures/TheMachina_right.png")
+  upPic.src = love.graphics.newImage("pictures/TheMachina_up.png")
+  downPic.src = love.graphics.newImage("pictures/TheMachina_down.png")
   
 end
 
@@ -56,10 +63,22 @@ function Machina.Update(dt, pLevel, pMap)
         local oldCoor = {Machina.body.col, Machina.body.lin}
         local backTo = false
         
-        if love.keyboard.isDown("right") then Machina.body.col = Machina.body.col + 1 end
-        if love.keyboard.isDown("left") then Machina.body.col = Machina.body.col - 1 end
-        if love.keyboard.isDown("up") then Machina.body.lin = Machina.body.lin - 1 end
-        if love.keyboard.isDown("down") then Machina.body.lin = Machina.body.lin + 1 end
+        if love.keyboard.isDown("right") then
+          Machina.body.col = Machina.body.col + 1
+          Machina.body.dir = "right"
+        end
+        if love.keyboard.isDown("left") then
+          Machina.body.col = Machina.body.col - 1
+          Machina.body.dir = "left"
+        end
+        if love.keyboard.isDown("up") then
+          Machina.body.lin = Machina.body.lin - 1
+          Machina.body.dir = "up"
+        end
+        if love.keyboard.isDown("down") then
+          Machina.body.lin = Machina.body.lin + 1
+          Machina.body.dir = "down"
+        end
         
         if Machina.action.drill == true then
           if love.keyboard.isDown("d") then
@@ -127,7 +146,17 @@ function Machina.Update(dt, pLevel, pMap)
 end
 
 function Machina.Draw()
-  love.graphics.rectangle("fill", (Machina.body.col-1) * TILE_SIZE + 8, (Machina.body.lin-1) * TILE_SIZE + 8, 16, 16)
+  
+  if Machina.body.dir == "right" then
+    love.graphics.draw(rightPic.src, (Machina.body.col-1) * TILE_SIZE - 4, (Machina.body.lin-1) * TILE_SIZE - 4)
+  elseif Machina.body.dir == "left" then
+    love.graphics.draw(rightPic.src, (Machina.body.col-1) * TILE_SIZE - 4 + 40, (Machina.body.lin-1) * TILE_SIZE - 4, 0, -1, 1)
+  elseif Machina.body.dir == "up" then
+    love.graphics.draw(upPic.src, (Machina.body.col-1) * TILE_SIZE - 4, (Machina.body.lin-1) * TILE_SIZE - 4)
+  elseif Machina.body.dir == "down" then
+    love.graphics.draw(downPic.src, (Machina.body.col-1) * TILE_SIZE - 4, (Machina.body.lin-1) * TILE_SIZE - 4)
+  end
+  
   love.graphics.print(Machina.power, (Machina.body.col-1) * TILE_SIZE + 8, (Machina.body.lin-1) * TILE_SIZE + 8)
   if Machina.action.drill == true then
     love.graphics.print("you can drill", 32, windowHeight - 32)
