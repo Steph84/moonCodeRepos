@@ -7,3 +7,6 @@ https://www.lua.org
 FrameWork : 
 Love 2D
 https://love2d.org/wiki/Main_Page
+Sound Effects : 
+BFXR
+http://www.bfxr.net

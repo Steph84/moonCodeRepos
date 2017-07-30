@@ -14,7 +14,7 @@ function Credits.Load(pWindowWidth, pWindowHeight, pFontSize)
   windowHeight = pWindowHeight
   fontSize = pFontSize
   
-  itemFonts.credits1 = love.graphics.newFont("fonts/Capture_it.ttf", fontSize * 2)
+  itemFonts.credits1 = love.graphics.newFont("fonts/Pacifico.ttf", fontSize * 2)
   itemFonts.credits2 = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", fontSize)
   
   dataObject = {}
@@ -41,7 +41,7 @@ function Credits.Draw()
   
   love.graphics.setColor(255, 255, 255)
   love.graphics.setFont(itemFonts.credits1)
-  love.graphics.printf("The Credits", 0, windowHeight * 0.05, windowWidth, "center")
+  love.graphics.printf("The Credits", 0, windowHeight * 0.02, windowWidth, "center")
   
   love.graphics.setFont(itemFonts.credits2)
   local i, j

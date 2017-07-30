@@ -2,13 +2,12 @@ local Machina = {}
 Machina.keyPressed = false
 local windowWidth, windowHeight, TILE_SIZE
 
-local costDrill = 5
+Machina.costDrill = 5
 local costMove = 1
-local costTeleport
-local costExtract
 local harvestOil
 
 local rightPic, upPic, downPic = {}, {}, {}
+local soundEffects = {}
 
 Machina.countOil = {}
 local iter
@@ -23,6 +22,13 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
   
+  -- load the sound effects
+  soundEffects.bump = love.audio.newSource("sounds/bump.wav", "static")
+  soundEffects.drill = love.audio.newSource("sounds/drill.wav", "static")
+  soundEffects.move = love.audio.newSource("sounds/move.wav", "static")
+  soundEffects.move:setVolume(0.5)
+  soundEffects.extract = love.audio.newSource("sounds/extract.wav", "static")
+  
   local tempCol, tempLin
   tempCol, tempLin = Machina.Spawn(1, myMap)
   
@@ -31,9 +37,9 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   Machina.action = {right = true, left = true, up = true, down = true,
                     drill = false, teleport = false, extract = false}
   
-  costTeleport = myMap.size.w * 0.5
-  costDrill = myMap.size.w * 0.25
-  costExtract = myMap.size.w * 1
+  Machina.costTeleport = myMap.size.w * 1
+  Machina.costDrill = myMap.size.w * 0.25
+  Machina.costExtract = myMap.size.w * 10
   
   -- load pictures
   rightPic.src = love.graphics.newImage("pictures/TheMachina_right.png")
@@ -76,45 +82,52 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
           Machina.body.col = Machina.body.col + 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "right"
+          soundEffects.move:play()
         end
         if love.keyboard.isDown("left") then
           Machina.body.col = Machina.body.col - 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "left"
+          soundEffects.move:play()
         end
         if love.keyboard.isDown("up") then
           Machina.body.lin = Machina.body.lin - 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "up"
+          soundEffects.move:play()
         end
         if love.keyboard.isDown("down") then
           Machina.body.lin = Machina.body.lin + 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "down"
+          soundEffects.move:play()
         end
         
         if Machina.action.drill == true then
           if love.keyboard.isDown("d") then
             pMap[Machina.body.lin][Machina.body.col].idText = 10
             pMap[Machina.body.lin][Machina.body.col].petrol = false
-            Machina.power = Machina.power - costDrill
+            Machina.power = Machina.power - Machina.costDrill
             local harvestOil = math.random(myMap.size.w, myMap.size.w * 1.5)
             Machina.power = Machina.power + harvestOil
             myMap.countOil[pLevel] = myMap.countOil[pLevel] - 1
             Machina.countOil[pLevel] = Machina.countOil[pLevel] + 1
+            soundEffects.drill:stop() -- avoid to overlap the sounds
+            soundEffects.drill:play()
           end
         end
         
         if Machina.action.teleport == true then
           if love.keyboard.isDown("t") then
-            Machina.power = Machina.power - costTeleport
+            Machina.power = Machina.power - Machina.costTeleport
             pLevel = pLevel + 1
           end
         end
         
         if Machina.action.extract == true then
           if love.keyboard.isDown("e") then
-            Machina.power = Machina.power - costExtract
+            soundEffects.extract:play()
+            Machina.power = Machina.power - Machina.costExtract
             pMap[Machina.body.lin][Machina.body.col].idText = 10
             pMenuState = "win"
           end
@@ -132,23 +145,25 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
           Machina.body.col = oldCoor[1]
           Machina.body.lin = oldCoor[2]
           Machina.power = Machina.power + costMove
+          soundEffects.bump:stop() -- avoid to overlap the sounds
+          soundEffects.bump:play()
         end
         
       end
     else Machina.keyPressed = false
     end
 
-    if pMap[Machina.body.lin][Machina.body.col].petrol == true and Machina.power >= costDrill then
+    if pMap[Machina.body.lin][Machina.body.col].petrol == true and Machina.power >= Machina.costDrill then
       Machina.action.drill = true
     else Machina.action.drill = false
     end
   
-    if pMap[Machina.body.lin][Machina.body.col].idText == 11 and Machina.power >= costExtract then
+    if pMap[Machina.body.lin][Machina.body.col].idText == 11 and Machina.power >= Machina.costExtract then
       Machina.action.extract = true
     else Machina.action.extract = false
     end
 
-    if Machina.power >= costTeleport and pLevel < 5 then
+    if Machina.power >= Machina.costTeleport and pLevel < 5 then
       Machina.action.teleport = true
     else Machina.action.teleport = false
     end

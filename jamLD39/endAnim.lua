@@ -58,7 +58,7 @@ function EndAnim.Draw()
   
   if status == "lose" then
     love.graphics.setFont(endFont)
-    love.graphics.printf("You running out of power...", coorStatus.x, coorStatus.y, windowWidth, "center")
+    love.graphics.printf("Running out of power...", coorStatus.x, coorStatus.y, windowWidth, "center")
   end
   
   local i

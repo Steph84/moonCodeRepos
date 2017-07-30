@@ -4,8 +4,13 @@ local haloPic, beamPic = {}, {}
 local timeElapsed = 0
 local TILE_ANIM_SIZE = 64
 local beamInstalled = false
+local soundTeleport = {}
+
 
 function LevelAnimation.Load()
+  
+  soundTeleport.beam = love.audio.newSource("sounds/teleport.wav", "static")
+  soundTeleport.machina = love.audio.newSource("sounds/teleport2.wav", "static")
   
   -- load the halo animation tile
   haloPic.src = love.graphics.newImage("pictures/haloAnimLD39.png")
@@ -49,7 +54,7 @@ function LevelAnimation.Update(dt, pMachina, pLvlTrans)
     haloPic.y = (pMachina.lin-1) * 32 - TILE_ANIM_SIZE/4
     beamPic.x = (pMachina.col-1) * 32
     beamPic.y = (pMachina.lin-1) * 32 - TILE_ANIM_SIZE/4 + beamPic.extend
-    
+    soundTeleport.beam:play()
     if beamPic.y < 0 then beamInstalled = true end
     
   end
@@ -57,6 +62,7 @@ function LevelAnimation.Update(dt, pMachina, pLvlTrans)
   -- manage the Machina teleportation
   if beamInstalled == true then
     pMachina.lin = pMachina.lin - dt * 5
+    soundTeleport.machina:play()
     if pMachina.lin < 0 then
       pLvlTrans = false
       pMachina.isHere = false

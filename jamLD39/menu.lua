@@ -19,17 +19,18 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   gameVersion = "v1.0"
   
   sizeFonts.fontSize = 32
-  sizeFonts.titles = sizeFonts.fontSize * 2.5
+  sizeFonts.titles = sizeFonts.fontSize * 2
+  sizeFonts.subTitles = sizeFonts.fontSize * 2
   sizeFonts.selections = sizeFonts.fontSize * 1.25
   sizeFonts.version = sizeFonts.fontSize * 1.0
   sizeFonts.credits = sizeFonts.fontSize * 1.0
   
-  itemFonts.titles = love.graphics.newFont("fonts/Capture_it.ttf", sizeFonts.titles)
-  itemFonts.subTitles = love.graphics.newFont("fonts/AlexBrush-Regular.ttf", sizeFonts.titles)
+  itemFonts.titles = love.graphics.newFont("fonts/Pacifico.ttf", sizeFonts.titles)
+  itemFonts.subTitles = love.graphics.newFont("fonts/AlexBrush-Regular.ttf", sizeFonts.subTitles)
   itemFonts.selections = love.graphics.newFont("fonts/Pacifico.ttf", sizeFonts.selections)
   itemFonts.version = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", sizeFonts.version)
   
-  anchorTitleY = windowHeight*0.05
+  anchorTitleY = windowHeight*0.04
   anchorSelectionY = windowHeight*0.5
 
   -- list of items of the menu
@@ -48,12 +49,6 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   soundObjects.selectionValidate:setVolume(0.25)
   soundObjects.back = love.audio.newSource("sounds/headBack.wav", "static")
   soundObjects.back:setVolume(0.5)
-  
-  -- load the background music
-  --soundObjects.bgMusic = love.audio.newSource("musics/dkSNESTheme.mp3", "stream")
-  --soundObjects.bgMusic:setLooping(true)
-  --soundObjects.bgMusic:setVolume(0.25)
-  --soundObjects.bgMusic:play()
 end
 
 
@@ -119,11 +114,11 @@ function Menu.Draw()
     -- draw the title and subtitle
     love.graphics.setColor(0, 0, 255)
     love.graphics.setFont(itemFonts.titles)
-    love.graphics.printf("#game name#", 0, anchorTitleY, windowWidth, "center")
+    love.graphics.printf("Harvest & Extract", 0, anchorTitleY, windowWidth, "center")
     
     love.graphics.setColor(255, 0, 255)
     love.graphics.setFont(itemFonts.subTitles)
-    love.graphics.printf("Ludum Dare 39", 0, anchorTitleY + sizeFonts.titles, windowWidth, "center")
+    love.graphics.printf("Ludum Dare 39", 0, anchorTitleY + sizeFonts.titles * 2, windowWidth, "center")
     
     -- draw the menu selection
     love.graphics.setFont(itemFonts.selections)

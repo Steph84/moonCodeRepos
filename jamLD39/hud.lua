@@ -61,9 +61,22 @@ function Hud.Draw(pLevel)
   
   -- power part
   love.graphics.printf("Power", powerPart.x, powerPart.y + 4, powerPart.w, "center")
-  local tempRatio = (powerPart.w - 44)/(myMap.size.w * 20) -- bar width/max power
+  local tempRatio = (powerPart.w - 44)/(myMap.size.w * 15) -- bar width/max power
   love.graphics.rectangle("line", powerPart.x + 16, powerPart.y + 24, powerPart.w - 32, powerPart.h - 32, 10, 10, 5)
   love.graphics.rectangle("fill", powerPart.x + 22, powerPart.y + 30, myMachina.power * tempRatio, powerPart.h - 44)
+  
+  local drillLine = {x = (powerPart.x + 22) + myMachina.costDrill * tempRatio, y = powerPart.y + 30, w = 2, h = powerPart.h - 44}
+  local teleportLine = {x = (powerPart.x + 22) + myMachina.costTeleport * tempRatio, y = powerPart.y + 30, w = 2, h = powerPart.h - 44}
+  local extractLine = {x = (powerPart.x + 22) + myMachina.costExtract * tempRatio, y = powerPart.y + 30, w = 2, h = powerPart.h - 44}
+  love.graphics.setColor(255, 0, 0)
+  love.graphics.rectangle("fill", drillLine.x, drillLine.y, drillLine.w, drillLine.h)
+  love.graphics.print("drill", drillLine.x - 16, drillLine.y - 24)
+  love.graphics.rectangle("fill", teleportLine.x, teleportLine.y, teleportLine.w, teleportLine.h)
+  love.graphics.print("teleport", teleportLine.x - 16, teleportLine.y - 24)
+  love.graphics.rectangle("fill", extractLine.x, extractLine.y, extractLine.w, extractLine.h)
+  love.graphics.print("extract", extractLine.x - 16, extractLine.y - 24)
+  
+  love.graphics.setColor(255, 255, 255)
   
   -- statitic part
   love.graphics.printf("Statistics", statPart.x, statPart.y + 4, statPart.w, "center")

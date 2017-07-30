@@ -5,7 +5,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth, windowHeight
 local TILE_SIZE = 32
 
-local gameState = "game"
+local gameState = "menu"
 
 local myMenu = require("menu")
 local myGame = require("game")
@@ -19,7 +19,7 @@ function love.load()
   windowHeight = (math.floor(displayHeight/TILE_SIZE) - 3) * TILE_SIZE
   
   love.window.setMode(windowWidth, windowHeight)
-  love.window.setTitle("LD39-#game name#")
+  love.window.setTitle("LD39 - Running Out Of Power")
   
   myMenu.Load(windowWidth, windowHeight)
   myGame.Load(windowWidth, windowHeight, TILE_SIZE)
