@@ -15,6 +15,7 @@ function GameTrans.Load(pWindowWidth, pWindowHeight)
   param.size = 32
   param.typeFace = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", param.size)
   
+  -- load the text of the scenario
   dataObject = {}
   local iteration = 0
   for line in love.filesystem.lines("data/dataScenario.txt") do
@@ -32,6 +33,8 @@ function GameTrans.Load(pWindowWidth, pWindowHeight)
 end
 
 function GameTrans.Update(dt, pGameState)
+  
+  -- show the scenario text along the time
   timeElapsed = timeElapsed + dt
   
   if timeElapsed > 1 and endOfText < #dataObject then
@@ -48,6 +51,8 @@ function GameTrans.Update(dt, pGameState)
 end
 
 function GameTrans.Draw()
+  
+  -- show the scenario text
   love.graphics.setFont(param.typeFace)
   local i, j
   for i = 1, endOfText do -- foreach block
@@ -62,6 +67,7 @@ function GameTrans.Draw()
     end
   end
   
+  -- show the instruction to continue
   if endOfText == #dataObject and timeElapsed > 2 then
     love.graphics.printf("press space to continue",
                          0, windowHeight - param.size * 1.5,

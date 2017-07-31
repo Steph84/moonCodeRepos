@@ -22,8 +22,11 @@ function Game.Load(pWindowWidth, pWindowHeight, pTileSize)
 end
 
 function Game.Update(dt, pMenuState)
+  
+  -- save the old level
   local oldLevel = level
   
+  -- if playing the level
   if lvlTrans == false then
     level, pMenuState = myMachina.Update(dt, level, myMap.listGrids[level], pMenuState)
   end
@@ -43,13 +46,19 @@ function Game.Update(dt, pMenuState)
 end
 
 function Game.Draw()
+  
+  -- if playing level
   if lvlTrans == false then
     myMap.Draw(level)
   end
+  
+  -- if level transition
   if lvlTrans == true then
     myMap.Draw(level - 1)
     myAnimation.Draw(myMachina.body)
   end
+  
+  -- either playing or transition
   myMachina.Draw()
   myHud.Draw(level)
 end

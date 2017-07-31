@@ -2,6 +2,7 @@ local Hud = {}
 
 local windowWidth, windowHeight, TILE_SIZE
 
+-- hud is divided in 3 parts
 local instructionPart = {}
 local powerPart = {}
 local statPart = {}
@@ -16,6 +17,7 @@ function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
   
+  -- initialize the coordinates and the size of each hud parts
   instructionPart.x = 0
   instructionPart.y = windowHeight - 2 * TILE_SIZE
   instructionPart.w = windowWidth/4
@@ -34,6 +36,8 @@ function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
 end
 
 function Hud.Update(dt, pMachina, pMap)
+  
+  -- determine if particular instruction is shown
   if pMachina.action.drill == true then
     instructionPart.drill = "show"
   else instructionPart.drill = "hide"
@@ -60,14 +64,22 @@ function Hud.Draw(pLevel)
   love.graphics.rectangle("line", statPart.x, statPart.y, statPart.w, statPart.h, 10, 10, 5)
   
   -- power part
-  love.graphics.printf("Power", powerPart.x, powerPart.y + 4, powerPart.w, "center")
+  love.graphics.printf("Power", powerPart.x, powerPart.y + 4, powerPart.w, "center") -- title
   local tempRatio = (powerPart.w - 44)/(myMap.size.w * 15) -- bar width/max power
+  -- frame of the power bar
   love.graphics.rectangle("line", powerPart.x + 16, powerPart.y + 24, powerPart.w - 32, powerPart.h - 32, 10, 10, 5)
+  -- dynamic bar for the power
   love.graphics.rectangle("fill", powerPart.x + 22, powerPart.y + 30, myMachina.power * tempRatio, powerPart.h - 44)
   
-  local drillLine = {x = (powerPart.x + 22) + myMachina.costDrill * tempRatio, y = powerPart.y + 30, w = 2, h = powerPart.h - 44}
-  local teleportLine = {x = (powerPart.x + 22) + myMachina.costTeleport * tempRatio, y = powerPart.y + 30, w = 2, h = powerPart.h - 44}
-  local extractLine = {x = (powerPart.x + 22) + myMachina.costExtract * tempRatio, y = powerPart.y + 30, w = 2, h = powerPart.h - 44}
+  -- determine the coordinates of threshold
+  local drillLine = {x = (powerPart.x + 22) + myMachina.costDrill * tempRatio, y = powerPart.y + 30,
+                     w = 2, h = powerPart.h - 44}
+  local teleportLine = {x = (powerPart.x + 22) + myMachina.costTeleport * tempRatio, y = powerPart.y + 30,
+                        w = 2, h = powerPart.h - 44}
+  local extractLine = {x = (powerPart.x + 22) + myMachina.costExtract * tempRatio, y = powerPart.y + 30,
+                       w = 2, h = powerPart.h - 44}
+  
+  -- show the threshold directly on the power bar
   love.graphics.setColor(255, 0, 0)
   love.graphics.rectangle("fill", drillLine.x, drillLine.y, drillLine.w, drillLine.h)
   love.graphics.print("drill", drillLine.x - 16, drillLine.y - 24)
@@ -81,10 +93,12 @@ function Hud.Draw(pLevel)
   -- statitic part
   love.graphics.printf("Statistics", statPart.x, statPart.y + 4, statPart.w, "center")
   
+  -- oil tiles number existing in this level
   love.graphics.printf("Oil tiles : "..myMap.countOil[pLevel],
                        statPart.x + 16, statPart.y + 24,
                        statPart.w/2, "left")
 
+  -- percentage of area explored in this level
   local tempArea = math.floor((myMap.fogOutCount[pLevel]/(myMap.size.w * myMap.size.h)) * 1000)/10
   love.graphics.printf("Map explored : "..tempArea.." %",
                        statPart.x + 16, statPart.y + 24 + 16,

@@ -9,6 +9,7 @@ local harvestOil
 local rightPic, upPic, downPic = {}, {}, {}
 local soundEffects = {}
 
+-- initialize oil count harvest by the machina in each level
 Machina.countOil = {}
 local iter
 for iter = 1, 5 do
@@ -29,29 +30,34 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   soundEffects.move:setVolume(0.5)
   soundEffects.extract = love.audio.newSource("sounds/extract.wav", "static")
   
+  -- first spawn of the machina
   local tempCol, tempLin
   tempCol, tempLin = Machina.Spawn(1, myMap)
   
+  -- initialize the different parts of the Machina
   Machina.body = {col = tempCol, lin = tempLin, dir = "right", isHere = true}
   Machina.power = myMap.size.w * 2
   Machina.action = {right = true, left = true, up = true, down = true,
                     drill = false, teleport = false, extract = false}
   
+  -- determine the cost of all action
   Machina.costTeleport = myMap.size.w * 1
   Machina.costDrill = myMap.size.w * 0.25
   Machina.costExtract = myMap.size.w * 10
   
-  -- load pictures
+  -- load pictures of the Machina
   rightPic.src = love.graphics.newImage("pictures/TheMachina_right.png")
   upPic.src = love.graphics.newImage("pictures/TheMachina_up.png")
   downPic.src = love.graphics.newImage("pictures/TheMachina_down.png")
   
 end
 
+-- function to spawn the machina at each level beginning
 function Machina.Spawn(pLevel, pMap)
   local col, lin
   local rdCol, rdLin
   
+  -- determine a spawn point at the center but not on a block
   repeat
     rdCol = math.floor(math.random(myMap.size.w * 0.4, myMap.size.w * 0.6))
     rdLin = math.floor(math.random(myMap.size.h * 0.4, myMap.size.h * 0.6))
@@ -65,6 +71,7 @@ end
 
 function Machina.Update(dt, pLevel, pMap, pMenuState)
   
+  -- if the machina is not here, ie if transition level animation
   if Machina.body.isHere == false then
     local tempCol, tempLin
     tempCol, tempLin = Machina.Spawn(pLevel, myMap)
@@ -72,12 +79,14 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
     Machina.body.isHere = true
   end
   
+  -- if the machina is here, ie if it's playable
   if Machina.body.isHere == true then
     if love.keyboard.isDown("right", "left", "up", "down", "d", "t", "e") then
       if Machina.keyPressed == false then
         local oldCoor = {Machina.body.col, Machina.body.lin}
         local backTo = false
         
+        -- movement along the map
         if love.keyboard.isDown("right") then
           Machina.body.col = Machina.body.col + 1
           Machina.power = Machina.power - costMove
@@ -103,6 +112,7 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
           soundEffects.move:play()
         end
         
+        -- drill action
         if Machina.action.drill == true then
           if love.keyboard.isDown("d") then
             pMap[Machina.body.lin][Machina.body.col].idText = 10
@@ -117,6 +127,7 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
           end
         end
         
+        -- teleport action
         if Machina.action.teleport == true then
           if love.keyboard.isDown("t") then
             Machina.power = Machina.power - Machina.costTeleport
@@ -124,6 +135,7 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
           end
         end
         
+        -- extract action
         if Machina.action.extract == true then
           if love.keyboard.isDown("e") then
             soundEffects.extract:play()
@@ -135,12 +147,14 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
             
         Machina.keyPressed = true
         
+        -- determine if the movement is possible, ie collision or not
         if Machina.body.lin < 1 or Machina.body.col < 1 or Machina.body.lin > myMap.size.h or Machina.body.col > myMap.size.w then
           backTo = true
         elseif pMap[Machina.body.lin][Machina.body.col].texture == "block" then
           backTo = true
         end
         
+        -- if movement not possible, back to early tile
         if backTo == true then
           Machina.body.col = oldCoor[1]
           Machina.body.lin = oldCoor[2]
@@ -153,16 +167,19 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
     else Machina.keyPressed = false
     end
 
+    -- determine if drilling is possible
     if pMap[Machina.body.lin][Machina.body.col].petrol == true and Machina.power >= Machina.costDrill then
       Machina.action.drill = true
     else Machina.action.drill = false
     end
   
+    -- determine if extraction is possible
     if pMap[Machina.body.lin][Machina.body.col].idText == 11 and Machina.power >= Machina.costExtract then
       Machina.action.extract = true
     else Machina.action.extract = false
     end
 
+    -- determine if teleportation is possible
     if Machina.power >= Machina.costTeleport and pLevel < 5 then
       Machina.action.teleport = true
     else Machina.action.teleport = false
@@ -187,6 +204,7 @@ end
 
 function Machina.Draw()
   
+  -- show the right picture for each direction
   if Machina.body.dir == "right" then
     love.graphics.draw(rightPic.src, (Machina.body.col-1) * TILE_SIZE - 4, (Machina.body.lin-1) * TILE_SIZE - 4)
   elseif Machina.body.dir == "left" then

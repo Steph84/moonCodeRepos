@@ -9,6 +9,7 @@ local soundTeleport = {}
 
 function LevelAnimation.Load()
   
+  -- load sound effects for level transition
   soundTeleport.beam = love.audio.newSource("sounds/teleport.wav", "static")
   soundTeleport.machina = love.audio.newSource("sounds/teleport2.wav", "static")
   

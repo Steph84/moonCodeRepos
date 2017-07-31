@@ -7,6 +7,7 @@ local TileSet, TileTextures = {}, {}
 Map.grid = {}
 Map.listGrids = {}
 
+-- initialize oil count and fog count
 Map.countOil = {}
 Map.fogOutCount = {}
 local iter
@@ -14,6 +15,7 @@ for iter = 1, 5 do
   Map.fogOutCount[iter] = 0
 end
 
+-- color used in each map
 local listColors = {
                     {0, 128, 0},
                     {255, 192, 0},
@@ -58,6 +60,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   end
 end
 
+-- function to create level
 function CreateLevel(pId)
   local gridItem = {}
   local tempCount = 0
@@ -75,13 +78,17 @@ function CreateLevel(pId)
                             idText = 10, texture = "void",
                             isHidden = true, petrol = false}
       
+      -- spawn alternative texture
       local rdGeneric = math.random(0, 100)
       if rdGeneric < 20 then gridItem[lin][col].idText = pId end
+      
+      -- spawn rocks
       if rdGeneric > 95 then
         gridItem[lin][col].idText = 8 -- rocks
         gridItem[lin][col].texture = "block"
       end
       
+      -- for the first level, spawn trees
       if pId == 1 then
         local rdTree = math.random(0, 100)
         if rdTree < 5 then
@@ -90,6 +97,7 @@ function CreateLevel(pId)
         end
       end
       
+      -- for the second level spawn cactus
       if pId == 2 then
         local rdCactus = math.random(0, 1000)
         if rdCactus < 5 then
@@ -98,6 +106,7 @@ function CreateLevel(pId)
         end
       end
       
+      -- spawn oil
       if rdGeneric == 7 then -- non significant number
         tempCount = tempCount + 1
         gridItem[lin][col].idText = 9 -- petrol
@@ -108,6 +117,7 @@ function CreateLevel(pId)
     end
   end
   
+  -- for the last level, spaw the plutonium bar
   if pId == 5 then
     local rdCol, rdLin
     repeat
@@ -116,12 +126,15 @@ function CreateLevel(pId)
     until (gridItem[rdLin][rdCol].texture ~= "block")
     gridItem[rdLin][rdCol].idText = 11 -- plutonium
   end
+  
+  -- update oil count and save each map
   table.insert(Map.countOil, tempCount)
   table.insert(Map.listGrids, gridItem)
   
 end
 
 function Map.Update(dt, pLevel)
+  -- dynamic update of the area explored
   Map.fogOutCount[pLevel] = 0
   local lin, col
   for lin = 1, Map.size.h do
@@ -135,7 +148,7 @@ function Map.Update(dt, pLevel)
 end
 
 function Map.Draw(pId)
-    
+  
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do

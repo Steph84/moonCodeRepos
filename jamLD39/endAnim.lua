@@ -7,8 +7,11 @@ local calculDone = false
 local myMap = require("map")
 local myMachina = require("machina")
 
+-- titles for the data table
 local verticalTitles = {"Harvest Oil", "Oil Left", "Map Explored (%)"}
 local horizontalTitles = {"Grassland", "Desert", "Ocean", "Toundra", "Mars", "Total"}
+
+-- initialize data
 local dataByLevel = {}
 local iter
 for iter = 1, 6 do
@@ -19,10 +22,12 @@ function EndAnim.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   
+  -- define font for the table
   endFont = love.graphics.newFont("fonts/Pacifico.ttf", 32)
   titleFont = love.graphics.newFont("fonts/Pacifico.ttf", 24)
   dataFont = love.graphics.newFont("fonts/Pacifico.ttf", 20)
   
+  -- define coordonates for the first element in each part of the table
   coorStatus = {x = 0, y = windowHeight * 0.1}
   coorHoriTitle = {x = windowWidth * 1/8 + 16, y = coorStatus.y + ((windowHeight - coorStatus.y) * 1/6)}
   coorVertTitle = {x = 0 + 16, y = coorHoriTitle.y + ((windowHeight - coorHoriTitle.y) * 1/6)}
@@ -31,9 +36,13 @@ function EndAnim.Load(pWindowWidth, pWindowHeight)
 end
 
 function EndAnim.Update(dt, pStatus)
-  status = pStatus
+  status = pStatus -- win or lose
+  
+  -- calculate the data at the end of the game
   if calculDone == false then
-    local tempSize = myMap.size.w * myMap.size.h
+    local tempSize = myMap.size.w * myMap.size.h -- total number of tiles
+    
+    -- for each level, get the oil count by the machina and left, and the % area explored
     local k
     for k = 1, #dataByLevel - 1 do
       dataByLevel[k][1] = myMachina.countOil[k]
@@ -51,16 +60,20 @@ function EndAnim.Update(dt, pStatus)
 end
 
 function EndAnim.Draw()
+  
+  -- if win
   if status == "win" then
     love.graphics.setFont(endFont)
     love.graphics.printf("You discover the plutonium bar !!!", coorStatus.x, coorStatus.y, windowWidth, "center")
   end
   
+  -- if lose
   if status == "lose" then
     love.graphics.setFont(endFont)
     love.graphics.printf("Running out of power...", coorStatus.x, coorStatus.y, windowWidth, "center")
   end
   
+  -- either win or lose, show the data table
   local i
   for i = 1, #horizontalTitles do
     love.graphics.setFont(titleFont)

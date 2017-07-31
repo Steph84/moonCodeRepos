@@ -13,6 +13,8 @@ local myGameTrans = require("gameTrans")
 local myEndAnimation = require("endAnim")
 
 function love.load()
+  
+  -- determine and set the right values for the window size
   local displayWidth, displayHeight
   displayWidth, displayHeight = love.window.getDesktopDimensions()
   windowWidth = (math.floor(displayWidth/TILE_SIZE) - 2) * TILE_SIZE
