@@ -31,7 +31,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   local e
   for e = 1, maxEnemiesNb do
-    myEnemy.Load(e, windowWidth, windowHeight, TILE_SIZE)
+    myEnemy.Load(e, windowWidth, windowHeight, TILE_SIZE, Map.size)
   end
   -- load castle pic
   castlePic.src = love.graphics.newImage("pictures/castle01.png")

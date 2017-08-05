@@ -206,7 +206,7 @@ function Hero.Update(dt)
       if Hero.speed.alongY > 0 then Hero.mov = "jump"
       elseif Hero.speed.alongY < 0 then Hero.mov = "fall" end
 
-      if Hero.yFeet > myMap.size.pixH - 10 and Hero.isDead == false then
+      if Hero.yFeet > myMap.size.pixH - 12 and Hero.isDead == false then
         -- death animation
         Hero.isDead = true
         Hero.Dead = {}

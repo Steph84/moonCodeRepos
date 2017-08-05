@@ -4,7 +4,7 @@ local windowWidth, windowHeight, TILE_SIZE
 local textureUnder, textureBeforeFeet, textureAfterFeet
 local listEnemies = {}
 
-function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize)
+function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
@@ -15,7 +15,7 @@ function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize)
   item.isDead = false
   item.mov = "stand"
   item.speed = {}
-  item.speed.walk = 1
+  item.speed.walk = math.random(5, 15)/10
   item.speed.animWalk = 10
   item.speed.alongY = 5
   item.animWalk = {}
@@ -26,8 +26,8 @@ function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize)
   item.scale = 1.5
   item.w = 32
   item.h = 32
-  item.x = math.random(500, 1000)
-  item.y = 300
+  item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
+  item.y = 100
   
   item.animHit = false
   item.hitted = false
