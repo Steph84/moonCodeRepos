@@ -9,19 +9,18 @@ local TileTextures = {}
 local listPits = {}
 local listHills = {}
 local listPlatForms = {}
-local coefMap = 4
+local coefMap
 local castlePic = {}
-local maxEnemiesNb = coefMap * coefMap - 3 - 3
 
 local myEltGen = require("mapEltGen")
 local myParallax = require("parallaxAnimation")
 local myColor = require("colorBlock")
-local myEnemy = require("enemy")
 
-function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
+function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pCoefMap)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
+  coefMap = pCoefMap
   
   -- initialize the size of the map
   Map.size = { w = (coefMap * windowWidth)/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
@@ -29,10 +28,6 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   myParallax.Load(Map.size.pixW, Map.size.pixH, coefMap)
   
-  local e
-  for e = 1, maxEnemiesNb do
-    myEnemy.Load(e, windowWidth, windowHeight, TILE_SIZE, Map.size)
-  end
   -- load castle pic
   castlePic.src = love.graphics.newImage("pictures/castle01.png")
   castlePic.x = Map.size.pixW - windowWidth/3
@@ -195,8 +190,6 @@ function Map.Update(dt, pHero)
     end
   end
   
-  myEnemy.Update(dt, Map, pHero)
-  
 end
 
 function Map.Draw()
@@ -219,8 +212,6 @@ function Map.Draw()
       end
     end
   end
-  
-  myEnemy.Draw()
   
   love.graphics.setColor(0, 0, 0)
   love.graphics.printf("maxLin : "..Map.size.h.." / maxCol : "..Map.size.w, 10, 30, windowWidth, "left")
