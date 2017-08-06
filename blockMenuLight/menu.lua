@@ -2,14 +2,39 @@ local Menu = {}
 
 Menu.menuState = nil
 
-local windowWidth, windowHeight, gameVersion, anchorTitleY, anchorSelectionY
+local windowWidth, windowHeight, gameVersion, anchorTitleY, anchorSelectionY, bMenuStable
 local selectionItems = {}
 local sizeFonts = {}
 local itemFonts = {}
 local soundObjects = {}
 
+-- 
+local selectionCoorX, selectionLimit
+
 local myPicture = require("loadPictures")
 local myCredits = require("menuCredits")
+
+-- function use for the selection tweening
+local function easeOutSin(t, b, c, d)
+  return c * math.sin(t/d * (math.pi/2)) + b
+end
+
+-- initialize the values for the tweening
+local function EnterMenu()
+  
+  selectionCoorX = {}
+  selectionCoorX.time = 0
+  selectionCoorX.value = -100
+  selectionCoorX.distance = 100
+  selectionCoorX.duration = 1.5
+  
+  selectionLimit = {}
+  selectionLimit.time = 0
+  selectionLimit.value = 0
+  selectionLimit.distance = windowWidth
+  selectionLimit.duration = 1.5
+  
+end
 
 function Menu.Load(pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
@@ -17,6 +42,10 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   
   Menu.menuState = "title"
   gameVersion = "v1.0"
+  
+  -- menu tweening
+  bMenuStable = false
+  EnterMenu()
   
   sizeFonts.fontSize = 32
   sizeFonts.titles = sizeFonts.fontSize * 2
@@ -58,8 +87,20 @@ end
 
 
 function Menu.Update(dt)
+  bMenuStable = true
   
   if Menu.menuState == "title" then
+    if selectionCoorX.time < selectionCoorX.duration then
+      selectionCoorX.time = selectionCoorX.time + dt
+      bMenuStable = false
+    end
+    if selectionLimit.time < selectionLimit.duration then
+      selectionLimit.time = selectionLimit.time + dt
+      bMenuStable = false
+    end
+  end
+  
+  if Menu.menuState == "title" and bMenuStable == true then
     -- manage the looping selection on the menu
     local optionsLength = #selectionItems.data
     if selectionItems.itemSelected < 1 then
@@ -75,10 +116,9 @@ function Menu.Update(dt)
     if Menu.menuState == "title" then soundObjects.back:play() end
   end
   
-
 	-- using keypressed function ponctual action
 	function love.keypressed(key, isRepeat)
-	  if Menu.menuState == "title" then
+	  if Menu.menuState == "title" and bMenuStable == true then
 		-- manage the looping navigation through the menu
 		if key == "up" then
 		  soundObjects.selectionMove:stop() -- avoid to overlap the sounds
@@ -125,6 +165,10 @@ function Menu.Draw()
     love.graphics.setFont(itemFonts.subTitles)
     love.graphics.printf("Story", 0, anchorTitleY + sizeFonts.titles, windowWidth, "center")
     
+    local tweenXDraw, tweenLimitDraw
+    tweenXDraw = easeOutSin(selectionCoorX.time, selectionCoorX.value, selectionCoorX.distance, selectionCoorX.duration)
+    tweenLimitDraw = easeOutSin(selectionLimit.time, selectionLimit.value, selectionLimit.distance, selectionLimit.duration)
+    
     -- draw the menu selection
     love.graphics.setFont(itemFonts.selections)
     local i
@@ -138,7 +182,8 @@ function Menu.Draw()
       else selectionItems.color = {120, 120, 120} end
       
       love.graphics.setColor(selectionItems.color)
-      love.graphics.printf(msg, 0, anchorSelectionY + 1.5*(i-1) * sizeFonts.selections, windowWidth, "center")
+      love.graphics.printf(msg, tweenXDraw * i, anchorSelectionY + 1.5*(i-1) * sizeFonts.selections, tweenLimitDraw, "center")
+      --love.graphics.printf(msg, 0, anchorSelectionY + 1.5*(i-1) * sizeFonts.selections, windowWidth, "center")
     end
     
     -- draw the game version
