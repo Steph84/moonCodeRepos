@@ -1,7 +1,7 @@
 local Enemy = {}
 
 local windowWidth, windowHeight, TILE_SIZE
-local textureUnder, textureBeforeFeet, textureAfterFeet
+local textureUnder, textureBeforeFeet, textureAfterFeet, textureBefore, textureAfter
 local listEnemies = {}
 
 function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
@@ -78,9 +78,21 @@ function Enemy.Update(dt, pMap, pHero)
       e.linFeet = math.ceil(e.yFeet / TILE_SIZE)
       e.colFeet = math.ceil((e.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
       
+      -- calculate the position of the left and right in pixel
+      e.xCenter = e.x + (e.w * e.scale)/2
+      e.yCenter = e.y + (e.h * e.scale)/2
+      -- calculate the position of the left and right in line and columns
+      e.colCenter = math.ceil((e.xCenter - pMap.grid[1][1].x) / TILE_SIZE)
+      e.linCenter = math.ceil(e.yCenter / TILE_SIZE)
+      
+      -- stay on the ground
       textureUnder = pMap.grid[e.linFeet][e.colFeet].texture
+      -- avoid fall into pit
       textureBeforeFeet = pMap.grid[e.linFeet][e.colFeet - 1].texture
       textureAfterFeet = pMap.grid[e.linFeet][e.colFeet + 1].texture
+      -- avoid walking through hill
+      textureBefore = pMap.grid[e.linFeet - 1][e.colFeet - 1].texture
+      textureAfter = pMap.grid[e.linFeet - 1][e.colFeet + 1].texture
     
       if textureUnder == "ground" then e.mov = "walk" end
       if textureUnder == "void" then e.mov = "fall" end -- fall when no more ground
@@ -89,6 +101,17 @@ function Enemy.Update(dt, pMap, pHero)
         e.y = pMap.grid[e.linFeet][e.colFeet].y - (e.h * e.scale - 8) -- put the e on top of the ground
         
         e.x = e.x + e.speed.walk * e.sign
+        
+        -- avoid walking through hill
+        if textureBefore == "ground" and e.dir == "left" then
+          e.dir = "right"
+          e.sign = -1 * e.sign
+        end
+        if textureAfter == "ground" and e.dir == "right" then
+          e.dir = "left"
+          e.sign = -1 * e.sign
+        end
+        
         if pMap.mov == true then
           e.x = e.x - pHero.speed.walk * pHero.sign
         end
