@@ -32,7 +32,6 @@ function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   item.animHit = false
   item.hitted = false
   item.animHitSpeedX = 5
-  item.animHitSpeedY = 5
   item.health = 30
   item.ptsAttack = 3
   item.ptsDefense = 1
@@ -149,10 +148,14 @@ function Enemy.Update(dt, pMap, pHero)
         table.remove(Enemy.listEnemies, item)
       end
       
+      
+  
       --[[
-      if e.x < (e.w * e.scale) or e.x > (pMap.size.pixW - (e.w / e.scale)) then
-        e.animHitSpeedX = 0
-        e.x = e.w / e.scale
+      if e.hitted == false then
+        if e.x < (e.w * e.scale) or  then
+          e.animHitSpeedX = 0
+          e.x = e.w / e.scale
+        end
       end
       --]]
       

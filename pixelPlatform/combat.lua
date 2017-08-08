@@ -90,15 +90,15 @@ function Combat.Update(dt)
         -- bound animation
         te.x = te.x + te.animHitSpeedX * tempSign
         
-        te.animHitSpeedY = te.animHitSpeedY - dt*9.81
-        
-        if te.animHitSpeedX > 0 then
-          te.animHitSpeedX = te.animHitSpeedX - dt*6
+        if te.animHitSpeedX > 0
+          -- avoid crash from left or right boundary
+          and te.x < (windowWidth - te.w * te.scale)
+          and te.x > (te.w * te.scale) then
+            te.animHitSpeedX = te.animHitSpeedX - dt*6
         else
           -- reinitialize and calculate the new health
           te.animHit = false
           te.animHitSpeedX = 5
-          te.animHitSpeedY = 5
           te.hitted = false
           tempSign = 0
           te.health = te.health - (myHero.ptsAttack - te.ptsDefense)
