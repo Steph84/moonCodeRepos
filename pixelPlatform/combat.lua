@@ -1,9 +1,17 @@
 local Combat = {}
 
+local windowWidth, windowHeight, TILE_SIZE
+
+local tempEnemy = {}
+local tempSign = 0
+
 local myHero = require("hero")
 local myEnemy = require("enemy")
 
-function Combat.Load()
+function Combat.Load(pWindowWidth, pWindowHeight, pTileSize)
+  windowWidth = pWindowWidth
+  windowHeight = pWindowHeight
+  TILE_SIZE = pTileSize
   
 end
 
@@ -11,25 +19,37 @@ function Combat.Update(dt)
   
   -- detection hero is hitted
   if myHero.attack == false and myHero.hitted == false then
-    
-    local dx = myHero.xHead - myEnemy.x
-    local dy = myHero.yHead - myEnemy.y
-    if (math.abs(dx) < (myEnemy.w / myEnemy.scale)) then
-      if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + (myEnemy.h / myEnemy.scale))) then
-        myHero.hitted = true
+    local item
+    for item = #myEnemy.listEnemies, 1, -1 do
+      local e = myEnemy.listEnemies[item]
+      if e.hitted == false and e.isDead == false then
+        local dx = myHero.xHead - e.x
+        local dy = myHero.yHead - e.y
+        if (math.abs(dx) < (e.w / e.scale)) then
+          if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + (e.h / e.scale))) then
+            myHero.hitted = true
+            table.insert(tempEnemy, e)
+          end
+        end
       end
     end
   end
   
-  
   -- detection enemy is hitted
-  if myHero.attack == true and myEnemy.hitted == false then
-    local dx = myHero.x - myEnemy.x
-    local dy = myHero.y - myEnemy.y
-    
-    if (math.abs(dx) < (myHero.w + (myEnemy.w / myEnemy.scale))) then
-      if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + (myEnemy.h / myEnemy.scale))) then
-        myEnemy.hitted = true
+  if myHero.attack == true then
+    local item
+    for item = #myEnemy.listEnemies, 1, -1 do
+      local e = myEnemy.listEnemies[item]
+      if e.hitted == false then
+        local dx = myHero.x - e.x
+        local dy = myHero.y - e.y
+        
+        if (math.abs(dx) < (myHero.w + (e.w / e.scale))) then
+          if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + (e.h / e.scale))) then
+            e.hitted = true
+            tempEnemy[#tempEnemy + 1] = e
+          end
+        end
       end
     end
   end
@@ -50,32 +70,43 @@ function Combat.Update(dt)
       myHero.animHitSpeedX = 5
       myHero.animHitSpeedY = 5
       myHero.hitted = false
-      myHero.health = myHero.health - (myEnemy.ptsAttack - myHero.ptsDefense)
+      myHero.health = myHero.health - (tempEnemy[1].ptsAttack - myHero.ptsDefense)
+      table.remove(tempEnemy, 1)
     end
     myHero.animHitSpeedY = myHero.animHitSpeedY - dt*9.81
   end
   
   -- animation and calculus if the hero is hitted
-  if myEnemy.hitted == true then
-    -- to bypass the standard hero animation
-    myEnemy.animHit = true
-    -- bound animation
-    myEnemy.x = myEnemy.x + myEnemy.animHitSpeedX * myHero.sign
-    --myEnemy.y = myEnemy.y - myEnemy.animHitSpeedY
-    
-    if myEnemy.animHitSpeedX > 0 then
-      myEnemy.animHitSpeedX = myEnemy.animHitSpeedX - dt*6
-    else
-      -- reinitialize and calculate the new health
-      myEnemy.animHit = false
-      myEnemy.animHitSpeedX = 5
-      myEnemy.animHitSpeedY = 5
-      myEnemy.hitted = false
-      myEnemy.health = myEnemy.health - (myHero.ptsAttack - myEnemy.ptsDefense)
+  if #tempEnemy > 0 then
+    local i
+    for i = #tempEnemy, 1, -1 do
+      local te = tempEnemy[i]
+      if te.hitted == true then
+        if tempSign == 0 then
+          tempSign = myHero.sign
+        end
+        -- to bypass the standard hero animation
+        te.animHit = true
+        -- bound animation
+        te.x = te.x + te.animHitSpeedX * tempSign
+        
+        te.animHitSpeedY = te.animHitSpeedY - dt*9.81
+        
+        if te.animHitSpeedX > 0 then
+          te.animHitSpeedX = te.animHitSpeedX - dt*6
+        else
+          -- reinitialize and calculate the new health
+          te.animHit = false
+          te.animHitSpeedX = 5
+          te.animHitSpeedY = 5
+          te.hitted = false
+          tempSign = 0
+          te.health = te.health - (myHero.ptsAttack - te.ptsDefense)
+          table.remove(tempEnemy, i)
+        end
+      end
     end
-    myEnemy.animHitSpeedY = myEnemy.animHitSpeedY - dt*9.81
   end
-  
 end
 
 function Combat.Draw()

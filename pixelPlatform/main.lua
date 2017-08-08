@@ -13,6 +13,7 @@ local myHero = require("hero")
 local myMap = require("map")
 local myCombat = require("combat")
 local myEnemy = require("enemy")
+local myHud = require("hud")
 
 function love.load()
   local displayWidth, displayHeight
@@ -23,8 +24,11 @@ function love.load()
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("PixelPlatform")
   
+  myHud.Load(windowWidth, windowHeight, TILE_SIZE)
   myHero.Load(windowWidth, windowHeight, TILE_SIZE)
   myMap.Load(windowWidth, windowHeight, TILE_SIZE, coefMap)
+  myCombat.Load(windowWidth, windowHeight, TILE_SIZE)
+  
   local e
   for e = 1, maxEnemiesNb do
     myEnemy.Load(e, windowWidth, windowHeight, TILE_SIZE, myMap.size)
@@ -35,7 +39,7 @@ end
 function love.update(dt)
   myHero.Update(dt)
   myMap.Update(dt, myHero)
-  --myCombat.Update(dt)
+  myCombat.Update(dt)
   myEnemy.Update(dt, myMap, myHero)
 end
 
@@ -43,6 +47,7 @@ function love.draw()
   myMap.Draw()
   myHero.Draw()
   myEnemy.Draw()
+  myHud.Draw()
   
   love.graphics.setColor(0, 0, 0)
   love.graphics.printf("width : "..windowWidth.." / height : "..windowHeight, 10, 10, windowWidth, "left")

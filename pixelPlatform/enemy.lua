@@ -2,7 +2,7 @@ local Enemy = {}
 
 local windowWidth, windowHeight, TILE_SIZE
 local textureUnder, textureBeforeFeet, textureAfterFeet, textureBefore, textureAfter
-local listEnemies = {}
+Enemy.listEnemies = {}
 
 function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   windowWidth = pWindowWidth
@@ -27,13 +27,13 @@ function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   item.w = 32
   item.h = 32
   item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
-  item.y = 100
+  item.y = 500
   
   item.animHit = false
   item.hitted = false
   item.animHitSpeedX = 5
   item.animHitSpeedY = 5
-  item.health = 3
+  item.health = 30
   item.ptsAttack = 3
   item.ptsDefense = 1
   
@@ -57,106 +57,121 @@ function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
     id = id + 1
     end
   end
-  table.insert(listEnemies, item)
+  table.insert(Enemy.listEnemies, item)
   
 end
 
 function Enemy.Update(dt, pMap, pHero)
   
-  for item = 1, #listEnemies do
-    local e = listEnemies[item]
-  
-    if e.isDead == false then
-      -- manage the walking animation
-      if e.mov == "walk" then e.picCurrent = e.picCurrent + (e.speed.animWalk * dt) end
-      if math.floor(e.picCurrent) > #e.animWalk then e.picCurrent = 1 end
-      
-      -- calculate the position of the feet in pixel
-      e.xFeet = e.x + (e.w * e.scale)/2 - (e.w * e.scale)/2 -- the (- e.w/2) is for centered sprite
-      e.yFeet = e.y + e.h * e.scale
-      -- calculate the position of the feet in line and columns
-      e.linFeet = math.ceil(e.yFeet / TILE_SIZE)
-      e.colFeet = math.ceil((e.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
-      
-      -- calculate the position of the left and right in pixel
-      e.xCenter = e.x + (e.w * e.scale)/2
-      e.yCenter = e.y + (e.h * e.scale)/2
-      -- calculate the position of the left and right in line and columns
-      e.colCenter = math.ceil((e.xCenter - pMap.grid[1][1].x) / TILE_SIZE)
-      e.linCenter = math.ceil(e.yCenter / TILE_SIZE)
-      
-      -- stay on the ground
-      textureUnder = pMap.grid[e.linFeet][e.colFeet].texture
-      -- avoid fall into pit
-      textureBeforeFeet = pMap.grid[e.linFeet][e.colFeet - 1].texture
-      textureAfterFeet = pMap.grid[e.linFeet][e.colFeet + 1].texture
-      -- avoid walking through hill
-      textureBefore = pMap.grid[e.linFeet - 1][e.colFeet - 1].texture
-      textureAfter = pMap.grid[e.linFeet - 1][e.colFeet + 1].texture
+  if #Enemy.listEnemies > 0 then
+    for item = #Enemy.listEnemies, 1, -1 do
+      local e = Enemy.listEnemies[item]
     
-      if textureUnder == "ground" then e.mov = "walk" end
-      if textureUnder == "void" then e.mov = "fall" end -- fall when no more ground
-      
-      if e.mov == "walk" then
-        e.y = pMap.grid[e.linFeet][e.colFeet].y - (e.h * e.scale - 8) -- put the e on top of the ground
+      if e.isDead == false then
+        -- manage the walking animation
+        if e.mov == "walk" then e.picCurrent = e.picCurrent + (e.speed.animWalk * dt) end
+        if math.floor(e.picCurrent) > #e.animWalk then e.picCurrent = 1 end
         
-        e.x = e.x + e.speed.walk * e.sign
+        -- calculate the position of the feet in pixel
+        e.xFeet = e.x + (e.w * e.scale)/2 - (e.w * e.scale)/2 -- the (- e.w/2) is for centered sprite
+        e.yFeet = e.y + e.h * e.scale
+        -- calculate the position of the feet in line and columns
+        e.linFeet = math.ceil(e.yFeet / TILE_SIZE)
+        e.colFeet = math.ceil((e.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
         
+        -- calculate the position of the left and right in pixel
+        e.xCenter = e.x + (e.w * e.scale)/2
+        e.yCenter = e.y + (e.h * e.scale)/2
+        -- calculate the position of the left and right in line and columns
+        e.colCenter = math.ceil((e.xCenter - pMap.grid[1][1].x) / TILE_SIZE)
+        e.linCenter = math.ceil(e.yCenter / TILE_SIZE)
+        
+        -- stay on the ground
+        textureUnder = pMap.grid[e.linFeet][e.colFeet].texture
+        -- avoid fall into pit
+        textureBeforeFeet = pMap.grid[e.linFeet][e.colFeet - 1].texture
+        textureAfterFeet = pMap.grid[e.linFeet][e.colFeet + 1].texture
         -- avoid walking through hill
-        if textureBefore == "ground" and e.dir == "left" then
-          e.dir = "right"
-          e.sign = -1 * e.sign
-        end
-        if textureAfter == "ground" and e.dir == "right" then
-          e.dir = "left"
-          e.sign = -1 * e.sign
+        textureBefore = pMap.grid[e.linFeet - 1][e.colFeet - 1].texture
+        textureAfter = pMap.grid[e.linFeet - 1][e.colFeet + 1].texture
+      
+        if textureUnder == "ground" then e.mov = "walk" end
+        if textureUnder == "void" then e.mov = "fall" end -- fall when no more ground
+        
+        if e.mov == "walk" then
+          e.y = pMap.grid[e.linFeet][e.colFeet].y - (e.h * e.scale - 8) -- put the e on top of the ground
+          
+          e.x = e.x + e.speed.walk * e.sign
+          
+          -- avoid walking through hill
+          if textureBefore == "ground" and e.dir == "left" then
+            e.dir = "right"
+            e.sign = -1 * e.sign
+          end
+          if textureAfter == "ground" and e.dir == "right" then
+            e.dir = "left"
+            e.sign = -1 * e.sign
+          end
+          
+          if pMap.mov == true then
+            e.x = e.x - pHero.speed.walk * pHero.sign
+          end
+          
+          if e.dir == "right" and (textureAfterFeet == "void" or (e.colFeet + 1) == pMap.size.w) then
+            e.dir = "left"
+            e.sign = -1 * e.sign
+          end
+          
+          if e.dir == "left" and (textureBeforeFeet == "void" or (e.colFeet - 1) == 1) then
+            e.dir = "right"
+            e.sign = -1 * e.sign
+          end
+          
         end
         
-        if pMap.mov == true then
-          e.x = e.x - pHero.speed.walk * pHero.sign
+        -- manage the movement along y
+        if e.mov == "fall" then
+          e.y = e.y - e.speed.alongY
+          e.speed.alongY = e.speed.alongY - dt*9.81
+        else
+          e.speed.alongY = 5
         end
         
-        if e.dir == "right" and (textureAfterFeet == "void" or (e.colFeet + 1) == pMap.size.w) then
-          e.dir = "left"
-          e.sign = -1 * e.sign
+        -- condition for death
+        if e.health < 0 then
+          e.isDead = true
+          e.Dead.y = e.y
+          e.Dead.x = e.x
         end
-        
-        if e.dir == "left" and (textureBeforeFeet == "void" or (e.colFeet - 1) == 1) then
-          e.dir = "right"
-          e.sign = -1 * e.sign
-        end
-        
       end
       
-      -- manage the movement along y
-      if e.mov == "fall" then
-        e.y = e.y - e.speed.alongY
+      if e.yFeet > pMap.size.pixH - 12 and e.isDead == false then
+        table.remove(Enemy.listEnemies, item)
+      end
+      
+      --[[
+      if e.x < (e.w * e.scale) or e.x > (pMap.size.pixW - (e.w / e.scale)) then
+        e.animHitSpeedX = 0
+        e.x = e.w / e.scale
+      end
+      --]]
+      
+      -- death animation
+      if e.isDead == true then
+        e.Dead.y = e.Dead.y - e.speed.alongY
         e.speed.alongY = e.speed.alongY - dt*9.81
-      else
-        e.speed.alongY = 5
+        if e.Dead.y > windowHeight then 
+          table.remove(Enemy.listEnemies, item)  
+        end
       end
-      
-      -- condition for death
-      if e.health < 0 then
-        e.isDead = true
-        e.Dead.y = e.y
-        e.Dead.x = e.x
-      end
-    end
-    
-    -- death animation
-    if e.isDead == true then
-      e.Dead.y = e.Dead.y - e.speed.alongY
-      e.speed.alongY = e.speed.alongY - dt*9.81
-      if e.Dead.y > windowHeight then e = {} end
     end
   end
 end
 
 function Enemy.Draw()
   
-  for item = 1, #listEnemies do
-    local e = listEnemies[item]
+  for item = 1, #Enemy.listEnemies do
+    local e = Enemy.listEnemies[item]
   
     if e.isDead == false then
       if e.x > (0 - 32) and e.x < (windowWidth + 32) then
