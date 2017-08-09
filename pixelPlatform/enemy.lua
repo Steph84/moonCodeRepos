@@ -4,7 +4,7 @@ local windowWidth, windowHeight, TILE_SIZE
 local textureUnder, textureBeforeFeet, textureAfterFeet, textureBefore, textureAfter
 Enemy.listEnemies = {}
 
-function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
+function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
@@ -12,11 +12,10 @@ function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   local item = {}
   
   item.id = pId
+  item.type = pType
   item.isDead = false
   item.mov = "stand"
   item.speed = {}
-  item.speed.walk = math.random(5, 15)/10
-  item.speed.animWalk = 10
   item.speed.alongY = 5
   item.animWalk = {}
   item.picCurrent = 1
@@ -24,38 +23,70 @@ function Enemy.Load(pId, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   item.dir = "right"
   item.sign = 1
   item.scale = 1.5
-  item.w = 32
-  item.h = 32
   item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
-  item.y = 500
+  item.y = 100
   
   item.animHit = false
   item.hitted = false
   item.animHitSpeedX = 5
-  item.health = 30
-  item.ptsAttack = 3
-  item.ptsDefense = 1
   
   item.Dead = {}
   item.Dead.rot = 3.14
   
-  -- load the animation walking tile
-  item.anim = love.graphics.newImage("pictures/enemy01Walk.png")
-  local nbColumns = item.anim:getWidth() / 32
-  local nbLines = item.anim:getHeight() / 32
-  
-  -- extract all the frames in the animation walking tile
-  local l, c
-  local id = 1
-  item.animWalk[0] = nil
-  for l = 1, nbLines do
-    for c = 1, nbColumns do
-    item.animWalk[id] = love.graphics.newQuad((c-1)*item.w, (l-1)*item.h,
-                                              item.w, item.h,
-                                              item.anim:getDimensions())
-    id = id + 1
+  if pType == 1 then
+    item.w = 32
+    item.h = 32
+    item.speed.walk = math.random(5, 15)/10
+    item.speed.animWalk = 10
+    item.health = 10
+    item.ptsAttack = 3
+    item.ptsDefense = 1
+    -- load the animation walking tile
+    item.anim = love.graphics.newImage("pictures/enemy01Walk.png")
+    local nbColumns = item.anim:getWidth() / 32
+    local nbLines = item.anim:getHeight() / 32
+    
+    -- extract all the frames in the animation walking tile
+    local l, c
+    local id = 1
+    item.animWalk[0] = nil
+    for l = 1, nbLines do
+      for c = 1, nbColumns do
+      item.animWalk[id] = love.graphics.newQuad((c-1)*item.w, (l-1)*item.h,
+                                                item.w, item.h,
+                                                item.anim:getDimensions())
+      id = id + 1
+      end
     end
   end
+  
+  if pType == 2 then
+    item.w = 64
+    item.h = 64
+    item.speed.walk = math.random(2, 7)/10
+    item.speed.animWalk = 7
+    item.health = 20
+    item.ptsAttack = 4
+    item.ptsDefense = 4
+    -- load the animation walking tile
+    item.anim = love.graphics.newImage("pictures/tankWalking.png")
+    local nbColumns = item.anim:getWidth() / 64
+    local nbLines = item.anim:getHeight() / 64
+    
+    -- extract all the frames in the animation walking tile
+    local l, c
+    local id = 1
+    item.animWalk[0] = nil
+    for l = 1, nbLines do
+      for c = 1, nbColumns do
+      item.animWalk[id] = love.graphics.newQuad((c-1)*item.w, (l-1)*item.h,
+                                                item.w, item.h,
+                                                item.anim:getDimensions())
+      id = id + 1
+      end
+    end
+  end
+  
   table.insert(Enemy.listEnemies, item)
   
 end
@@ -144,20 +175,10 @@ function Enemy.Update(dt, pMap, pHero)
         end
       end
       
+      -- remove enemy from the list if spawn into a pit
       if e.yFeet > pMap.size.pixH - 12 and e.isDead == false then
         table.remove(Enemy.listEnemies, item)
       end
-      
-      
-  
-      --[[
-      if e.hitted == false then
-        if e.x < (e.w * e.scale) or  then
-          e.animHitSpeedX = 0
-          e.x = e.w / e.scale
-        end
-      end
-      --]]
       
       -- death animation
       if e.isDead == true then

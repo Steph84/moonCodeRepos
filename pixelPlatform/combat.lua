@@ -26,7 +26,7 @@ function Combat.Update(dt)
         local dx = myHero.xHead - e.x
         local dy = myHero.yHead - e.y
         if (math.abs(dx) < (e.w / e.scale)) then
-          if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + (e.h / e.scale))) then
+          if (math.abs(dy) < ((myHero.yFeet - myHero.yHead))) then
             myHero.hitted = true
             table.insert(tempEnemy, e)
           end

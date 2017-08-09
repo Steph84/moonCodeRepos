@@ -43,7 +43,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   Hero.attack = false
   Hero.hitted = false
-  Hero.health = 100
+  Hero.health = 10
   Hero.ptsAttack = 5
   Hero.ptsDefense = 2
   

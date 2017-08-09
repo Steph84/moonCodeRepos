@@ -31,7 +31,8 @@ function love.load()
   
   local e
   for e = 1, maxEnemiesNb do
-    myEnemy.Load(e, windowWidth, windowHeight, TILE_SIZE, myMap.size)
+    local tempType = math.random(1, 2)
+    myEnemy.Load(e, tempType, windowWidth, windowHeight, TILE_SIZE, myMap.size)
   end
   
 end
