@@ -4,6 +4,7 @@ local windowWidth, windowHeight, TILE_SIZE
 
 local tempEnemy = {}
 local tempSign = 0
+local counter = 0
 
 local myHero = require("hero")
 local myEnemy = require("enemy")
@@ -29,6 +30,7 @@ function Combat.Update(dt)
           if (math.abs(dy) < ((myHero.yFeet - myHero.yHead))) then
             myHero.hitted = true
             table.insert(tempEnemy, e)
+            counter = 0
           end
         end
       end
@@ -56,24 +58,13 @@ function Combat.Update(dt)
   
   -- animation and calculus if the hero is hitted
   if myHero.hitted == true then
-    -- to bypass the standard hero animation
     myHero.animHit = true
-    -- bound animation
-    myHero.x = myHero.x - myHero.animHitSpeedX * myHero.sign
-    myHero.y = myHero.y - myHero.animHitSpeedY
-    
-    if myHero.animHitSpeedX > 0 then
-      myHero.animHitSpeedX = myHero.animHitSpeedX - dt*6
-    else
-      -- reinitialize and calculate the new health
-      myHero.animHit = false
-      myHero.animHitSpeedX = 5
-      myHero.animHitSpeedY = 5
-      myHero.hitted = false
+    -- reinitialize and calculate the new health
+    if counter < 1 then
       myHero.health = myHero.health - (tempEnemy[1].ptsAttack - myHero.ptsDefense)
       table.remove(tempEnemy, 1)
+      counter = counter + 1
     end
-    myHero.animHitSpeedY = myHero.animHitSpeedY - dt*9.81
   end
   
   -- animation and calculus if the hero is hitted

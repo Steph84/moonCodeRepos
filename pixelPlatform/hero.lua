@@ -4,7 +4,8 @@ local windowWidth, windowHeight, TILE_SIZE
 local myMap = require("map")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 local groundCollision = false
-local timeElapsed = 0
+local timeElapsedAttack = 0
+local timeElapsedAnimHit = 0
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -161,15 +162,15 @@ function Hero.Update(dt)
         Hero.attack = true
       end
       if Hero.attack == true then
-        timeElapsed = timeElapsed + dt
-        if timeElapsed > 0.3 then
-          timeElapsed = 0
+        timeElapsedAttack = timeElapsedAttack + dt
+        if timeElapsedAttack > 0.3 then
+          timeElapsedAttack = 0
           Hero.attack = false
         end
       end
       
       -- manage the movement along x
-      if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" ) -- actions allow to move along x
+      if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" or Hero.animHit == true) -- actions allow to move along x
           and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
               and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
                   or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > -1 ) -- hero left part
@@ -219,20 +220,21 @@ function Hero.Update(dt)
       end
     end
     
+    if Hero.animHit == true then
+      timeElapsedAnimHit = timeElapsedAnimHit + dt
+      if timeElapsedAnimHit > 0.5 then
+        timeElapsedAnimHit = 0
+        Hero.animHit = false
+        Hero.hitted = false
+      end
+    end
+    
   end
   
   if Hero.isDead == true then
     Hero.Dead.y = Hero.Dead.y + Hero.Dead.vy
     Hero.Dead.vy = Hero.Dead.vy + 9.81 * dt
     Hero.Dead.rot = Hero.Dead.rot + 2 * dt
-    
-    --[[
-    if Hero.Dead.y > windowHeight then 
-      Hero.Load(windowWidth, windowHeight, TILE_SIZE)
-      print("yop")
-    end
-    -- if hero dead, load another sreen
-    --]]
   end
   
 end
@@ -264,9 +266,9 @@ function Hero.Draw()
                                                       Hero.w/2, 1) end
       end
     elseif Hero.animHit == true then love.graphics.draw(Hero.pitDeathPic,
-                                                      Hero.x, Hero.y, - Hero.sign * 1,
-                                                      Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                      Hero.w/2, 1)
+                                                        Hero.x, Hero.y, 0,
+                                                        Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                        Hero.w/2, 1)
     end
   end    
   
