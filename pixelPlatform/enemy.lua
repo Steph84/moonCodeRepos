@@ -102,15 +102,44 @@ function Enemy.Update(dt, pMap, pHero)
         if e.mov == "walk" then e.picCurrent = e.picCurrent + (e.speed.animWalk * dt) end
         if math.floor(e.picCurrent) > #e.animWalk then e.picCurrent = 1 end
         
-        -- calculate the position of the feet in pixel
-        e.xFeet = e.x + (e.w * e.scale)/2 - (e.w * e.scale)/2 -- the (- e.w/2) is for centered sprite
-        e.yFeet = e.y + e.h * e.scale
+        if e.type == 1 then
+          -- calculate the position of the feet in pixel
+          e.xFeet = e.x + (e.w * e.scale)/2 - (e.w * e.scale)/2 -- the (- e.w/2) is for centered sprite
+          e.yFeet = e.y + e.h * e.scale - 2
+          -- calculate the position of the head in pixel
+          e.xHead = e.x
+          e.yHead = e.y + 3
+          -- calculate the position of the left and right in pixel in relation to the type of enemy
+          e.xLeft = e.x - e.w * e.scale / 2 + 5
+          e.yLeft = e.y + e.h * e.scale / 2
+          e.xRight = e.x + e.w * e.scale / 2 - 5
+          e.yRight = e.y + e.h * e.scale / 2
+        
+        elseif e.type == 2 then
+          -- calculate the position of the feet in pixel
+          e.xFeet = e.x - e.sign * (e.w * e.scale)/5
+          e.yFeet = e.y + e.h * e.scale - 2
+          -- calculate the position of the head in pixel
+          e.xHead = e.x - e.sign * (e.w * e.scale)/5
+          e.yHead = e.y + 3
+          -- calculate the position of the left and right in pixel in relation to the type of enemy
+          e.xLeft = e.x - e.w * e.scale / 2 + 5
+          e.yLeft = e.y + e.h * e.scale / 2
+          e.xRight = e.x + e.w * e.scale / 2 - 5
+          e.yRight = e.y + e.h * e.scale / 2
+        end
+        
         -- calculate the position of the feet in line and columns
         e.linFeet = math.ceil(e.yFeet / TILE_SIZE)
         e.colFeet = math.ceil((e.xFeet - pMap.grid[1][1].x) / TILE_SIZE)
+
+        -- calculate the position of the left and right in line and columns
+        e.colLeft = math.ceil((e.xLeft - pMap.grid[1][1].x) / TILE_SIZE)
+        e.linLeft = math.ceil(e.yLeft / TILE_SIZE)
+        e.colRight = math.ceil((e.xRight - pMap.grid[1][1].x) / TILE_SIZE)
+        e.linRight = math.ceil(e.yRight / TILE_SIZE)
         
-        -- calculate the position of the left and right in pixel
-        e.xCenter = e.x + (e.w * e.scale)/2
+        e.xCenter = e.x
         e.yCenter = e.y + (e.h * e.scale)/2
         -- calculate the position of the left and right in line and columns
         e.colCenter = math.ceil((e.xCenter - pMap.grid[1][1].x) / TILE_SIZE)
@@ -118,12 +147,20 @@ function Enemy.Update(dt, pMap, pHero)
         
         -- stay on the ground
         textureUnder = pMap.grid[e.linFeet][e.colFeet].texture
-        -- avoid fall into pit
-        textureBeforeFeet = pMap.grid[e.linFeet][e.colFeet - 1].texture
-        textureAfterFeet = pMap.grid[e.linFeet][e.colFeet + 1].texture
+        
         -- avoid walking through hill
-        textureBefore = pMap.grid[e.linFeet - 1][e.colFeet - 1].texture
-        textureAfter = pMap.grid[e.linFeet - 1][e.colFeet + 1].texture
+        textureBefore = pMap.grid[e.linLeft][e.colLeft].texture
+        textureAfter = pMap.grid[e.linRight][e.colRight].texture
+        
+        if e.type == 1 then
+          -- avoid fall into pit
+          textureBeforeFeet = pMap.grid[e.linLeft + 1][e.colLeft].texture
+          textureAfterFeet = pMap.grid[e.linRight + 1][e.colRight].texture
+        elseif e.type == 2 then
+          -- avoid fall into pit
+          textureBeforeFeet = pMap.grid[e.linLeft + 2][e.colLeft].texture
+          textureAfterFeet = pMap.grid[e.linRight + 2][e.colRight].texture
+        end
       
         if textureUnder == "ground" then e.mov = "walk" end
         if textureUnder == "void" then e.mov = "fall" end -- fall when no more ground
@@ -209,6 +246,13 @@ function Enemy.Draw()
       love.graphics.printf("health : "..e.health, e.x - 16, e.y - 16, windowWidth, "left")
       love.graphics.setColor(255, 255, 255)
     end
+    
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.circle("fill", e.xFeet, e.yFeet, 2)
+    love.graphics.circle("fill", e.xHead, e.yHead, 2)
+    love.graphics.circle("fill", e.xLeft, e.yLeft, 2)
+    love.graphics.circle("fill", e.xRight, e.yRight, 2)
+    love.graphics.setColor(255, 255, 255)
     
     if e.isDead == true then
       love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],

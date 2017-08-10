@@ -78,11 +78,11 @@ function Hero.Update(dt)
   
   if Hero.isDead == false then
     -- calculate the position of the feet in pixel
-    Hero.xFeet = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
-    Hero.yFeet = Hero.y + Hero.h * Hero.scale
+    Hero.xFeet = Hero.x - Hero.sign * 10 + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
+    Hero.yFeet = Hero.y + Hero.h * Hero.scale - 2
     -- calculate the position of the head in pixel
-    Hero.xHead = Hero.x + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
-    Hero.yHead = Hero.y
+    Hero.xHead = Hero.x - Hero.sign * 10
+    Hero.yHead = Hero.y + 5
     -- calculate the postion of the left in pixel
     Hero.xLeft = Hero.x - (Hero.w * 0.4 * Hero.scale)/2 -- 0.6 is for match to the Hero's body and not the sprite
     Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2

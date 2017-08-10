@@ -10,7 +10,6 @@ local listPits = {}
 local listHills = {}
 local listPlatForms = {}
 local coefMap
-local castlePic = {}
 
 local myEltGen = require("mapEltGen")
 local myParallax = require("parallaxAnimation")
@@ -27,17 +26,6 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pCoefMap)
                pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
   
   myParallax.Load(Map.size.pixW, Map.size.pixH, coefMap)
-  
-  -- load castle pic
-  castlePic.src = love.graphics.newImage("pictures/castle01.png")
-  castlePic.x = Map.size.pixW - windowWidth/3
-  --                           ground height                        offset hero feet
-  castlePic.y = Map.size.pixH - 2 * 32 - castlePic.src:getHeight() + 8
-  
-  -- random color in the palette then increase L to pale it
-  castlePic.color = myColor.HSLData[math.random(1, #myColor.HSLData)]
-  
-  castlePic.color[3] = castlePic.color[3] * 1.5 -- 50% higher for L
   
   -- load the tile sheet
   TileSet = love.graphics.newImage("pictures/platFormTileSet02_32x32.png")
@@ -178,8 +166,6 @@ end
 function Map.Update(dt, pHero)
   -- manage the map movement
   if Map.mov == true then
-    -- move the castle with the map
-    castlePic.x = castlePic.x - pHero.sign * pHero.speed.walk
     local lin, col
     for lin = 1, Map.size.h do
       for col = 1, Map.size.w do
@@ -196,19 +182,15 @@ function Map.Draw()
   
   myParallax.Draw()
   
-  if castlePic.x < windowWidth + 32 then
-    -- change color of the castle via HSL values
-    love.graphics.setColor(myColor.HSL(castlePic.color))
-    love.graphics.draw(castlePic.src, castlePic.x, castlePic.y)
-    love.graphics.setColor(255, 255, 255)
-  end
-  
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
       local g = Map.grid[lin][col]
       if g.x > (0 - 32) and g.x < (windowWidth + 32) then
         love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.rectangle("line", g.x, g.y, 32, 32)
+        love.graphics.setColor(255, 255, 255)
       end
     end
   end
