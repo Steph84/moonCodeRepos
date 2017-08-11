@@ -30,8 +30,8 @@ function love.load()
   myCombat.Load(windowWidth, windowHeight, TILE_SIZE)
   
   local e
-  for e = 1, maxEnemiesNb do
-    local tempType = math.random(1, 2)
+  for e = 1, 2 do--maxEnemiesNb do
+    local tempType = 1 --math.random(1, 2)
     myEnemy.Load(e, tempType, windowWidth, windowHeight, TILE_SIZE, myMap.size)
   end
   
@@ -40,8 +40,8 @@ end
 function love.update(dt)
   myHero.Update(dt)
   myMap.Update(dt, myHero)
-  myCombat.Update(dt)
   myEnemy.Update(dt, myMap, myHero)
+  myCombat.Update(dt)
 end
 
 function love.draw()

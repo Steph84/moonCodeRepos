@@ -213,7 +213,7 @@ function Enemy.Update(dt, pMap, pHero)
       end
       
       -- remove enemy from the list if spawn into a pit
-      if e.yFeet > pMap.size.pixH - 12 and e.isDead == false then
+      if e.yFeet > pMap.size.pixH - 32 and e.isDead == false then
         table.remove(Enemy.listEnemies, item)
       end
       
@@ -235,7 +235,7 @@ function Enemy.Draw()
     local e = Enemy.listEnemies[item]
   
     if e.isDead == false then
-      if e.x > (0 - 32) and e.x < (windowWidth + 32) then
+      if e.x > (0 - 64) and e.x < (windowWidth + 64) then
         love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
                            e.x, e.y, 0,
                            e.sign * e.scale, 1 * e.scale,
