@@ -27,31 +27,19 @@ function Combat.Update(dt)
         
         local dxLeft = math.abs(myHero.xLeft - e.xLeft)
         local dxRight = math.abs(myHero.xRight - e.xRight)
-        local dWidthFighters = (myHero.xRight - myHero.xLeft) + (e.xRight - e.xLeft)
+        local dWidthFighters = math.min(myHero.xRight - myHero.xLeft, e.xRight - e.xLeft)
         
         local dyHead = math.abs(myHero.yHead - e.yHead)
         local dyFeet = math.abs(myHero.yFeet - e.yFeet)
-        local dHeightFighters = (myHero.yFeet - myHero.yHead) + (e.yFeet - e.yHead)
+        local dHeightFighters = math.min(myHero.yFeet - myHero.yHead, e.yFeet - e.yHead)
         
         if dxLeft < dWidthFighters or dxRight < dWidthFighters then
-          --print(dxLeft, dxRight, dWidthFighters)
           if dyHead < dHeightFighters or dyFeet < dHeightFighters then
-            print(e.yFeet - e.yHead, myHero.yFeet - myHero.yHead, dHeightFighters)
-            --print(e.yFeet, e.yHead)
-          end
-        end
-        
-        --[[
-        local dx = myHero.xHead - e.x
-        local dy = myHero.yHead - e.y
-        if (math.abs(dx) < (e.w / e.scale)) then
-          if (math.abs(dy) < ((myHero.yFeet - myHero.yHead))) then
             myHero.hitted = true
             table.insert(tempEnemy, e)
             counter = 0
           end
         end
-        --]]
       end
     end
   end

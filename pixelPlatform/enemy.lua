@@ -21,10 +21,10 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.picCurrent = 1
   item.mov = "walk"
   item.dir = "right"
-  item.sign = 1
+  item.sign = - 1
   item.scale = 1.5
   item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
-  item.y = 100
+  item.y = 500
   
   item.animHit = false
   item.hitted = false
