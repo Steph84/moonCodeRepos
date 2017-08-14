@@ -188,9 +188,11 @@ function Map.Draw()
       local g = Map.grid[lin][col]
       if g.x > (0 - 32) and g.x < (windowWidth + 32) then
         love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
+        --[[
         love.graphics.setColor(0, 0, 0)
         love.graphics.rectangle("line", g.x, g.y, 32, 32)
         love.graphics.setColor(255, 255, 255)
+        --]]
       end
     end
   end

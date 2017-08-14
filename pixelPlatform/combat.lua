@@ -50,11 +50,16 @@ function Combat.Update(dt)
     for item = #myEnemy.listEnemies, 1, -1 do
       local e = myEnemy.listEnemies[item]
       if e.hitted == false then
-        local dx = myHero.x - e.x
-        local dy = myHero.y - e.y
+        local dxLeft = math.abs(myHero.xLeft - e.xLeft)
+        local dxRight = math.abs(myHero.xRight - e.xRight)
+        local dWidthFighters = math.min(myHero.xRight - myHero.xLeft, e.xRight - e.xLeft)
         
-        if (math.abs(dx) < (myHero.w + (e.w / e.scale))) then
-          if (math.abs(dy) < ((myHero.yFeet - myHero.yHead) + (e.h / e.scale))) then
+        local dyHead = math.abs(myHero.yHead - e.yHead)
+        local dyFeet = math.abs(myHero.yFeet - e.yFeet)
+        local dHeightFighters = math.min(myHero.yFeet - myHero.yHead, e.yFeet - e.yHead)
+        
+        if dxLeft < dWidthFighters or dxRight < dWidthFighters then
+          if dyHead < dHeightFighters or dyFeet < dHeightFighters then
             e.hitted = true
             tempEnemy[#tempEnemy + 1] = e
           end

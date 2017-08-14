@@ -20,7 +20,7 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.animWalk = {}
   item.picCurrent = 1
   item.mov = "walk"
-  item.dir = "right"
+  item.dir = "left"
   item.sign = - 1
   item.scale = 1.5
   item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
@@ -184,12 +184,15 @@ function Enemy.Update(dt, pMap, pHero)
             e.x = e.x - pHero.speed.walk * pHero.sign
           end
           
-          if e.dir == "right" and (textureAfterFeet == "void" or (e.colFeet + 1) == pMap.size.w) then
+          if e.dir == "right" and (textureAfterFeet == "void" or e.colFeet > pMap.size.w - 1) then
             e.dir = "left"
             e.sign = -1 * e.sign
           end
+          if e.colFeet < 5 then
+            print(e.dir, e.colFeet)
+          end
           
-          if e.dir == "left" and (textureBeforeFeet == "void" or (e.colFeet - 1) == 1) then
+          if e.dir == "left" and (textureBeforeFeet == "void" or e.colFeet < 2) then
             e.dir = "right"
             e.sign = -1 * e.sign
           end

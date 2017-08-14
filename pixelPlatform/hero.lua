@@ -83,12 +83,20 @@ function Hero.Update(dt)
     -- calculate the position of the head in pixel
     Hero.xHead = Hero.x - Hero.sign * 10
     Hero.yHead = Hero.y + 5
-    -- calculate the postion of the left in pixel
-    Hero.xLeft = Hero.x  - Hero.sign * (Hero.w * Hero.scale)/2 + Hero.sign * 28
-    Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
-    -- calculate the postion of the right in pixel
-    Hero.xRight = Hero.x + Hero.sign * (Hero.w * Hero.scale)/2 - Hero.sign * 48
-    Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
+
+    if Hero.attack == false then
+      -- calculate the postion of the left in pixel
+      Hero.xLeft = Hero.x  - Hero.sign * (Hero.w * Hero.scale)/2 + Hero.sign * 28
+      Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
+      -- calculate the postion of the right in pixel
+      Hero.xRight = Hero.x + Hero.sign * (Hero.w * Hero.scale)/2 - Hero.sign * 48
+      Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
+    elseif Hero.attack == true then
+      Hero.xLeft = Hero.x  - Hero.sign * (Hero.w * Hero.scale)/2 + Hero.sign * 30
+      Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
+      Hero.xRight = Hero.x + Hero.sign * (Hero.w * Hero.scale)/2 - Hero.sign * 1
+      Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
+    end
     
     -- calculate the position of the feet in line and columns
     Hero.linFeet = math.ceil(Hero.yFeet / TILE_SIZE)
@@ -280,7 +288,6 @@ function Hero.Draw()
   love.graphics.setColor(0, 0, 0)
   love.graphics.printf("health : "..Hero.health, Hero.xHead - 16, Hero.yHead - 16, windowWidth, "left")
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
-  love.graphics.printf("yFeet : "..Hero.yFeet.." / yHead : "..Hero.yHead, 10, 85, windowWidth, "left")
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)
   love.graphics.circle("fill", Hero.xHead, Hero.yHead, 2)
