@@ -85,16 +85,31 @@ function Hero.Update(dt)
     Hero.yHead = Hero.y + 5
 
     if Hero.attack == false then
+      
+      if Hero.sign == 1 then
+        Hero.xLeft = Hero.x - (Hero.w * Hero.scale)/2 + 28
+        Hero.xRight = Hero.x + (Hero.w * Hero.scale)/2 - 48
+      end
+      if Hero.sign == -1 then
+        Hero.xLeft = Hero.x - (Hero.w * Hero.scale)/2 + 48
+        Hero.xRight = Hero.x + (Hero.w * Hero.scale)/2 - 28
+      end
       -- calculate the postion of the left in pixel
-      Hero.xLeft = Hero.x  - Hero.sign * (Hero.w * Hero.scale)/2 + Hero.sign * 28
       Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
       -- calculate the postion of the right in pixel
-      Hero.xRight = Hero.x + Hero.sign * (Hero.w * Hero.scale)/2 - Hero.sign * 48
       Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
     elseif Hero.attack == true then
-      Hero.xLeft = Hero.x  - Hero.sign * (Hero.w * Hero.scale)/2 + Hero.sign * 30
+      
+      if Hero.sign == 1 then
+        Hero.xLeft = Hero.x - (Hero.w * Hero.scale)/2 + 30
+        Hero.xRight = Hero.x + (Hero.w * Hero.scale)/2 - 1
+      end
+      if Hero.sign == -1 then
+        Hero.xLeft = Hero.x - (Hero.w * Hero.scale)/2 + 1
+        Hero.xRight = Hero.x + (Hero.w * Hero.scale)/2 - 30
+      end
+      
       Hero.yLeft = Hero.y + (Hero.h * Hero.scale)/2
-      Hero.xRight = Hero.x + Hero.sign * (Hero.w * Hero.scale)/2 - Hero.sign * 1
       Hero.yRight = Hero.y + (Hero.h * Hero.scale)/2
     end
     
@@ -120,112 +135,110 @@ function Hero.Update(dt)
     textureLeft = myMap.grid[Hero.linLeft][Hero.colLeft].texture
     textureRight = myMap.grid[Hero.linRight][Hero.colRight].texture
     
-    -- if the hero is not hitted, standard movements
-    if Hero.animHit == false then
-      -- condition for correct orientation
-      if (love.keyboard.isDown("right") and Hero.dir == "left") then
-        Hero.dir = "right"
-        Hero.sign = 1
-      elseif (love.keyboard.isDown("left") and Hero.dir == "right") then
-        Hero.dir = "left"
-        Hero.sign = -1
+    -- standard movements
+    -- condition for correct orientation
+    if (love.keyboard.isDown("right") and Hero.dir == "left") then
+      Hero.dir = "right"
+      Hero.sign = 1
+    elseif (love.keyboard.isDown("left") and Hero.dir == "right") then
+      Hero.dir = "left"
+      Hero.sign = -1
+    end
+    
+    -- if there is ground under
+    if textureUnder == "ground" then
+      Hero.speed.alongY = 0
+      if (love.keyboard.isDown("right") and Hero.dir == "right")
+          or (love.keyboard.isDown("left") and Hero.dir == "left") then
+        Hero.mov = "walk"
+      else Hero.mov = "stand"
       end
-      
-      -- if there is ground under
+    end
+    -- if there is ground above
+    if (textureAbove == "ground" or Hero.y < 5) and Hero.mov == "jump" then
+      Hero.mov = "fall"
+      Hero.speed.alongY = - 0.5 -- initialize under 0 to avoid stick on the platform
+      Hero.speed.alongX = 0
+    end
+    
+    -- condition for jumping
+    if love.keyboard.isDown("space") and (Hero.mov == "walk" or Hero.mov == "stand") then -- avoid jumping while in void
+      Hero.mov = "jump"
+      Hero.speed.alongY = Hero.speed.impuls -- initialize jump speed
+    end
+    -- manage the falling when walking and reinitialize the ground position
+    if Hero.mov == "stand" or Hero.mov == "walk" then
+      if textureUnder == "void" then Hero.mov = "fall" end -- fall when no more ground
       if textureUnder == "ground" then
-        Hero.speed.alongY = 0
-        if (love.keyboard.isDown("right") and Hero.dir == "right")
-            or (love.keyboard.isDown("left") and Hero.dir == "left") then
-          Hero.mov = "walk"
-        else Hero.mov = "stand"
-        end
+        Hero.y = myMap.grid[Hero.linFeet][Hero.colFeet].y - (Hero.h * Hero.scale - 8) -- put the Hero on top of the ground
       end
-      -- if there is ground above
-      if (textureAbove == "ground" or Hero.y < 5) and Hero.mov == "jump" then
-        Hero.mov = "fall"
-        Hero.speed.alongY = - 0.5 -- initialize under 0 to avoid stick on the platform
-        Hero.speed.alongX = 0
+    end
+    
+    -- manage the walking animation
+    if Hero.mov == "walk" then Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) end
+    if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
+    
+    -- manage the attack animation
+    if (Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" or Hero.mov == "stand")
+    and love.keyboard.isDown("e") and Hero.attack == false then
+      Hero.attack = true
+    end
+    if Hero.attack == true then
+      timeElapsedAttack = timeElapsedAttack + dt
+      if timeElapsedAttack > 0.3 then
+        timeElapsedAttack = 0
+        Hero.attack = false
       end
+    end
+    
+    -- manage the movement along x
+    if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" or Hero.animHit == true) -- actions allow to move along x
+        and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
+            and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
+                or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > -1 ) -- hero left part
+                or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < (windowWidth - TILE_SIZE + 10) ) ) ) -- hero in the right part
+        or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
+        or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
+    then
       
-      -- condition for jumping
-      if love.keyboard.isDown("space") and (Hero.mov == "walk" or Hero.mov == "stand") then -- avoid jumping while in void
-        Hero.mov = "jump"
-        Hero.speed.alongY = Hero.speed.impuls -- initialize jump speed
-      end
-      -- manage the falling when walking and reinitialize the ground position
-      if Hero.mov == "stand" or Hero.mov == "walk" then
-        if textureUnder == "void" then Hero.mov = "fall" end -- fall when no more ground
-        if textureUnder == "ground" then
-          Hero.y = myMap.grid[Hero.linFeet][Hero.colFeet].y - (Hero.h * Hero.scale - 8) -- put the Hero on top of the ground
-        end
-      end
-      
-      -- manage the walking animation
-      if Hero.mov == "walk" then Hero.picCurrent = Hero.picCurrent + (Hero.speed.animWalk * dt) end
-      if math.floor(Hero.picCurrent) > #Hero.animWalk then Hero.picCurrent = 1 end
-      
-      -- manage the attack animation
-      if (Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" or Hero.mov == "stand")
-      and love.keyboard.isDown("e") and Hero.attack == false then
-        Hero.attack = true
-      end
-      if Hero.attack == true then
-        timeElapsedAttack = timeElapsedAttack + dt
-        if timeElapsedAttack > 0.3 then
-          timeElapsedAttack = 0
-          Hero.attack = false
-        end
-      end
-      
-      -- manage the movement along x
-      if ( Hero.mov == "walk" or Hero.mov == "jump" or Hero.mov == "fall" or Hero.animHit == true) -- actions allow to move along x
-          and ( (love.keyboard.isDown("left") or love.keyboard.isDown("right")) -- press keyboard
-              and ( (Hero.x > windowWidth*(1-Hero.wall) and Hero.x < windowWidth*Hero.wall) -- hero in the center part
-                  or ( Hero.x > 0 and Hero.x <= windowWidth*(1-Hero.wall) and myMap.grid[1][1].x > -1 ) -- hero left part
-                  or ( (Hero.x - Hero.w) < windowWidth and Hero.x >= windowWidth*Hero.wall and myMap.grid[myMap.size.h][myMap.size.w].x < (windowWidth - TILE_SIZE + 10) ) ) ) -- hero in the right part
-          or ( Hero.x >= Hero.wall*windowWidth and love.keyboard.isDown("left")) -- unstuck the hero from right wall
-          or ( Hero.x <= (1-Hero.wall)*windowWidth and love.keyboard.isDown("right")) -- unstuck the hero from left wall
-      then
-        
-        local threShold = Hero.w/5
-        if Hero.x > threShold and Hero.x < (windowWidth - threShold) 
-           or ( Hero.x <= threShold and love.keyboard.isDown("right") )
-           or ( Hero.x >= (windowWidth - threShold) and love.keyboard.isDown("left") )
-        then Hero.x = Hero.x + Hero.speed.walk * Hero.sign end
-        myMap.mov = false
-      else
-        myMap.mov = true
-      end
-      
-      -- stop the map when no arrow key is pressed
-      if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
-      
-      -- manage the lateral ground collision
-      if (textureLeft == "ground" and love.keyboard.isDown("left"))
-      or (textureRight == "ground" and love.keyboard.isDown("right")) then
-        Hero.speed.walk = 0
-      else Hero.speed.walk = 5 end
-      
-      -- manage the movement along y
-      if Hero.mov == "jump" or Hero.mov == "fall" then
-        Hero.y = Hero.y - Hero.speed.alongY
-        Hero.speed.alongY = Hero.speed.alongY - dt*9.81
-      end
-      -- manage the status along y
-      if Hero.speed.alongY > 0 then Hero.mov = "jump"
-      elseif Hero.speed.alongY < 0 then Hero.mov = "fall" end
+      local threShold = Hero.w/5
+      if Hero.x > threShold and Hero.x < (windowWidth - threShold) 
+         or ( Hero.x <= threShold and love.keyboard.isDown("right") )
+         or ( Hero.x >= (windowWidth - threShold) and love.keyboard.isDown("left") )
+      then Hero.x = Hero.x + Hero.speed.walk * Hero.sign end
+      myMap.mov = false
+    else
+      myMap.mov = true
+    end
+    
+    -- stop the map when no arrow key is pressed
+    if not love.keyboard.isDown("right") and not love.keyboard.isDown("left") then myMap.mov = false end
+    
+    -- manage the lateral ground collision
+    if (textureLeft == "ground" and love.keyboard.isDown("left"))
+    or (textureRight == "ground" and love.keyboard.isDown("right")) then
+      Hero.speed.walk = 0
+    else Hero.speed.walk = 5 end
+    
+    -- manage the movement along y
+    if Hero.mov == "jump" or Hero.mov == "fall" then
+      Hero.y = Hero.y - Hero.speed.alongY
+      Hero.speed.alongY = Hero.speed.alongY - dt*9.81
+    end
+    -- manage the status along y
+    if Hero.speed.alongY > 0 then Hero.mov = "jump"
+    elseif Hero.speed.alongY < 0 then Hero.mov = "fall" end
 
-      if Hero.yFeet > myMap.size.pixH - 12 and Hero.isDead == false then
-        -- death animation
-        Hero.isDead = true
-        Hero.Dead = {}
-        Hero.Dead.x = Hero.x
-        Hero.Dead.y = Hero.y
-        Hero.Dead.vy = -5
-        Hero.Dead.rot = 0
-        Hero.speed.alongY = 0
-        Hero.speed.alongX = 0
-      end
+    if Hero.yFeet > myMap.size.pixH - 12 and Hero.isDead == false then
+      -- death animation
+      Hero.isDead = true
+      Hero.Dead = {}
+      Hero.Dead.x = Hero.x
+      Hero.Dead.y = Hero.y
+      Hero.Dead.vy = -5
+      Hero.Dead.rot = 0
+      Hero.speed.alongY = 0
+      Hero.speed.alongX = 0
     end
     
     if Hero.animHit == true then
@@ -290,6 +303,7 @@ function Hero.Draw()
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)
+  love.graphics.print("Left", Hero.xLeft - 16, Hero.yLeft)
   love.graphics.circle("fill", Hero.xHead, Hero.yHead, 2)
   love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
   love.graphics.setColor(255, 255, 255)

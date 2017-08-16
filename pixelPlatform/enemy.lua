@@ -189,7 +189,6 @@ function Enemy.Update(dt, pMap, pHero)
             e.sign = -1 * e.sign
           end
           if e.colFeet < 5 then
-            print(e.dir, e.colFeet)
           end
           
           if e.dir == "left" and (textureBeforeFeet == "void" or e.colFeet < 2) then
