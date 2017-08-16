@@ -3,8 +3,7 @@ local Combat = {}
 local windowWidth, windowHeight, TILE_SIZE
 
 local tempEnemy = {}
-local tempSign = 0
-local counter = 0
+local counterHero = 0
 
 local myHero = require("hero")
 local myEnemy = require("enemy")
@@ -37,7 +36,7 @@ function Combat.Update(dt)
           if dyHead < dHeightFighters or dyFeet < dHeightFighters then
             myHero.hitted = true
             table.insert(tempEnemy, e)
-            counter = 0
+            counterHero = 0
           end
         end
       end
@@ -60,8 +59,9 @@ function Combat.Update(dt)
         
         if dxLeft < dWidthFighters or dxRight < dWidthFighters then
           if dyHead < dHeightFighters or dyFeet < dHeightFighters then
-            e.hitted = true
-            tempEnemy[#tempEnemy + 1] = e
+            --e.hitted = true
+            --tempEnemy[#tempEnemy + 1] = e
+            --e.counter = 0
           end
         end
       end
@@ -72,10 +72,10 @@ function Combat.Update(dt)
   if myHero.hitted == true then
     myHero.animHit = true
     -- reinitialize and calculate the new health
-    if counter < 1 then
+    if counterHero < 1 then
       myHero.health = myHero.health - (tempEnemy[1].ptsAttack - myHero.ptsDefense)
       table.remove(tempEnemy, 1)
-      counter = counter + 1
+      counterHero = counterHero + 1
     end
   end
   
@@ -85,27 +85,11 @@ function Combat.Update(dt)
     for i = #tempEnemy, 1, -1 do
       local te = tempEnemy[i]
       if te.hitted == true then
-        if tempSign == 0 then
-          tempSign = myHero.sign
-        end
-        -- to bypass the standard hero animation
         te.animHit = true
-        -- bound animation
-        te.x = te.x + te.animHitSpeedX * tempSign
-        
-        if te.animHitSpeedX > 0
-          -- avoid crash from left or right boundary
-          and te.x < (windowWidth - te.w * te.scale)
-          and te.x > (te.w * te.scale) then
-            te.animHitSpeedX = te.animHitSpeedX - dt*6
-        else
-          -- reinitialize and calculate the new health
-          te.animHit = false
-          te.animHitSpeedX = 5
-          te.hitted = false
-          tempSign = 0
+        if counterHero < 1 then
           te.health = te.health - (myHero.ptsAttack - te.ptsDefense)
-          table.remove(tempEnemy, i)
+          table.remove(tempEnemy, 1)
+          te.counter = te.counter + 1
         end
       end
     end

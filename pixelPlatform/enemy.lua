@@ -2,6 +2,9 @@ local Enemy = {}
 
 local windowWidth, windowHeight, TILE_SIZE
 local textureUnder, textureBeforeFeet, textureAfterFeet, textureBefore, textureAfter
+local timeElapsedAnimHit = 0
+local isBlinking = false
+
 Enemy.listEnemies = {}
 
 function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
@@ -24,11 +27,12 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.sign = - 1
   item.scale = 1.5
   item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
-  item.y = 500
+  item.y = 100
   
   item.animHit = false
   item.hitted = false
   item.animHitSpeedX = 5
+  item.counter = 0
   
   item.Dead = {}
   item.Dead.rot = 3.14
@@ -219,6 +223,22 @@ function Enemy.Update(dt, pMap, pHero)
         table.remove(Enemy.listEnemies, item)
       end
       
+      if e.animHit == true then
+        timeElapsedAnimHit = timeElapsedAnimHit + dt
+        
+        if timeElapsedAnimHit < 0.1 or timeElapsedAnimHit > 0.4
+           or (timeElapsedAnimHit > 0.2 and timeElapsedAnimHit < 0.3) then
+            isBlinking = true
+        else isBlinking = false
+        end
+      
+        if timeElapsedAnimHit > 0.5 then
+          timeElapsedAnimHit = 0
+          e.animHit = false
+          e.hitted = false
+        end
+      end
+      
       -- death animation
       if e.isDead == true then
         e.Dead.y = e.Dead.y - e.speed.alongY
@@ -243,6 +263,15 @@ function Enemy.Draw()
                            e.sign * e.scale, 1 * e.scale,
                            e.w/2, 1)
       end
+      
+      if e.animHit == true then
+      if isBlinking == false then
+        love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
+                           e.x, e.y, 0,
+                           e.sign * e.scale, 1 * e.scale,
+                           e.w/2, 1)
+      end
+    end
       
       love.graphics.setColor(0, 0, 0)
       love.graphics.printf("health : "..e.health, e.x - 16, e.y - 16, windowWidth, "left")

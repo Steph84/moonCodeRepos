@@ -6,6 +6,7 @@ local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 local groundCollision = false
 local timeElapsedAttack = 0
 local timeElapsedAnimHit = 0
+local isBlinking = false
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -243,6 +244,13 @@ function Hero.Update(dt)
     
     if Hero.animHit == true then
       timeElapsedAnimHit = timeElapsedAnimHit + dt
+      
+      if timeElapsedAnimHit < 0.1 or timeElapsedAnimHit > 0.4
+         or (timeElapsedAnimHit > 0.2 and timeElapsedAnimHit < 0.3) then
+          isBlinking = true
+      else isBlinking = false
+      end
+    
       if timeElapsedAnimHit > 0.5 then
         timeElapsedAnimHit = 0
         Hero.animHit = false
@@ -286,17 +294,20 @@ function Hero.Draw()
                                                       Hero.sign * Hero.scale, 1 * Hero.scale,
                                                       Hero.w/2, 1) end
       end
-    elseif Hero.animHit == true then love.graphics.draw(Hero.pitDeathPic,
-                                                        Hero.x, Hero.y, 0,
-                                                        Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                        Hero.w/2, 1)
+    elseif Hero.animHit == true then
+      if isBlinking == false then
+        love.graphics.draw(Hero.pitDeathPic,
+                           Hero.x, Hero.y, 0,
+                           Hero.sign * Hero.scale, 1 * Hero.scale,
+                           Hero.w/2, 1)
+      end
     end
   end    
   
-  if Hero.isDead == true then love.graphics.draw(Hero.pitDeathPic,
-                                                Hero.Dead.x, Hero.Dead.y, Hero.Dead.rot,
-                                                Hero.sign * Hero.scale, 1 * Hero.scale,
-                                                Hero.w/2, 1) end
+  
+  if Hero.isDead == true then love.graphics.draw(Hero.pitDeathPic, Hero.Dead.x, Hero.Dead.y, Hero.Dead.rot,
+                                                 Hero.sign * Hero.scale, 1 * Hero.scale,
+                                                 Hero.w/2, 1) end
   
   love.graphics.setColor(0, 0, 0)
   love.graphics.printf("health : "..Hero.health, Hero.xHead - 16, Hero.yHead - 16, windowWidth, "left")
