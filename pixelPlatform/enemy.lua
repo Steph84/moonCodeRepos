@@ -27,7 +27,7 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.sign = - 1
   item.scale = 1.5
   item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
-  item.y = 100
+  item.y = 500
   
   item.animHit = false
   item.hitted = false
@@ -172,7 +172,11 @@ function Enemy.Update(dt, pMap, pHero)
         if e.mov == "walk" then
           e.y = pMap.grid[e.linFeet][e.colFeet].y - (e.h * e.scale - 8) -- put the e on top of the ground
           
-          e.x = e.x + e.speed.walk * e.sign
+          if e.hitted == false then
+            e.x = e.x + e.speed.walk * e.sign
+          else
+            print("manson")
+          end
           
           -- avoid walking through hill
           if textureBefore == "ground" and e.dir == "left" then
@@ -258,20 +262,13 @@ function Enemy.Draw()
   
     if e.isDead == false then
       if e.x > (0 - 64) and e.x < (windowWidth + 64) then
-        love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
-                           e.x, e.y, 0,
-                           e.sign * e.scale, 1 * e.scale,
-                           e.w/2, 1)
+        if e.animHit == false or (e.animHit == true and isBlinking == false) then
+          love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
+                             e.x, e.y, 0,
+                             e.sign * e.scale, 1 * e.scale,
+                             e.w/2, 1)
+        end
       end
-      
-      if e.animHit == true then
-      if isBlinking == false then
-        love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
-                           e.x, e.y, 0,
-                           e.sign * e.scale, 1 * e.scale,
-                           e.w/2, 1)
-      end
-    end
       
       love.graphics.setColor(0, 0, 0)
       love.graphics.printf("health : "..e.health, e.x - 16, e.y - 16, windowWidth, "left")

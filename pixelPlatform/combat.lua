@@ -59,9 +59,10 @@ function Combat.Update(dt)
         
         if dxLeft < dWidthFighters or dxRight < dWidthFighters then
           if dyHead < dHeightFighters or dyFeet < dHeightFighters then
-            --e.hitted = true
-            --tempEnemy[#tempEnemy + 1] = e
-            --e.counter = 0
+            print("fuck yeah")
+            e.hitted = true
+            tempEnemy[#tempEnemy + 1] = e
+            e.counter = 0
           end
         end
       end
@@ -86,11 +87,12 @@ function Combat.Update(dt)
       local te = tempEnemy[i]
       if te.hitted == true then
         te.animHit = true
-        if counterHero < 1 then
+        if te.counter < 1 then
           te.health = te.health - (myHero.ptsAttack - te.ptsDefense)
-          table.remove(tempEnemy, 1)
           te.counter = te.counter + 1
         end
+      else
+        table.remove(tempEnemy, #tempEnemy)
       end
     end
   end
