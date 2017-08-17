@@ -59,7 +59,6 @@ function Combat.Update(dt)
         
         if dxLeft < dWidthFighters or dxRight < dWidthFighters then
           if dyHead < dHeightFighters or dyFeet < dHeightFighters then
-            print("fuck yeah")
             e.hitted = true
             tempEnemy[#tempEnemy + 1] = e
             e.counter = 0

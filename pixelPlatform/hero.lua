@@ -2,11 +2,13 @@ local Hero = {}
 
 local windowWidth, windowHeight, TILE_SIZE
 local myMap = require("map")
+local myEnemy = require("enemy")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 local groundCollision = false
 local timeElapsedAttack = 0
 local timeElapsedAnimHit = 0
 local isBlinking = false
+local ScaleLevel = {}
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -45,9 +47,11 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   Hero.attack = false
   Hero.hitted = false
-  Hero.health = 10
-  Hero.ptsAttack = 5
-  Hero.ptsDefense = 2
+  Hero.health = 0
+  Hero.ptsAttack = 0
+  Hero.ptsDefense = 0
+  Hero.level = 1
+  Hero.xp = 0
   
   Hero.animHit = false
   Hero.animHitSpeedX = 5
@@ -72,6 +76,24 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
     id = id + 1
     end
   end
+  
+  ScaleLevel = {
+                  {h = math.random(8, 12), a = math.random(4, 6), d = math.random(1, 3), ts = 0}
+               }
+  
+  -- generate scale level for Hero
+  local thigh
+  for thigh = 2, 10 do
+    local hips = ScaleLevel[thigh - 1]
+    ScaleLevel[thigh] = {h = hips.h + math.random(2, 8),
+                         a = hips.a + math.random(1, 4),
+                         d = hips.d + math.random(0, 3),
+                         ts = hips.ts + math.random(15, 25)}
+  end
+  
+  Hero.health = ScaleLevel[1].h
+  Hero.ptsAttack = ScaleLevel[1].a
+  Hero.ptsDefense = ScaleLevel[1].d
   
 end
 
@@ -257,8 +279,20 @@ function Hero.Update(dt)
         Hero.hitted = false
       end
     end
-    
   end
+  
+  
+  if Hero.xp > ScaleLevel[Hero.level].ts then
+    Hero.level = Hero.level + 1
+    --myEnemy.countDeadBodies
+    Hero.health = ScaleLevel[Hero.level].h
+    Hero.ptsAttack = ScaleLevel[Hero.level].a
+    Hero.ptsDefense = ScaleLevel[Hero.level].d
+  end
+  
+  
+  
+  
   
   if Hero.isDead == true then
     Hero.Dead.y = Hero.Dead.y + Hero.Dead.vy
@@ -314,7 +348,8 @@ function Hero.Draw()
   love.graphics.printf("line : "..Hero.linFeet.." / column : "..Hero.colFeet, 10, 70, windowWidth, "left")
   love.graphics.circle("fill", Hero.xFeet, Hero.yFeet, 2)
   love.graphics.circle("fill", Hero.xLeft, Hero.yLeft, 2)
-  love.graphics.print("Left", Hero.xLeft - 16, Hero.yLeft)
+  love.graphics.print("Lv"..Hero.level, Hero.xLeft - 16, Hero.yLeft)
+  love.graphics.print("Xp"..Hero.xp, Hero.xRight + 16, Hero.yRight)
   love.graphics.circle("fill", Hero.xHead, Hero.yHead, 2)
   love.graphics.circle("fill", Hero.xRight, Hero.yRight, 2)
   love.graphics.setColor(255, 255, 255)

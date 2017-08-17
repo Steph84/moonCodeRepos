@@ -6,6 +6,7 @@ local timeElapsedAnimHit = 0
 local isBlinking = false
 
 Enemy.listEnemies = {}
+Enemy.countDeadBodies = {}
 
 function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
   windowWidth = pWindowWidth
@@ -27,7 +28,7 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.sign = - 1
   item.scale = 1.5
   item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
-  item.y = 500
+  item.y = 100
   
   item.animHit = false
   item.hitted = false
@@ -45,6 +46,7 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
     item.health = 10
     item.ptsAttack = 3
     item.ptsDefense = 1
+    item.level = 1
     -- load the animation walking tile
     item.anim = love.graphics.newImage("pictures/enemy01Walk.png")
     local nbColumns = item.anim:getWidth() / 32
@@ -92,6 +94,8 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   end
   
   table.insert(Enemy.listEnemies, item)
+  
+  Enemy.countDeadBodies = {underLv = 0, sameLv = 0, aboveLv = 0}
   
 end
 
@@ -174,8 +178,6 @@ function Enemy.Update(dt, pMap, pHero)
           
           if e.hitted == false then
             e.x = e.x + e.speed.walk * e.sign
-          else
-            print("manson")
           end
           
           -- avoid walking through hill
@@ -195,8 +197,6 @@ function Enemy.Update(dt, pMap, pHero)
           if e.dir == "right" and (textureAfterFeet == "void" or e.colFeet > pMap.size.w - 1) then
             e.dir = "left"
             e.sign = -1 * e.sign
-          end
-          if e.colFeet < 5 then
           end
           
           if e.dir == "left" and (textureBeforeFeet == "void" or e.colFeet < 2) then
@@ -248,6 +248,10 @@ function Enemy.Update(dt, pMap, pHero)
         e.Dead.y = e.Dead.y - e.speed.alongY
         e.speed.alongY = e.speed.alongY - dt*9.81
         if e.Dead.y > windowHeight then 
+          pHero.xp = pHero.xp + 10
+          if e.level < pHero.level then Enemy.countDeadBodies.underLv = Enemy.countDeadBodies.underLv + 1 end
+          if e.level == pHero.level then Enemy.countDeadBodies.sameLv = Enemy.countDeadBodies.sameLv + 1 end
+          if e.level > pHero.level then Enemy.countDeadBodies.aboveLv = Enemy.countDeadBodies.aboveLv + 1 end
           table.remove(Enemy.listEnemies, item)  
         end
       end
