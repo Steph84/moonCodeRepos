@@ -74,6 +74,7 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
     item.health = 20
     item.ptsAttack = 4
     item.ptsDefense = 4
+    item.level = 1
     -- load the animation walking tile
     item.anim = love.graphics.newImage("pictures/tankWalking.png")
     local nbColumns = item.anim:getWidth() / 64
@@ -194,12 +195,12 @@ function Enemy.Update(dt, pMap, pHero)
             e.x = e.x - pHero.speed.walk * pHero.sign
           end
           
-          if e.dir == "right" and (textureAfterFeet == "void" or e.colFeet > pMap.size.w - 1) then
+          if e.dir == "right" and (textureAfterFeet == "void" or e.colRight > pMap.size.w - 1) then
             e.dir = "left"
             e.sign = -1 * e.sign
           end
           
-          if e.dir == "left" and (textureBeforeFeet == "void" or e.colFeet < 2) then
+          if e.dir == "left" and (textureBeforeFeet == "void" or e.colLeft < 2) then
             e.dir = "right"
             e.sign = -1 * e.sign
           end
@@ -243,12 +244,14 @@ function Enemy.Update(dt, pMap, pHero)
         end
       end
       
+      --print(Enemy.countDeadBodies.underLv, Enemy.countDeadBodies.sameLv, Enemy.countDeadBodies.aboveLv)
       -- death animation
       if e.isDead == true then
         e.Dead.y = e.Dead.y - e.speed.alongY
         e.speed.alongY = e.speed.alongY - dt*9.81
         if e.Dead.y > windowHeight then 
           pHero.xp = pHero.xp + 10
+          print(e.level)
           if e.level < pHero.level then Enemy.countDeadBodies.underLv = Enemy.countDeadBodies.underLv + 1 end
           if e.level == pHero.level then Enemy.countDeadBodies.sameLv = Enemy.countDeadBodies.sameLv + 1 end
           if e.level > pHero.level then Enemy.countDeadBodies.aboveLv = Enemy.countDeadBodies.aboveLv + 1 end
@@ -258,6 +261,7 @@ function Enemy.Update(dt, pMap, pHero)
     end
   end
 end
+
 
 function Enemy.Draw()
   
