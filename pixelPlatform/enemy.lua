@@ -41,9 +41,10 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   if pType == 1 then
     item.w = 32
     item.h = 32
-    item.speed.walk = math.random(5, 15)/10
+    item.speed.walk = 0.5 --math.random(5, 15)/10
     item.speed.animWalk = 10
     item.health = 10
+    item.maxHealth = 10
     item.ptsAttack = 3
     item.ptsDefense = 1
     item.level = 1
@@ -72,6 +73,7 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
     item.speed.walk = math.random(2, 7)/10
     item.speed.animWalk = 7
     item.health = 20
+    item.maxHealth = 20
     item.ptsAttack = 4
     item.ptsDefense = 4
     item.level = 1
@@ -107,6 +109,9 @@ function Enemy.Update(dt, pMap, pHero)
       local e = Enemy.listEnemies[item]
     
       if e.isDead == false then
+        
+        e.healthBar = e.health/e.maxHealth
+        
         -- manage the walking animation
         if e.mov == "walk" then e.picCurrent = e.picCurrent + (e.speed.animWalk * dt) end
         if math.floor(e.picCurrent) > #e.animWalk then e.picCurrent = 1 end
@@ -216,10 +221,13 @@ function Enemy.Update(dt, pMap, pHero)
         end
         
         -- condition for death
-        if e.health < 0 then
+        if e.health <= 0 then
           e.isDead = true
           e.Dead.y = e.y
           e.Dead.x = e.x
+          e.Dead.scale = e.scale
+          e.Dead.sign = e.sign
+          e.Dead.w = e.w
         end
       end
       
@@ -251,11 +259,10 @@ function Enemy.Update(dt, pMap, pHero)
         e.speed.alongY = e.speed.alongY - dt*9.81
         if e.Dead.y > windowHeight then 
           pHero.xp = pHero.xp + 10
-          print(e.level)
           if e.level < pHero.level then Enemy.countDeadBodies.underLv = Enemy.countDeadBodies.underLv + 1 end
           if e.level == pHero.level then Enemy.countDeadBodies.sameLv = Enemy.countDeadBodies.sameLv + 1 end
           if e.level > pHero.level then Enemy.countDeadBodies.aboveLv = Enemy.countDeadBodies.aboveLv + 1 end
-          table.remove(Enemy.listEnemies, item)  
+          table.remove(Enemy.listEnemies, item)
         end
       end
     end
@@ -271,6 +278,15 @@ function Enemy.Draw()
     if e.isDead == false then
       if e.x > (0 - 64) and e.x < (windowWidth + 64) then
         if e.animHit == false or (e.animHit == true and isBlinking == false) then
+          
+          -- manage color of the health bar
+          if e.healthBar >= 0.5 then love.graphics.setColor(0, 128, 0)
+          elseif e.healthBar < 0.5 and e.healthBar >= 0.2 then love.graphics.setColor(255, 192, 0)
+          elseif e.healthBar < 0.2 then love.graphics.setColor(255, 0, 0) end
+          
+          love.graphics.rectangle("fill", e.x - (e.w * e.scale)/2, e.y - 16, (e.healthBar)*(e.w * e.scale), 5)
+          love.graphics.setColor(255, 255, 255)
+          
           love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
                              e.x, e.y, 0,
                              e.sign * e.scale, 1 * e.scale,
@@ -278,23 +294,23 @@ function Enemy.Draw()
         end
       end
       
-      love.graphics.setColor(0, 0, 0)
-      love.graphics.printf("health : "..e.health, e.x - 16, e.y - 16, windowWidth, "left")
-      love.graphics.setColor(255, 255, 255)
+      
     end
     
+    --[[
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("fill", e.xFeet, e.yFeet, 2)
     love.graphics.circle("fill", e.xHead, e.yHead, 2)
     love.graphics.circle("fill", e.xLeft, e.yLeft, 2)
     love.graphics.circle("fill", e.xRight, e.yRight, 2)
     love.graphics.setColor(255, 255, 255)
+    --]]
     
     if e.isDead == true then
       love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
                          e.Dead.x, e.Dead.y, e.Dead.rot,
-                         e.sign * e.scale, 1 * e.scale,
-                         e.w/2, 1)
+                         e.Dead.sign * e.Dead.scale, 1 * e.Dead.scale,
+                         e.Dead.w/2, 1)
     end
   end
   
