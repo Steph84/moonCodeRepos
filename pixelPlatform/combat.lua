@@ -73,7 +73,9 @@ function Combat.Update(dt)
     myHero.animHit = true
     -- reinitialize and calculate the new health
     if counterHero < 1 then
-      myHero.health = myHero.health - (tempEnemy[1].ptsAttack - myHero.ptsDefense)
+      if(tempEnemy[1].ptsAttack - myHero.ptsDefense >=0) then
+        myHero.health = myHero.health - (tempEnemy[1].ptsAttack - myHero.ptsDefense)
+      end
       table.remove(tempEnemy, 1)
       counterHero = counterHero + 1
     end
@@ -87,7 +89,9 @@ function Combat.Update(dt)
       if te.hitted == true then
         te.animHit = true
         if te.counter < 1 then
-          te.health = te.health - (myHero.ptsAttack - te.ptsDefense)
+          if(myHero.ptsAttack - te.ptsDefense >=0) then
+            te.health = te.health - (myHero.ptsAttack - te.ptsDefense)
+          end
           te.counter = te.counter + 1
         end
       else

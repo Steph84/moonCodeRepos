@@ -48,6 +48,8 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.attack = false
   Hero.hitted = false
   Hero.health = 0
+  Hero.maxHealth = 0
+  Hero.healthBar = 0
   Hero.ptsAttack = 0
   Hero.ptsDefense = 0
   Hero.level = 1
@@ -92,6 +94,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   end
   
   Hero.health = ScaleLevel[1].h
+  Hero.maxHealth = ScaleLevel[1].h
   Hero.ptsAttack = ScaleLevel[1].a
   Hero.ptsDefense = ScaleLevel[1].d
   
@@ -100,6 +103,10 @@ end
 function Hero.Update(dt)
   
   if Hero.isDead == false then
+    
+    Hero.healthBar = Hero.health/Hero.maxHealth
+    print(Hero.health, Hero.maxHealth)
+    
     -- calculate the position of the feet in pixel
     Hero.xFeet = Hero.x - Hero.sign * 10 + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
     Hero.yFeet = Hero.y + Hero.h * Hero.scale - 2
@@ -252,7 +259,7 @@ function Hero.Update(dt)
     if Hero.speed.alongY > 0 then Hero.mov = "jump"
     elseif Hero.speed.alongY < 0 then Hero.mov = "fall" end
 
-    if Hero.yFeet > myMap.size.pixH - 12 and Hero.isDead == false then
+    if (Hero.yFeet > myMap.size.pixH - 12 or Hero.health <= 0) and Hero.isDead == false then
       -- death animation
       Hero.isDead = true
       Hero.Dead = {}
@@ -286,13 +293,10 @@ function Hero.Update(dt)
     Hero.level = Hero.level + 1
     --myEnemy.countDeadBodies
     Hero.health = ScaleLevel[Hero.level].h
+    Hero.maxHealth = ScaleLevel[Hero.level].h
     Hero.ptsAttack = ScaleLevel[Hero.level].a
     Hero.ptsDefense = ScaleLevel[Hero.level].d
   end
-  
-  
-  
-  
   
   if Hero.isDead == true then
     Hero.Dead.y = Hero.Dead.y + Hero.Dead.vy

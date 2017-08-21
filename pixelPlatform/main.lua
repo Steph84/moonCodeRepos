@@ -19,8 +19,7 @@ function love.load()
   local displayWidth, displayHeight
   displayWidth, displayHeight = love.window.getDesktopDimensions()
   windowWidth = (math.floor(displayWidth/TILE_SIZE) - 2) * TILE_SIZE
-  windowHeight = (math.floor(displayHeight/TILE_SIZE) - 3) * TILE_SIZE
-  
+  windowHeight = (math.floor(displayHeight/TILE_SIZE) - 4) * TILE_SIZE
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("PixelPlatform")
   
