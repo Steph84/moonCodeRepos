@@ -54,6 +54,8 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.ptsDefense = 0
   Hero.level = 1
   Hero.xp = 0
+  Hero.xpBar = 0
+  Hero.xpMax = 0
   
   Hero.animHit = false
   Hero.animHitSpeedX = 5
@@ -97,6 +99,7 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.maxHealth = ScaleLevel[1].h
   Hero.ptsAttack = ScaleLevel[1].a
   Hero.ptsDefense = ScaleLevel[1].d
+  Hero.xpMax = ScaleLevel[2].ts
   
 end
 
@@ -105,7 +108,7 @@ function Hero.Update(dt)
   if Hero.isDead == false then
     
     Hero.healthBar = Hero.health/Hero.maxHealth
-    print(Hero.health, Hero.maxHealth)
+    Hero.xpBar = Hero.xp/Hero.xpMax
     
     -- calculate the position of the feet in pixel
     Hero.xFeet = Hero.x - Hero.sign * 10 + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
@@ -296,6 +299,7 @@ function Hero.Update(dt)
     Hero.maxHealth = ScaleLevel[Hero.level].h
     Hero.ptsAttack = ScaleLevel[Hero.level].a
     Hero.ptsDefense = ScaleLevel[Hero.level].d
+    Hero.xpMax = ScaleLevel[Hero.level + 1].ts
   end
   
   if Hero.isDead == true then
