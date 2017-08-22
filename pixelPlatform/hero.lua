@@ -9,6 +9,7 @@ local timeElapsedAttack = 0
 local timeElapsedAnimHit = 0
 local isBlinking = false
 local ScaleLevel = {}
+local ThresholdLevel = {}
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -81,25 +82,17 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
     end
   end
   
-  ScaleLevel = {
-                  {h = math.random(8, 12), a = math.random(4, 6), d = math.random(1, 3), ts = 0}
-               }
-  
-  -- generate scale level for Hero
+  ThresholdLevel[1] = 0
   local thigh
-  for thigh = 2, 10 do
-    local hips = ScaleLevel[thigh - 1]
-    ScaleLevel[thigh] = {h = hips.h + math.random(2, 8),
-                         a = hips.a + math.random(1, 4),
-                         d = hips.d + math.random(0, 3),
-                         ts = hips.ts + math.random(15, 25)}
+  for thigh = 2, 25 do
+    ThresholdLevel[thigh] = math.ceil(2.5 * thigh^2 - 3 * thigh + 10)
   end
   
-  Hero.health = ScaleLevel[1].h
-  Hero.maxHealth = ScaleLevel[1].h
-  Hero.ptsAttack = ScaleLevel[1].a
-  Hero.ptsDefense = ScaleLevel[1].d
-  Hero.xpMax = ScaleLevel[2].ts
+  Hero.health = math.random(8, 12)
+  Hero.maxHealth = Hero.health
+  Hero.ptsAttack = math.random(4, 6)
+  Hero.ptsDefense = math.random(1, 3)
+  Hero.xpMax = ThresholdLevel[2]
   
 end
 
@@ -292,14 +285,39 @@ function Hero.Update(dt)
   end
   
   
-  if Hero.xp > ScaleLevel[Hero.level].ts then
+  if Hero.xp > ThresholdLevel[Hero.level] then
+    
     Hero.level = Hero.level + 1
-    --myEnemy.countDeadBodies
-    Hero.health = ScaleLevel[Hero.level].h
-    Hero.maxHealth = ScaleLevel[Hero.level].h
-    Hero.ptsAttack = ScaleLevel[Hero.level].a
-    Hero.ptsDefense = ScaleLevel[Hero.level].d
-    Hero.xpMax = ScaleLevel[Hero.level + 1].ts
+    Hero.xpMax = ThresholdLevel[Hero.level]
+    -- ajouter le surplus d xp
+    Hero.xp = 0
+    
+    local t = myEnemy.countDeadBodies
+    local key, max = 1, t[1]
+    for k, v in ipairs(t) do
+        if t[k] > max then
+            key, max = k, v
+        end
+    end
+
+    if key == 1 then
+      Hero.health = Hero.health + 2
+      Hero.maxHealth = Hero.maxHealth + 2
+      Hero.ptsAttack = Hero.ptsAttack + 1
+      Hero.ptsDefense = Hero.ptsDefense + 0
+    elseif key == 2 then
+      Hero.health = Hero.health + 4
+      Hero.maxHealth = Hero.maxHealth + 4
+      Hero.ptsAttack = Hero.ptsAttack + 2
+      Hero.ptsDefense = Hero.ptsDefense + 1
+    elseif key == 3 then
+      Hero.health = Hero.health + 8
+      Hero.maxHealth = Hero.maxHealth + 8
+      Hero.ptsAttack = Hero.ptsAttack + 4
+      Hero.ptsDefense = Hero.ptsDefense + 3
+    end
+    
+    myEnemy.countDeadBodies = {0, 0, 0}
   end
   
   if Hero.isDead == true then

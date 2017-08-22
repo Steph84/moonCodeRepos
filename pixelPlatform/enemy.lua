@@ -98,7 +98,9 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   
   table.insert(Enemy.listEnemies, item)
   
-  Enemy.countDeadBodies = {underLv = 0, sameLv = 0, aboveLv = 0}
+  --               underLv, sameLv, aboveLv
+  Enemy.countDeadBodies = {0, 0, 0}
+
   
 end
 
@@ -251,17 +253,16 @@ function Enemy.Update(dt, pMap, pHero)
           e.hitted = false
         end
       end
-      
-      --print(Enemy.countDeadBodies.underLv, Enemy.countDeadBodies.sameLv, Enemy.countDeadBodies.aboveLv)
+    
       -- death animation
       if e.isDead == true then
         e.Dead.y = e.Dead.y - e.speed.alongY
         e.speed.alongY = e.speed.alongY - dt*9.81
         if e.Dead.y > windowHeight then 
           pHero.xp = pHero.xp + 10
-          if e.level < pHero.level then Enemy.countDeadBodies.underLv = Enemy.countDeadBodies.underLv + 1 end
-          if e.level == pHero.level then Enemy.countDeadBodies.sameLv = Enemy.countDeadBodies.sameLv + 1 end
-          if e.level > pHero.level then Enemy.countDeadBodies.aboveLv = Enemy.countDeadBodies.aboveLv + 1 end
+          if e.level < pHero.level then Enemy.countDeadBodies[1] = Enemy.countDeadBodies[1] + 1 end
+          if e.level == pHero.level then Enemy.countDeadBodies[2] = Enemy.countDeadBodies[2] + 1 end
+          if e.level > pHero.level then Enemy.countDeadBodies[3] = Enemy.countDeadBodies[3] + 1 end
           table.remove(Enemy.listEnemies, item)
         end
       end
