@@ -287,10 +287,9 @@ function Hero.Update(dt)
   
   if Hero.xp > ThresholdLevel[Hero.level] then
     
+    Hero.xp = Hero.xp - ThresholdLevel[Hero.level]
     Hero.level = Hero.level + 1
     Hero.xpMax = ThresholdLevel[Hero.level]
-    -- ajouter le surplus d xp
-    Hero.xp = 0
     
     local t = myEnemy.countDeadBodies
     local key, max = 1, t[1]

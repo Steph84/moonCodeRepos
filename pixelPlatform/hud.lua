@@ -61,24 +61,26 @@ function Hud.Draw(pLevel)
   
   
   -- left part
-  love.graphics.printf("Health", heroPart.x + 5, heroPart.y + 5, heroPart.w - 5, "left")
-  love.graphics.printf("LV", heroPart.x + 5, heroPart.y + 25, 32, "left")
-  love.graphics.printf("Att.", heroPart.x + 85, heroPart.y + 25, 32, "left")
-  love.graphics.printf("Def.", heroPart.x + 165, heroPart.y + 25, 32, "left")
-  love.graphics.printf("Exp.", heroPart.x + 5, heroPart.y + 45, heroPart.w - 5, "left")
+  love.graphics.printf("Health", heroPart.w * (1/40), heroPart.y + heroPart.h * (1/7), 64, "left")
+  love.graphics.printf("LV", heroPart.w * (1/10), heroPart.y + heroPart.h * (3/7), 32, "left")
+  love.graphics.printf("Att.", heroPart.w * (4/10), heroPart.y + heroPart.h * (3/7), 32, "left")
+  love.graphics.printf("Def.", heroPart.w * (7/10), heroPart.y + heroPart.h * (3/7), 32, "left")
+  love.graphics.printf("Exp.", heroPart.w * (1/40), heroPart.y + heroPart.h * (5/7), 64, "left")
   -- manage color of the health bar
   if myHero.healthBar >= 0.6 then love.graphics.setColor(0, 128, 0)
   elseif myHero.healthBar < 0.6 and myHero.healthBar >= 0.3 then love.graphics.setColor(255, 192, 0)
   elseif myHero.healthBar < 0.3 then love.graphics.setColor(255, 0, 0) end
   
   if myHero.isDead == false then
-    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + 10, myHero.healthBar * (heroPart.w - 80), 5)
+    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (1/7), myHero.healthBar * (heroPart.w - 80), 5)
     love.graphics.setColor(0, 64, 128)
-    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + 50, myHero.xpBar * (heroPart.w - 80), 5)
+    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (5/7), myHero.xpBar * (heroPart.w - 80), 5)
     love.graphics.setColor(255, 255, 255)
-    love.graphics.printf(myHero.level, heroPart.x + 35, heroPart.y + 25, 16, "right")
-    love.graphics.printf(myHero.ptsAttack, heroPart.x + 115, heroPart.y + 25, 16, "right")
-    love.graphics.printf(myHero.ptsDefense, heroPart.x + 195, heroPart.y + 25, 16, "right")
+    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (1/7) - 1, (heroPart.w - 78), 7)
+    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (5/7) - 1, (heroPart.w - 78), 7)
+    love.graphics.printf(myHero.level, heroPart.w * (2/10), heroPart.y + heroPart.h * (3/7), 16, "right")
+    love.graphics.printf(myHero.ptsAttack, heroPart.w * (5/10), heroPart.y + heroPart.h * (3/7), 16, "right")
+    love.graphics.printf(myHero.ptsDefense, heroPart.w * (8/10), heroPart.y + heroPart.h * (3/7), 16, "right")
   end
   
   
