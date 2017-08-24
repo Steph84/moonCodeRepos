@@ -258,8 +258,10 @@ function Enemy.Update(dt, pMap, pHero)
       if e.isDead == true then
         e.Dead.y = e.Dead.y - e.speed.alongY
         e.speed.alongY = e.speed.alongY - dt*9.81
-        if e.Dead.y > windowHeight then 
-          pHero.xp = pHero.xp + 10
+        if e.Dead.y > windowHeight then
+          print(pHero.level)
+          pHero.xp = pHero.xp + ((2^(e.level - pHero.level) * 1.5) + 1 ) * pHero.level
+          print(pHero.level)
           if e.level < pHero.level then Enemy.countDeadBodies[1] = Enemy.countDeadBodies[1] + 1 end
           if e.level == pHero.level then Enemy.countDeadBodies[2] = Enemy.countDeadBodies[2] + 1 end
           if e.level > pHero.level then Enemy.countDeadBodies[3] = Enemy.countDeadBodies[3] + 1 end

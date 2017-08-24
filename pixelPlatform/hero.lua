@@ -285,7 +285,7 @@ function Hero.Update(dt)
   end
   
   
-  if Hero.xp > ThresholdLevel[Hero.level] then
+  if Hero.xp > ThresholdLevel[Hero.level + 1] then
     
     Hero.xp = Hero.xp - ThresholdLevel[Hero.level]
     Hero.level = Hero.level + 1

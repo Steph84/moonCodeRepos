@@ -72,12 +72,12 @@ function Hud.Draw(pLevel)
   elseif myHero.healthBar < 0.3 then love.graphics.setColor(255, 0, 0) end
   
   if myHero.isDead == false then
-    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (1/7), myHero.healthBar * (heroPart.w - 80), 5)
+    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (3/14), myHero.healthBar * (heroPart.w - 80), 5)
     love.graphics.setColor(0, 64, 128)
-    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (5/7), myHero.xpBar * (heroPart.w - 80), 5)
+    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (11/14), myHero.xpBar * (heroPart.w - 80), 5)
     love.graphics.setColor(255, 255, 255)
-    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (1/7) - 1, (heroPart.w - 78), 7)
-    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (5/7) - 1, (heroPart.w - 78), 7)
+    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (3/14) - 1/2, (heroPart.w - 78), 7)
+    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (11/14) - 1/2, (heroPart.w - 78), 7)
     love.graphics.printf(myHero.level, heroPart.w * (2/10), heroPart.y + heroPart.h * (3/7), 16, "right")
     love.graphics.printf(myHero.ptsAttack, heroPart.w * (5/10), heroPart.y + heroPart.h * (3/7), 16, "right")
     love.graphics.printf(myHero.ptsDefense, heroPart.w * (8/10), heroPart.y + heroPart.h * (3/7), 16, "right")
