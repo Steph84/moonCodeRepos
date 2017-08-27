@@ -51,10 +51,15 @@ function Hud.Draw(pLevel)
   -- central part
   love.graphics.printf("Map", mapPart.x, mapPart.y + 4, mapPart.w, "center")
   
-  -- frame of the power bar
-  love.graphics.rectangle("line", mapPart.x + 16, mapPart.y + 24, mapPart.w - 32, mapPart.h - 32, 10, 10, 5)
+  -- frame of the map bar
+  love.graphics.rectangle("line",
+                          mapPart.x + mapPart.w * (1/20), mapPart.y + mapPart.h * (5/10),
+                          mapPart.w * (18/20), mapPart.h * (3/10),
+                          5, 5, 5)
   -- dynamic bar for the power
-  --love.graphics.rectangle("fill", powerPart.x + 22, powerPart.y + 30, myMachina.power * tempRatio, powerPart.h - 44)
+  love.graphics.rectangle("fill",
+                          mapPart.x + mapPart.w * (2/30), mapPart.y + mapPart.h * (6/10),
+                          (myHero.colFeet / myMap.size.w) * (mapPart.w * (26/30)), mapPart.h * (1/10))
   
   
   -- right part
