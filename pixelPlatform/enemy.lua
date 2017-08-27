@@ -38,16 +38,28 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.Dead = {}
   item.Dead.rot = 3.14
   
+  item.level = math.random(1, 3)
+    
   if pType == 1 then
+    -- initialize level 1
+    item.ptsAttack = math.random(2, 3)
+    item.ptsDefense = math.random(1, 2)
+    item.health = math.random(8, 12)
+    
+    -- modify if level > 1
+    if item.level > 1 then
+      item.ptsAttack = 2 * (item.level - 1) + item.ptsAttack
+      item.ptsDefense = 1.5 * (item.level - 1) + item.ptsDefense
+      item.health = 5 * (item.level - 1) + item.health
+    end
+    
+    item.maxHealth = item.health    
+    
     item.w = 32
     item.h = 32
-    item.speed.walk = 0.5 --math.random(5, 15)/10
+    item.speed.walk = math.random(5, 15)/10
     item.speed.animWalk = 10
-    item.health = 10
-    item.maxHealth = 10
-    item.ptsAttack = 3
-    item.ptsDefense = 1
-    item.level = 1
+    
     -- load the animation walking tile
     item.anim = love.graphics.newImage("pictures/enemy01Walk.png")
     local nbColumns = item.anim:getWidth() / 32
@@ -68,15 +80,24 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   end
   
   if pType == 2 then
+    -- initialize level 1
+    item.ptsAttack = math.random(3, 4)
+    item.ptsDefense = math.random(3, 4)
+    item.health = math.random(18, 22)
+    
+    if item.level > 1 then
+      item.ptsAttack = 1.5 * (item.level - 1) + item.ptsAttack
+      item.ptsDefense = 2 * (item.level - 1) + item.ptsDefense
+      item.health = 10 * (item.level - 1) + item.health
+    end
+    
+    item.maxHealth = item.health
+    
     item.w = 64
     item.h = 64
     item.speed.walk = math.random(2, 7)/10
     item.speed.animWalk = 7
-    item.health = 20
-    item.maxHealth = 20
-    item.ptsAttack = 4
-    item.ptsDefense = 4
-    item.level = 1
+    
     -- load the animation walking tile
     item.anim = love.graphics.newImage("pictures/tankWalking.png")
     local nbColumns = item.anim:getWidth() / 64
@@ -259,9 +280,7 @@ function Enemy.Update(dt, pMap, pHero)
         e.Dead.y = e.Dead.y - e.speed.alongY
         e.speed.alongY = e.speed.alongY - dt*9.81
         if e.Dead.y > windowHeight then
-          print(pHero.level)
           pHero.xp = pHero.xp + ((2^(e.level - pHero.level) * 1.5) + 1 ) * pHero.level
-          print(pHero.level)
           if e.level < pHero.level then Enemy.countDeadBodies[1] = Enemy.countDeadBodies[1] + 1 end
           if e.level == pHero.level then Enemy.countDeadBodies[2] = Enemy.countDeadBodies[2] + 1 end
           if e.level > pHero.level then Enemy.countDeadBodies[3] = Enemy.countDeadBodies[3] + 1 end
@@ -288,6 +307,8 @@ function Enemy.Draw()
           elseif e.healthBar < 0.2 then love.graphics.setColor(255, 0, 0) end
           
           love.graphics.rectangle("fill", e.x - (e.w * e.scale)/2, e.y - 16, (e.healthBar)*(e.w * e.scale), 5)
+          love.graphics.setColor(0, 0, 0)
+          love.graphics.printf("LV "..e.level, e.x - (e.w * e.scale)/2, e.yHead - 32, e.w * e.scale, "center")
           love.graphics.setColor(255, 255, 255)
           
           love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
@@ -299,15 +320,6 @@ function Enemy.Draw()
       
       
     end
-    
-    --[[
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.circle("fill", e.xFeet, e.yFeet, 2)
-    love.graphics.circle("fill", e.xHead, e.yHead, 2)
-    love.graphics.circle("fill", e.xLeft, e.yLeft, 2)
-    love.graphics.circle("fill", e.xRight, e.yRight, 2)
-    love.graphics.setColor(255, 255, 255)
-    --]]
     
     if e.isDead == true then
       love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],

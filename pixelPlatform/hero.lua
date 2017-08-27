@@ -88,10 +88,10 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
     ThresholdLevel[thigh] = math.ceil(2.5 * thigh^2 - 3 * thigh + 10)
   end
   
-  Hero.health = math.random(8, 12)
+  Hero.health = math.random(13, 17)
   Hero.maxHealth = Hero.health
-  Hero.ptsAttack = math.random(4, 6)
-  Hero.ptsDefense = math.random(1, 3)
+  Hero.ptsAttack = math.random(6, 8)
+  Hero.ptsDefense = math.random(2, 4)
   Hero.xpMax = ThresholdLevel[2]
   
 end
@@ -287,9 +287,9 @@ function Hero.Update(dt)
   
   if Hero.xp > ThresholdLevel[Hero.level + 1] then
     
-    Hero.xp = Hero.xp - ThresholdLevel[Hero.level]
+    Hero.xp = Hero.xp - ThresholdLevel[Hero.level + 1]
     Hero.level = Hero.level + 1
-    Hero.xpMax = ThresholdLevel[Hero.level]
+    Hero.xpMax = ThresholdLevel[Hero.level + 1]
     
     local t = myEnemy.countDeadBodies
     local key, max = 1, t[1]

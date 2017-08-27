@@ -8,6 +8,7 @@ local mapPart = {}
 local mobPart = {}
 
 local myHero = require("hero")
+local myMap = require("map")
 
 local hudFont = love.graphics.newFont("fonts/arial.ttf", 12)
 
