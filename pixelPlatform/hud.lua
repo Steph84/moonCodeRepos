@@ -10,6 +10,9 @@ local mobPart = {}
 local myHero = require("hero")
 local myMap = require("map")
 
+local countNotHidden, percentMap = 0, 0
+local countPlatForm, percentPlatForm = 0, 0
+
 local hudFont = love.graphics.newFont("fonts/arial.ttf", 12)
 
 function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
@@ -35,11 +38,29 @@ function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
   
 end
 
-function Hud.Update(dt, pMachina, pMap)
-  
+function Hud.Update(dt)
+  if myHero.mov ~= "stand" then
+    countNotHidden, countPlatForm = 0, 0
+    local lin, col
+    for lin = 1, myMap.size.h do
+      for col = 1, myMap.size.w do
+        local g = myMap.grid[lin][col]
+        if g.hidden == false then
+          countNotHidden = countNotHidden + 1
+          if (g.idText >= 4 and g.idText <= 6)
+              or (g.idText >= 16 and g.idText <= 21)
+              or (g.idText >= 28 and g.idText <= 36) then
+                countPlatForm = countPlatForm + 1
+          end
+        end
+      end
+    end
+  end
+  percentMap = math.floor((countNotHidden/(myMap.size.h * myMap.size.w)) * 10000)/100
+  percentPlatForm = math.floor((countPlatForm/myMap.size.platFormNumber) * 10000)/100
 end
 
-function Hud.Draw(pLevel)
+function Hud.Draw()
   
   love.graphics.setFont(hudFont)
   -- draw the frames
@@ -49,17 +70,24 @@ function Hud.Draw(pLevel)
   love.graphics.rectangle("line", mobPart.x, mobPart.y, mobPart.w, mobPart.h, 10, 10, 5)
   
   -- central part
-  love.graphics.printf("Map", mapPart.x, mapPart.y + 4, mapPart.w, "center")
+  love.graphics.printf("Map", mapPart.x + mapPart.w * (1/40), mapPart.y + mapPart.h * (2/10), mapPart.w, "left")
+  love.graphics.printf("Exploration %", mapPart.x + mapPart.w * (1/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
+  love.graphics.printf("total map", mapPart.x + mapPart.w * (10/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
+  love.graphics.printf("platform", mapPart.x + mapPart.w * (25/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
   
   -- frame of the map bar
   love.graphics.rectangle("line",
-                          mapPart.x + mapPart.w * (1/20), mapPart.y + mapPart.h * (5/10),
-                          mapPart.w * (18/20), mapPart.h * (3/10),
+                          mapPart.x + mapPart.w * (4/40), mapPart.y + mapPart.h * (2/10),
+                          mapPart.w * (34/40), mapPart.h * (5/20),
                           5, 5, 5)
   -- dynamic bar for the power
   love.graphics.rectangle("fill",
-                          mapPart.x + mapPart.w * (2/30), mapPart.y + mapPart.h * (6/10),
-                          (myHero.colFeet / myMap.size.w) * (mapPart.w * (26/30)), mapPart.h * (1/10))
+                          mapPart.x + mapPart.w * (5/40), mapPart.y + mapPart.h * (3/10),
+                          (myHero.colFeet / myMap.size.w) * (mapPart.w * (32/40)), mapPart.h * (1/20))
+  -- exploration total map
+  
+  love.graphics.printf(percentMap.." %", mapPart.x + mapPart.w * (15/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
+  love.graphics.printf(percentPlatForm.." %", mapPart.x + mapPart.w * (30/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
   
   
   -- right part

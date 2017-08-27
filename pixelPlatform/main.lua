@@ -41,6 +41,7 @@ function love.update(dt)
   myMap.Update(dt, myHero)
   myEnemy.Update(dt, myMap, myHero)
   myCombat.Update(dt)
+  myHud.Update(dt)
 end
 
 function love.draw()

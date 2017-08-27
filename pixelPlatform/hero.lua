@@ -156,6 +156,10 @@ function Hero.Update(dt)
     or Hero.colRight == myMap.size.w + 2 then
       Hero.colRight = myMap.size.w end -- manage the boundaries
     
+    if myMap.grid[Hero.linFeet][Hero.colFeet].hidden == true then
+      myMap.grid[Hero.linFeet][Hero.colFeet].hidden = false
+    end
+    
     textureUnder = myMap.grid[Hero.linFeet][Hero.colFeet].texture
     textureAbove = myMap.grid[Hero.linHead][Hero.colHead].texture
     textureLeft = myMap.grid[Hero.linLeft][Hero.colLeft].texture

@@ -23,7 +23,8 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pCoefMap)
   
   -- initialize the size of the map
   Map.size = { w = (coefMap * windowWidth)/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
-               pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
+               pixW = coefMap * windowWidth, pixH = windowHeight - (2 * TILE_SIZE),
+               platFormNumber = 0}
   
   myParallax.Load(Map.size.pixW, Map.size.pixH, coefMap)
   
@@ -60,7 +61,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pCoefMap)
       Map.grid[lin][col] = {id = idGrid,
                             x = (col-1)*TILE_SIZE, y = (lin-1)*TILE_SIZE,
                             w = TILE_SIZE, h = TILE_SIZE, 
-                            idText = 37, texture = "void", scale = 1}
+                            idText = 37, texture = "void", scale = 1, hidden = true}
       
       if lin == Map.size.h then
         Map.grid[lin][col].texture = "ground"
@@ -160,7 +161,18 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pCoefMap)
     Map.grid[pf.lin][pf.col + pf.width].idText = math.random(34, 36)
   end
     
-    
+  local lin2, col2, countPlatForm = 0, 0, 0
+  for lin2 = 1, Map.size.h do
+    for col2 = 1, Map.size.w do
+      local g = Map.grid[lin2][col2]
+      if (g.idText >= 4 and g.idText <= 6)
+                  or (g.idText >= 16 and g.idText <= 21)
+                  or (g.idText >= 28 and g.idText <= 36) then
+                    countPlatForm = countPlatForm + 1
+      end
+    end
+  end
+  Map.size.platFormNumber = countPlatForm
 end
 
 function Map.Update(dt, pHero)
@@ -188,11 +200,6 @@ function Map.Draw()
       local g = Map.grid[lin][col]
       if g.x > (0 - 32) and g.x < (windowWidth + 32) then
         love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
-        --[[
-        love.graphics.setColor(0, 0, 0)
-        love.graphics.rectangle("line", g.x, g.y, 32, 32)
-        love.graphics.setColor(255, 255, 255)
-        --]]
       end
     end
   end
