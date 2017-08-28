@@ -26,8 +26,8 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   -- load the sound effects
   soundEffects.bump = love.audio.newSource("sounds/bump.wav", "static")
   soundEffects.drill = love.audio.newSource("sounds/drill.wav", "static")
-  soundEffects.move = love.audio.newSource("sounds/move.wav", "static")
-  soundEffects.move:setVolume(0.5)
+  --soundEffects.move = love.audio.newSource("sounds/move.wav", "static")
+  --soundEffects.move:setVolume(0.5)
   soundEffects.extract = love.audio.newSource("sounds/extract.wav", "static")
   
   -- first spawn of the machina
@@ -91,25 +91,25 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
           Machina.body.col = Machina.body.col + 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "right"
-          soundEffects.move:play()
+          --soundEffects.move:play()
         end
         if love.keyboard.isDown("left") then
           Machina.body.col = Machina.body.col - 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "left"
-          soundEffects.move:play()
+          --soundEffects.move:play()
         end
         if love.keyboard.isDown("up") then
           Machina.body.lin = Machina.body.lin - 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "up"
-          soundEffects.move:play()
+          --soundEffects.move:play()
         end
         if love.keyboard.isDown("down") then
           Machina.body.lin = Machina.body.lin + 1
           Machina.power = Machina.power - costMove
           Machina.body.dir = "down"
-          soundEffects.move:play()
+          --soundEffects.move:play()
         end
         
         -- drill action

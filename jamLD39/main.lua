@@ -5,7 +5,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth, windowHeight
 local TILE_SIZE = 32
 
-local gameState = "menu"
+local gameState = "game"
 
 local myMenu = require("menu")
 local myGame = require("game")

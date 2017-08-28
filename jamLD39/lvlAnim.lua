@@ -49,8 +49,8 @@ function LevelAnimation.Update(dt, pMachina, pLvlTrans)
   
   if beamInstalled == false then
     -- manage the beam animation
-    beamPic.scale = beamPic.scale + dt
-    beamPic.extend = beamPic.extend - dt * 32
+    beamPic.scale = beamPic.scale + dt * 7.5
+    beamPic.extend = beamPic.extend - dt * 240
     haloPic.x = (pMachina.col-1) * 32 - TILE_ANIM_SIZE/4
     haloPic.y = (pMachina.lin-1) * 32 - TILE_ANIM_SIZE/4
     beamPic.x = (pMachina.col-1) * 32
