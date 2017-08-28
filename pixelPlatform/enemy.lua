@@ -302,9 +302,9 @@ function Enemy.Draw()
         if e.animHit == false or (e.animHit == true and isBlinking == false) then
           
           -- manage color of the health bar
-          if e.healthBar >= 0.5 then love.graphics.setColor(0, 128, 0)
-          elseif e.healthBar < 0.5 and e.healthBar >= 0.2 then love.graphics.setColor(255, 192, 0)
-          elseif e.healthBar < 0.2 then love.graphics.setColor(255, 0, 0) end
+          if e.healthBar >= 0.6 then love.graphics.setColor(0, 128, 0)
+          elseif e.healthBar < 0.6 and e.healthBar >= 0.3 then love.graphics.setColor(255, 192, 0)
+          elseif e.healthBar < 0.3 then love.graphics.setColor(255, 0, 0) end
           
           love.graphics.rectangle("fill", e.x - (e.w * e.scale)/2, e.y - 16, (e.healthBar)*(e.w * e.scale), 5)
           love.graphics.setColor(0, 0, 0)
