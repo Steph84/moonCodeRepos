@@ -64,6 +64,7 @@ end
 function CreateLevel(pId)
   local gridItem = {}
   local tempCount = 0
+  
   -- building the map
   local lin, col
   local idTile = 0

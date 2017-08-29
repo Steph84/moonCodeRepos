@@ -1,4 +1,4 @@
-make the terrain increase or not the cost move
+*make the terrain increase or not the cost move
 add barbarian units or wild animals to stop my progression
 add a gun to shoot the barbarian and the wild ;-)
 *work more on the teleport animation with transition screen and teleport on the new map

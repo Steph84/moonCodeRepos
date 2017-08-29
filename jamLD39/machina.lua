@@ -2,8 +2,6 @@ local Machina = {}
 Machina.keyPressed = false
 local windowWidth, windowHeight, TILE_SIZE
 
-Machina.costDrill = 5
-local costMove = 1
 local harvestOil
 
 local rightPic, upPic, downPic = {}, {}, {}
@@ -36,14 +34,9 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   -- initialize the different parts of the Machina
   Machina.body = {col = tempCol, lin = tempLin, dir = "right", isHere = true}
-  Machina.power = myMap.size.w * 2
+  Machina.power = myMap.size.w * 3
   Machina.action = {right = true, left = true, up = true, down = true,
                     drill = false, teleport = false, extract = false}
-  
-  -- determine the cost of all action
-  Machina.costTeleport = myMap.size.w * 1
-  Machina.costDrill = myMap.size.w * 0.25
-  Machina.costExtract = myMap.size.w * 10
   
   -- load pictures of the Machina
   rightPic.src = love.graphics.newImage("pictures/TheMachina_right.png")
@@ -71,6 +64,21 @@ end
 
 function Machina.Update(dt, pLevel, pMap, pMenuState)
   
+  local coefCost = 4
+  
+  -- costMove = f(pLevel)
+  if pLevel < 3 then coefCost = 2 end
+  if pLevel > 4 then coefCost = 1 end
+  
+  -- determine the cost of all action
+  local costMove = coefCost
+  Machina.costDrill = myMap.size.w * 0.25 * coefCost
+  Machina.costExtract = myMap.size.w * 10
+  
+  Machina.costTeleport = Machina.power * 0.5
+  
+  
+    
   -- if the machina is not here, ie if transition level animation
   if Machina.body.isHere == false then
     local tempCol, tempLin

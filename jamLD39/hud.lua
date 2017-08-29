@@ -67,26 +67,30 @@ function Hud.Draw(pLevel)
   love.graphics.printf("Power", powerPart.x, powerPart.y + 4, powerPart.w, "center") -- title
   local tempRatio = (powerPart.w - 44)/(myMap.size.w * 15) -- bar width/max power
   -- frame of the power bar
-  love.graphics.rectangle("line", powerPart.x + 16, powerPart.y + 24, powerPart.w - 32, powerPart.h - 32, 10, 10, 5)
+  love.graphics.rectangle("line", powerPart.x + 16, powerPart.y + 24, powerPart.w - 32, powerPart.h/4, 10, 10, 5)
   -- dynamic bar for the power
-  love.graphics.rectangle("fill", powerPart.x + 22, powerPart.y + 30, myMachina.power * tempRatio, powerPart.h - 44)
+  love.graphics.rectangle("fill", powerPart.x + 22, powerPart.y + 30, myMachina.power * tempRatio, powerPart.h/4 - 12)
   
   -- determine the coordinates of threshold
-  local drillLine = {x = (powerPart.x + 22) + myMachina.costDrill * tempRatio, y = powerPart.y + 30,
-                     w = 2, h = powerPart.h - 44}
-  local teleportLine = {x = (powerPart.x + 22) + myMachina.costTeleport * tempRatio, y = powerPart.y + 30,
-                        w = 2, h = powerPart.h - 44}
-  local extractLine = {x = (powerPart.x + 22) + myMachina.costExtract * tempRatio, y = powerPart.y + 30,
-                       w = 2, h = powerPart.h - 44}
+  local drillLine = {x = (powerPart.x + 22) + myMachina.costDrill * tempRatio, y = powerPart.y + 24,
+                     w = 2, h = powerPart.h/4}
+  
+  local extractLine = {x = (powerPart.x + 22) + myMachina.costExtract * tempRatio, y = powerPart.y + 24,
+                       w = 2, h = powerPart.h/4}
   
   -- show the threshold directly on the power bar
   love.graphics.setColor(255, 0, 0)
   love.graphics.rectangle("fill", drillLine.x, drillLine.y, drillLine.w, drillLine.h)
   love.graphics.print("drill", drillLine.x - 16, drillLine.y - 24)
-  love.graphics.rectangle("fill", teleportLine.x, teleportLine.y, teleportLine.w, teleportLine.h)
-  love.graphics.print("teleport", teleportLine.x - 16, teleportLine.y - 24)
   love.graphics.rectangle("fill", extractLine.x, extractLine.y, extractLine.w, extractLine.h)
   love.graphics.print("extract", extractLine.x - 16, extractLine.y - 24)
+  
+  if pLevel < 5 then
+    local teleportLine = {x = (powerPart.x + 22) + myMachina.costTeleport * tempRatio, y = powerPart.y + 24,
+                          w = 2, h = powerPart.h/4}
+    love.graphics.rectangle("fill", teleportLine.x, teleportLine.y, teleportLine.w, teleportLine.h)
+    love.graphics.print("teleport", teleportLine.x - 16, teleportLine.y + 20)
+  end
   
   love.graphics.setColor(255, 255, 255)
   
