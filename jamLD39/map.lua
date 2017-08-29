@@ -108,11 +108,27 @@ function CreateLevel(pId)
       end
       
       -- spawn oil
-      if rdGeneric == 7 then -- non significant number
-        tempCount = tempCount + 1
-        gridItem[lin][col].idText = 9 -- petrol
-        gridItem[lin][col].petrol = true
-        gridItem[lin][col].texture = "void"
+      if pId < 3 then
+        if rdGeneric < 3 then -- 3 %
+          tempCount = tempCount + 1
+          gridItem[lin][col].idText = 9 -- petrol
+          gridItem[lin][col].petrol = true
+          gridItem[lin][col].texture = "void"
+        end
+      elseif pId < 5 then
+        if rdGeneric < 2 then -- 2 %
+          tempCount = tempCount + 1
+          gridItem[lin][col].idText = 9 -- petrol
+          gridItem[lin][col].petrol = true
+          gridItem[lin][col].texture = "void"
+        end
+      else
+        if rdGeneric < 4 then -- 4 %
+          tempCount = tempCount + 1
+          gridItem[lin][col].idText = 9 -- petrol
+          gridItem[lin][col].petrol = true
+          gridItem[lin][col].texture = "void"
+        end
       end
       
     end

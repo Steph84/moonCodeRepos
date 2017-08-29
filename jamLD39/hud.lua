@@ -65,7 +65,7 @@ function Hud.Draw(pLevel)
   
   -- power part
   love.graphics.printf("Power", powerPart.x, powerPart.y + 4, powerPart.w, "center") -- title
-  local tempRatio = (powerPart.w - 44)/(myMap.size.w * 15) -- bar width/max power
+  local tempRatio = (powerPart.w - 44)/(myMachina.powerMax) -- bar width/max power
   -- frame of the power bar
   love.graphics.rectangle("line", powerPart.x + 16, powerPart.y + 24, powerPart.w - 32, powerPart.h/4, 10, 10, 5)
   -- dynamic bar for the power

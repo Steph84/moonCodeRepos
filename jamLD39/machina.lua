@@ -35,6 +35,7 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   -- initialize the different parts of the Machina
   Machina.body = {col = tempCol, lin = tempLin, dir = "right", isHere = true}
   Machina.power = myMap.size.w * 3
+  Machina.powerMax = (myMap.size.w * 2 + myMap.size.h * 2) * 2
   Machina.action = {right = true, left = true, up = true, down = true,
                     drill = false, teleport = false, extract = false}
   
@@ -64,21 +65,19 @@ end
 
 function Machina.Update(dt, pLevel, pMap, pMenuState)
   
-  local coefCost = 4
+  local coefCost = 2
   
   -- costMove = f(pLevel)
-  if pLevel < 3 then coefCost = 2 end
-  if pLevel > 4 then coefCost = 1 end
+  if pLevel < 3 then coefCost = 1 end
+  if pLevel > 4 then coefCost = 0.5 end
   
   -- determine the cost of all action
   local costMove = coefCost
-  Machina.costDrill = myMap.size.w * 0.25 * coefCost
-  Machina.costExtract = myMap.size.w * 10
+  Machina.costDrill = myMap.size.w * 0.1 * coefCost
+  Machina.costExtract = Machina.powerMax * 0.8
   
   Machina.costTeleport = Machina.power * 0.5
   
-  
-    
   -- if the machina is not here, ie if transition level animation
   if Machina.body.isHere == false then
     local tempCol, tempLin
@@ -126,12 +125,13 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
             pMap[Machina.body.lin][Machina.body.col].idText = 10
             pMap[Machina.body.lin][Machina.body.col].petrol = false
             Machina.power = Machina.power - Machina.costDrill
-            local harvestOil = math.random(myMap.size.w, myMap.size.w * 1.5)
+            local harvestOil = math.random(myMap.size.w * 0.4, myMap.size.w * 0.8) / coefCost
             Machina.power = Machina.power + harvestOil
             myMap.countOil[pLevel] = myMap.countOil[pLevel] - 1
             Machina.countOil[pLevel] = Machina.countOil[pLevel] + 1
             soundEffects.drill:stop() -- avoid to overlap the sounds
             soundEffects.drill:play()
+            if Machina.power > Machina.powerMax then Machina.power = Machina.powerMax end
           end
         end
         
