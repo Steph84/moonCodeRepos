@@ -2,5 +2,4 @@
 add barbarian units or wild animals to stop my progression
 add a gun to shoot the barbarian and the wild ;-)
 *work more on the teleport animation with transition screen and teleport on the new map
-adjust a little more the oil spawn to get the game harder
-adjust the spawn (oil and extra elements) in relation to your actual power level to get the game more challenging
+*adjust a little more the oil spawn to get the game harder

@@ -8,6 +8,7 @@ local myMap = require("map")
 local myMachina = require("machina")
 local myAnimation = require("lvlAnim")
 local myHud = require("hud")
+local myEnemy = require("enemy")
 
 function Game.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -18,6 +19,7 @@ function Game.Load(pWindowWidth, pWindowHeight, pTileSize)
   myMachina.Load(windowWidth, windowHeight, TILE_SIZE)
   myAnimation.Load()
   myHud.Load(windowWidth, windowHeight, TILE_SIZE)
+  myEnemy.Load(windowWidth, windowHeight, TILE_SIZE)
   
 end
 
@@ -41,6 +43,7 @@ function Game.Update(dt, pMenuState)
   
   myMap.Update(dt, level)
   myHud.Update(dt, myMachina, myMap)
+  myEnemy.Update(dt)
   
   return pMenuState
 end
@@ -50,11 +53,13 @@ function Game.Draw()
   -- if playing level
   if lvlTrans == false then
     myMap.Draw(level)
+    myEnemy.Draw(level)
   end
   
   -- if level transition
   if lvlTrans == true then
     myMap.Draw(level - 1)
+    myEnemy.Draw(level - 1)
     myAnimation.Draw(myMachina.body)
   end
   
