@@ -1,5 +1,7 @@
 *make the terrain increase or not the cost move
-add barbarian units or wild animals to stop my progression
+*add barbarian units or wild animals to stop my progression
 add a gun to shoot the barbarian and the wild ;-)
 *work more on the teleport animation with transition screen and teleport on the new map
 *adjust a little more the oil spawn to get the game harder
+add new sounds
+add ambience music

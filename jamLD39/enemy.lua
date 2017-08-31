@@ -7,6 +7,8 @@ local currentLevel = 0
 Enemy.listEnemies = {}
 
 local myMap = require("map")
+local myMachina = require("machina")
+local enemyFont = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", 28)
 
 function CreateEnemy(pId)
   local item = {}
@@ -98,8 +100,15 @@ function Enemy.Update(dt, pLevel)
         end
         
         if e.attack == true then
-          e.col = e.col + math.random(-1, 1)
-          e.lin = e.lin + math.random(-1, 1)
+          local difCol = myMachina.body.col - e.col
+          local difLin = myMachina.body.lin - e.lin
+          if math.abs(difCol) >= math.abs(difLin) then
+            if difCol > 0 then e.col = e.col + 1
+            elseif difCol < 0 then e.col = e.col - 1 end
+          elseif math.abs(difCol) < math.abs(difLin) then
+            if difLin > 0 then e.lin = e.lin + 1
+            elseif difLin < 0 then e.lin = e.lin - 1 end
+          end
         end
         
         if e.col < 1 or e.col > myMap.size.w then e.col = oldCol end
@@ -121,9 +130,14 @@ function Enemy.Draw(pId)
   local i
   for i = 1, #Enemy.listEnemies do
     local e = Enemy.listEnemies[i]
-    if e.isEnabled == true then
-    --if myMap.listGrids[pId][e.lin][e.col].isHidden == false and e.isEnabled == true then
+    if myMap.listGrids[pId][e.lin][e.col].isHidden == false and e.isEnabled == true then
       love.graphics.draw(TileSet, TileTextures[pId], e.x + 1, e.y + 1)
+      if e.attack == true then
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.setFont(enemyFont)
+        love.graphics.printf("!", e.x, e.y - 24, 32, "center")
+        love.graphics.setColor(255, 255, 255)
+      end
     end
   end
 end

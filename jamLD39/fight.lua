@@ -10,7 +10,7 @@ function Fight.Update(dt, pLevel)
     local e = myEnemy.listEnemies[i]
     
     local tempDist = (e.col - myMachina.body.col)^2 + (e.lin - myMachina.body.lin)^2
-    if tempDist > 17 then
+    if tempDist < 17 then
       e.attack = true
     else e.attack = false end
     

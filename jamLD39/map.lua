@@ -170,12 +170,12 @@ function Map.Draw(pId)
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
       local g = Map.listGrids[pId][lin][col]
-      --if g.isHidden == false then
+      if g.isHidden == false then
         love.graphics.setColor(listColors[pId])
         love.graphics.rectangle("fill", g.x, g.y, TILE_SIZE, TILE_SIZE)
         love.graphics.setColor(255, 255, 255)
         love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
-      --end
+      end
     end
   end
 end
