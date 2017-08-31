@@ -3,7 +3,8 @@ local Enemy = {}
 local TileSet, TileTextures = {}, {}
 local windowWidth, windowHeight, TILE_SIZE
 local ENEMY_SIZE = 30
-local listEnemies = {}
+local currentLevel = 0
+Enemy.listEnemies = {}
 
 local myMap = require("map")
 
@@ -17,8 +18,10 @@ function CreateEnemy(pId)
   item.y = (item.lin-1) * TILE_SIZE
   item.isEnabled = true
   item.timeElapsed = 0
+  item.speed = 1
+  item.attack = false
   
-  table.insert(listEnemies, item)
+  table.insert(Enemy.listEnemies, item)
 end
 
 function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
@@ -55,41 +58,71 @@ function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
     CreateEnemy(e)
   end
   
+  currentLevel = 1
+  
 end
 
-function Enemy.Update(dt)
-  local i
-  for i = 1, #listEnemies do
-    local e = listEnemies[i]
-    e.timeElapsed = e.timeElapsed + dt
-    
-    if e.timeElapsed > 2 then
-      local oldCol = e.col
-      local oldLin = e.lin
-      
-      e.col = e.col + math.random(-1, 1)
-      e.lin = e.lin + math.random(-1, 1)
-      
-      if e.col < 1 or e.col > myMap.size.w then e.col = oldCol end
-      if e.lin < 1 or e.lin > myMap.size.h then e.lin = oldLin end
-      
-      e.x = (e.col-1) * TILE_SIZE
-      e.y = (e.lin-1) * TILE_SIZE
-      
-      e.timeElapsed = 0
-    end
-    
+function Enemy.Update(dt, pLevel)
+  local reInit = false
+  if pLevel ~= currentLevel then
+    reInit = true
+    currentLevel = pLevel
   end
   
+  local i
+  for i = 1, #Enemy.listEnemies do
+    local e = Enemy.listEnemies[i]
+    
+    if reInit == true then
+      e.isEnabled = true
+      e.col = math.random(1, myMap.size.w)
+      e.lin = math.random(1, myMap.size.h)
+      e.x = (e.col-1) * TILE_SIZE
+      e.y = (e.lin-1) * TILE_SIZE
+    end
+    
+    if e.isEnabled == true then
+      
+      e.timeElapsed = e.timeElapsed + dt
+      
+      if e.attack == true then e.speed = 0.5
+      else e.speed = 1 end
+      
+      if e.timeElapsed > e.speed then
+        local oldCol = e.col
+        local oldLin = e.lin
+        
+        if e.attack == false then
+          e.col = e.col + math.random(-1, 1)
+          e.lin = e.lin + math.random(-1, 1)
+        end
+        
+        if e.attack == true then
+          e.col = e.col + math.random(-1, 1)
+          e.lin = e.lin + math.random(-1, 1)
+        end
+        
+        if e.col < 1 or e.col > myMap.size.w then e.col = oldCol end
+        if e.lin < 1 or e.lin > myMap.size.h then e.lin = oldLin end
+        
+        e.x = (e.col-1) * TILE_SIZE
+        e.y = (e.lin-1) * TILE_SIZE
+        
+        e.timeElapsed = 0
+      end
+      
+    end
+  end    
   -- attack kamikaze
   -- loss of power
 end
 
 function Enemy.Draw(pId)
   local i
-  for i = 1, #listEnemies do
-    local e = listEnemies[i]
-    if myMap.listGrids[pId][e.lin][e.col].isHidden == false then
+  for i = 1, #Enemy.listEnemies do
+    local e = Enemy.listEnemies[i]
+    if e.isEnabled == true then
+    --if myMap.listGrids[pId][e.lin][e.col].isHidden == false and e.isEnabled == true then
       love.graphics.draw(TileSet, TileTextures[pId], e.x + 1, e.y + 1)
     end
   end
