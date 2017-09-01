@@ -130,7 +130,7 @@ function Enemy.Draw(pId)
   local i
   for i = 1, #Enemy.listEnemies do
     local e = Enemy.listEnemies[i]
-    if myMap.listGrids[pId][e.lin][e.col].isHidden == false and e.isEnabled == true then
+    --if myMap.listGrids[pId][e.lin][e.col].isHidden == false and e.isEnabled == true then
       love.graphics.draw(TileSet, TileTextures[pId], e.x + 1, e.y + 1)
       if e.attack == true then
         love.graphics.setColor(0, 0, 0)
@@ -138,7 +138,7 @@ function Enemy.Draw(pId)
         love.graphics.printf("!", e.x, e.y - 24, 32, "center")
         love.graphics.setColor(255, 255, 255)
       end
-    end
+    --end
   end
 end
 

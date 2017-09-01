@@ -69,6 +69,8 @@ function Hud.Draw(pLevel)
   -- frame of the power bar
   love.graphics.rectangle("line", powerPart.x + 16, powerPart.y + 24, powerPart.w - 32, powerPart.h/4, 10, 10, 5)
   -- dynamic bar for the power
+  if myMachina.critical == true then love.graphics.setColor(255, 0, 0)
+  else love.graphics.setColor(255, 255, 255) end
   love.graphics.rectangle("fill", powerPart.x + 22, powerPart.y + 30, myMachina.power * tempRatio, powerPart.h/4 - 12)
   
   -- determine the coordinates of threshold

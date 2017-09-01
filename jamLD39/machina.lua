@@ -23,10 +23,11 @@ function Machina.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   -- load the sound effects
   soundEffects.bump = love.audio.newSource("sounds/bump.wav", "static")
-  soundEffects.drill = love.audio.newSource("sounds/drill.wav", "static")
+  soundEffects.drill = love.audio.newSource("sounds/SNES_HyperZone_ExtraLife.wav", "static")
   --soundEffects.move = love.audio.newSource("sounds/move.wav", "static")
   --soundEffects.move:setVolume(0.5)
   soundEffects.extract = love.audio.newSource("sounds/extract.wav", "static")
+  soundEffects.lowEnergy = love.audio.newSource("sounds/SNES_TopGear_LowEnergy.wav", "static")
   
   -- first spawn of the machina
   local tempCol, tempLin
@@ -206,6 +207,13 @@ function Machina.Update(dt, pLevel, pMap, pMenuState)
   end
   
   if Machina.power < 1 then pMenuState = "lose" end
+  
+  if (Machina.power / Machina.powerMax) < 0.15 then Machina.critical = true
+  else Machina.critical = false end
+  
+  if Machina.critical == true then
+    soundEffects.lowEnergy:play()
+  end
   
   return pLevel, pMenuState
 end
