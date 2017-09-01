@@ -123,7 +123,7 @@ function CreateLevel(pId)
           gridItem[lin][col].texture = "void"
         end
       else
-        if rdGeneric < 3 then -- 3 %
+        if rdGeneric < 3 then -- 2 %
           tempCount = tempCount + 1
           gridItem[lin][col].idText = 9 -- petrol
           gridItem[lin][col].petrol = true

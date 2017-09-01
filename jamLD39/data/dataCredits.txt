@@ -8,5 +8,5 @@ FrameWork :
 Love 2D
 https://love2d.org/wiki/Main_Page
 Sound Effects : 
-BFXR
-http://www.bfxr.net
+BFXR http://www.bfxr.net
+SNES games : Hyper Zone / Top Gear
