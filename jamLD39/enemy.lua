@@ -5,6 +5,7 @@ local windowWidth, windowHeight, TILE_SIZE
 local ENEMY_SIZE = 30
 local currentLevel = 0
 Enemy.listEnemies = {}
+local fightAnim = {}
 
 local myMap = require("map")
 local myMachina = require("machina")
@@ -22,6 +23,8 @@ function CreateEnemy(pId)
   item.timeElapsed = 0
   item.speed = 1
   item.attack = false
+  item.timePaf = 0
+  item.isPaf = false
   
   table.insert(Enemy.listEnemies, item)
 end
@@ -33,6 +36,7 @@ function Enemy.Load(pWindowWidth, pWindowHeight, pTileSize)
   
   -- load the tile sheet
   TileSet = love.graphics.newImage("pictures/enemiesLD39.png")
+  fightAnim.src = love.graphics.newImage("pictures/PAF.png")
   local nbColumns = TileSet:getWidth() / ENEMY_SIZE
   local nbLines = TileSet:getHeight() / ENEMY_SIZE
   
@@ -81,6 +85,8 @@ function Enemy.Update(dt, pLevel)
       e.lin = math.random(1, myMap.size.h)
       e.x = (e.col-1) * TILE_SIZE
       e.y = (e.lin-1) * TILE_SIZE
+      e.timePaf = 0
+      e.timeElapsed = 0
     end
     
     if e.isEnabled == true then
@@ -119,18 +125,24 @@ function Enemy.Update(dt, pLevel)
         
         e.timeElapsed = 0
       end
-      
     end
-  end    
-  -- attack kamikaze
-  -- loss of power
+    
+    if e.isEnabled == false then
+      e.isPaf = true
+      e.timePaf = e.timePaf + dt
+      if e.timePaf > 1 then
+        e.isPaf = false
+      end
+    end
+    
+  end
 end
 
 function Enemy.Draw(pId)
   local i
   for i = 1, #Enemy.listEnemies do
     local e = Enemy.listEnemies[i]
-    --if myMap.listGrids[pId][e.lin][e.col].isHidden == false and e.isEnabled == true then
+    if myMap.listGrids[pId][e.lin][e.col].isHidden == false and e.isEnabled == true then
       love.graphics.draw(TileSet, TileTextures[pId], e.x + 1, e.y + 1)
       if e.attack == true then
         love.graphics.setColor(0, 0, 0)
@@ -138,7 +150,10 @@ function Enemy.Draw(pId)
         love.graphics.printf("!", e.x, e.y - 24, 32, "center")
         love.graphics.setColor(255, 255, 255)
       end
-    --end
+    end
+    if e.isPaf == true then
+      love.graphics.draw(fightAnim.src, e.x, e.y - 32)
+    end
   end
 end
 
