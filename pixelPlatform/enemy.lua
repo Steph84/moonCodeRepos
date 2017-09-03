@@ -1,21 +1,36 @@
 local Enemy = {}
 
-local windowWidth, windowHeight, TILE_SIZE
+local windowWidth, windowHeight, TILE_SIZE, mapSizePixW
 local textureUnder, textureBeforeFeet, textureAfterFeet, textureBefore, textureAfter
 local timeElapsedAnimHit = 0
 local isBlinking = false
+local mobCreation = 0
 
 Enemy.listEnemies = {}
-Enemy.countDeadBodies = {}
+--               underLv, sameLv, aboveLv
+Enemy.countDeadBodies = {0, 0, 0}
+--                  goom, tank
+Enemy.countDeadTypes = {0, 0}
 
-function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize)
+Enemy.goomCount, Enemy.tankCount = {}, {}
+Enemy.goomCount.inf = 0
+Enemy.goomCount.same = 0
+Enemy.goomCount.sup = 0
+Enemy.tankCount.inf = 0
+Enemy.tankCount.same = 0
+Enemy.tankCount.sup = 0
+
+function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize, pHeroLevel)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   TILE_SIZE = pTileSize
+  mapSizePixW = pMapSize
+  
+  mobCreation = mobCreation + 1
   
   local item = {}
   
-  item.id = pId
+  item.id = mobCreation
   item.type = pType
   item.isDead = false
   item.mov = "stand"
@@ -27,7 +42,8 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.dir = "left"
   item.sign = - 1
   item.scale = 1.5
-  item.x = math.random(windowWidth * 0.75, pMapSize.pixW - windowWidth * 0.75)
+  if pInstant == "load" then item.x = math.random(windowWidth * 0.7, pMapSize - windowWidth * 0.7) end -- spawn in the map
+  if pInstant == "update" then item.x = math.random(windowWidth * 0.3, windowWidth * 0.7) end -- spawn in the window
   item.y = 100
   
   item.animHit = false
@@ -38,7 +54,8 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   item.Dead = {}
   item.Dead.rot = 3.14
   
-  item.level = math.random(1, 3)
+  if pInstant == "load" then item.level = math.random(1, 3) end -- level 1 to 3
+  if pInstant == "update" then item.level = math.random(pHeroLevel + 1, pHeroLevel + 2) end -- level +1 to +2
     
   if pType == 1 then
     -- initialize level 1
@@ -118,18 +135,39 @@ function Enemy.Load(pId, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize
   end
   
   table.insert(Enemy.listEnemies, item)
-  
-  --               underLv, sameLv, aboveLv
-  Enemy.countDeadBodies = {0, 0, 0}
-
-  
 end
 
-function Enemy.Update(dt, pMap, pHero)
+function Enemy.Update(dt, pMap, pHero, pMaxEnemiesNb)
+  
+  -- if the enemies number decrease, spawn a new one with a type in relation to the kill
+  if #Enemy.listEnemies < pMaxEnemiesNb then
+    local spawnType = 1
+    if Enemy.countDeadTypes[1] > Enemy.countDeadTypes[2] then spawnType = 2 end
+    Enemy.Load("update", spawnType, windowWidth, windowHeight, TILE_SIZE, mapSizePixW, pHero.level)
+  end
+  
+  Enemy.goomCount.inf = 0
+  Enemy.goomCount.same = 0
+  Enemy.goomCount.sup = 0
+  Enemy.tankCount.inf = 0
+  Enemy.tankCount.same = 0
+  Enemy.tankCount.sup = 0
   
   if #Enemy.listEnemies > 0 then
     for item = #Enemy.listEnemies, 1, -1 do
       local e = Enemy.listEnemies[item]
+    
+      if e.type == 1 then -- goom mob
+        if e.level < pHero.level then Enemy.goomCount.inf = Enemy.goomCount.inf + 1 end
+        if e.level == pHero.level then Enemy.goomCount.same = Enemy.goomCount.same + 1 end
+        if e.level > pHero.level then Enemy.goomCount.sup = Enemy.goomCount.sup + 1 end
+      end
+      
+      if e.type == 2 then -- tank mob
+        if e.level < pHero.level then Enemy.tankCount.inf = Enemy.tankCount.inf + 1 end
+        if e.level == pHero.level then Enemy.tankCount.same = Enemy.tankCount.same + 1 end
+        if e.level > pHero.level then Enemy.tankCount.sup = Enemy.tankCount.sup + 1 end
+      end
     
       if e.isDead == false then
         
@@ -219,9 +257,7 @@ function Enemy.Update(dt, pMap, pHero)
             e.sign = -1 * e.sign
           end
           
-          if pMap.mov == true then
-            e.x = e.x - pHero.speed.walk * pHero.sign
-          end
+          if pMap.mov == true then e.x = e.x - pHero.speed.walk * pHero.sign end
           
           if e.dir == "right" and (textureAfterFeet == "void" or e.colRight > pMap.size.w - 1) then
             e.dir = "left"
@@ -239,6 +275,9 @@ function Enemy.Update(dt, pMap, pHero)
         if e.mov == "fall" then
           e.y = e.y - e.speed.alongY
           e.speed.alongY = e.speed.alongY - dt*9.81
+          if pMap.mov == true then
+            e.x = e.x - pHero.speed.walk * pHero.sign
+          end
         else
           e.speed.alongY = 5
         end
@@ -278,12 +317,16 @@ function Enemy.Update(dt, pMap, pHero)
       -- death animation
       if e.isDead == true then
         e.Dead.y = e.Dead.y - e.speed.alongY
+        if pMap.mov == true then
+          e.Dead.x = e.Dead.x - pHero.speed.walk * pHero.sign
+        end
         e.speed.alongY = e.speed.alongY - dt*9.81
         if e.Dead.y > windowHeight then
           pHero.xp = pHero.xp + ((2^(e.level - pHero.level) * 1.5) + 1 ) * pHero.level
           if e.level < pHero.level then Enemy.countDeadBodies[1] = Enemy.countDeadBodies[1] + 1 end
           if e.level == pHero.level then Enemy.countDeadBodies[2] = Enemy.countDeadBodies[2] + 1 end
           if e.level > pHero.level then Enemy.countDeadBodies[3] = Enemy.countDeadBodies[3] + 1 end
+          Enemy.countDeadTypes[e.type] = Enemy.countDeadTypes[e.type] + 1
           table.remove(Enemy.listEnemies, item)
         end
       end

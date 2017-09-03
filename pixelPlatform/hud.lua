@@ -9,6 +9,7 @@ local mobPart = {}
 
 local myHero = require("hero")
 local myMap = require("map")
+local myMob = require("enemy")
 
 local countNotHidden, percentMap = 0, 0
 local countPlatForm, percentPlatForm = 0, 0
@@ -35,7 +36,6 @@ function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
   mobPart.y = windowHeight - 2 * TILE_SIZE
   mobPart.w = windowWidth/4
   mobPart.h = 2 * TILE_SIZE
-  
 end
 
 function Hud.Update(dt)
@@ -69,6 +69,30 @@ function Hud.Draw()
   love.graphics.rectangle("line", mapPart.x, mapPart.y, mapPart.w, mapPart.h, 10, 10, 5)
   love.graphics.rectangle("line", mobPart.x, mobPart.y, mobPart.w, mobPart.h, 10, 10, 5)
   
+  
+  -- right part
+  love.graphics.printf("Mobs", mobPart.x + mobPart.w * (1/20), mobPart.y + mobPart.h * (1/7), 32, "left")
+  love.graphics.printf("<", mobPart.x + mobPart.w * (7/20), mobPart.y + mobPart.h * (1/7), 32, "left")
+  love.graphics.printf("=", mobPart.x + mobPart.w * (12/20), mobPart.y + mobPart.h * (1/7), 32, "left")
+  love.graphics.printf(">", mobPart.x + mobPart.w * (17/20), mobPart.y + mobPart.h * (1/7), 32, "left")
+  
+  love.graphics.setColor(0, 64, 128) -- goom
+  love.graphics.circle("fill", mobPart.x + mobPart.w * (2/20), mobPart.y + mobPart.h * (11/20), 5)
+  love.graphics.setColor(0, 128, 0) -- tank
+  love.graphics.circle("fill", mobPart.x + mobPart.w * (2/20), mobPart.y + mobPart.h * (16/20), 5)
+  love.graphics.setColor(255, 255, 255)
+  
+  -- show goom count
+  love.graphics.printf(myMob.goomCount.inf, mobPart.x + mobPart.w * (7/20), mobPart.y + mobPart.h * (9/20), 32, "left")
+  love.graphics.printf(myMob.goomCount.same, mobPart.x + mobPart.w * (12/20), mobPart.y + mobPart.h * (9/20), 32, "left")
+  love.graphics.printf(myMob.goomCount.sup, mobPart.x + mobPart.w * (17/20), mobPart.y + mobPart.h * (9/20), 32, "left")
+  
+  -- show tank count
+  love.graphics.printf(myMob.tankCount.inf, mobPart.x + mobPart.w * (7/20), mobPart.y + mobPart.h * (14/20), 32, "left")
+  love.graphics.printf(myMob.tankCount.same, mobPart.x + mobPart.w * (12/20), mobPart.y + mobPart.h * (14/20), 32, "left")
+  love.graphics.printf(myMob.tankCount.sup, mobPart.x + mobPart.w * (17/20), mobPart.y + mobPart.h * (14/20), 32, "left")
+  
+  
   -- central part
   love.graphics.printf("Map", mapPart.x + mapPart.w * (1/40), mapPart.y + mapPart.h * (2/10), mapPart.w, "left")
   love.graphics.printf("Exploration %", mapPart.x + mapPart.w * (1/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
@@ -88,10 +112,6 @@ function Hud.Draw()
   
   love.graphics.printf(percentMap.." %", mapPart.x + mapPart.w * (15/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
   love.graphics.printf(percentPlatForm.." %", mapPart.x + mapPart.w * (30/40), mapPart.y + mapPart.h * (7/10), mapPart.w, "left")
-  
-  
-  -- right part
-  love.graphics.printf("Mobs", mobPart.x, mobPart.y + 4, mobPart.w, "center")
   
   
   -- left part

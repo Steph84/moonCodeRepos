@@ -6,8 +6,8 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth = 1280 -- 32x32px sprites value (40 columns)
 local windowHeight = 672 -- 32x32px sprites value (21 lines)
 local TILE_SIZE = 32
-local coefMap = 6
-local maxEnemiesNb = coefMap * coefMap - 3 - 3
+local coefMap = 4
+local maxEnemiesNb = math.pow(coefMap, 2) + 1
 
 local myHero = require("hero")
 local myMap = require("map")
@@ -31,7 +31,7 @@ function love.load()
   local e
   for e = 1, maxEnemiesNb do
     local tempType = math.random(1, 2)
-    myEnemy.Load(e, tempType, windowWidth, windowHeight, TILE_SIZE, myMap.size)
+    myEnemy.Load("load", tempType, windowWidth, windowHeight, TILE_SIZE, myMap.size.pixW, 0)
   end
   
 end
@@ -39,7 +39,7 @@ end
 function love.update(dt)
   myHero.Update(dt)
   myMap.Update(dt, myHero)
-  myEnemy.Update(dt, myMap, myHero)
+  myEnemy.Update(dt, myMap, myHero, maxEnemiesNb)
   myCombat.Update(dt)
   myHud.Update(dt)
 end

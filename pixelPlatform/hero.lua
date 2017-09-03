@@ -298,9 +298,9 @@ function Hero.Update(dt)
     local t = myEnemy.countDeadBodies
     local key, max = 1, t[1]
     for k, v in ipairs(t) do
-        if t[k] > max then
-            key, max = k, v
-        end
+      if t[k] >= max then
+        key, max = k, v
+      end
     end
 
     if key == 1 then
