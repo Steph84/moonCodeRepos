@@ -6,4 +6,4 @@ X add a gun to shoot the barbarian and the wild ;-)
 * add new sounds
 X add ambience music
 * change credits (sounds)
-add animation of hit and harvest
+* add animation of hit and harvest

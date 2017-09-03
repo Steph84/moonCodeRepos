@@ -1,6 +1,6 @@
-io.stdout:setvbuf('no')
+--io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
-if arg[#arg] == "-debug" then require("mobdebug").start() end
+--if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 local windowWidth, windowHeight
 local TILE_SIZE = 32
