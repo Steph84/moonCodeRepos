@@ -16,7 +16,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   windowHeight = pWindowHeight
   
   Menu.menuState = "title"
-  gameVersion = "v1.0"
+  gameVersion = "v2.0"
   
   sizeFonts.fontSize = 32
   sizeFonts.titles = sizeFonts.fontSize * 2
