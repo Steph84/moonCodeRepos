@@ -1,4 +1,6 @@
 trees, clouds, hills (parallax stuff but not 3 layers, maybe 1 or 2 will be enough)
-list mobs with icone and number for each < = >
-spawn of new ennemies
+* list mobs with icone and number for each < = >
+* spawn of new ennemies
 maybe a boss when reach the 25th level
+on enemy, put number level only and on the left side, same level than health bar (like in borderlands)
+on enemy, put icones to describe big defense/attack, deadly

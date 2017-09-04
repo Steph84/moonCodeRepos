@@ -6,6 +6,7 @@ local windowWidth, windowHeight, TILE_SIZE
 local heroPart = {}
 local mapPart = {}
 local mobPart = {}
+local timerPart = {}
 
 local myHero = require("hero")
 local myMap = require("map")
@@ -13,6 +14,11 @@ local myMob = require("enemy")
 
 local countNotHidden, percentMap = 0, 0
 local countPlatForm, percentPlatForm = 0, 0
+local startTime = love.timer.getTime()
+local currentTime = {}
+currentTime.sec = 0
+currentTime.min = 0
+currentTime.hour = 0
 
 local hudFont = love.graphics.newFont("fonts/arial.ttf", 12)
 
@@ -36,9 +42,26 @@ function Hud.Load(pWindowWidth, pWindowHeight, pTileSize)
   mobPart.y = windowHeight - 2 * TILE_SIZE
   mobPart.w = windowWidth/4
   mobPart.h = 2 * TILE_SIZE
+  
+  timerPart.x = 20
+  timerPart.y = 20
+  timerPart.w = 100
+  timerPart.h = 16
+  
 end
 
 function Hud.Update(dt)
+  currentTime.sec = love.timer.getTime() - startTime
+  if currentTime.sec > 59 then
+    currentTime.min = currentTime.min + 1
+    currentTime.sec = 0
+    startTime = love.timer.getTime()
+  end
+  if currentTime.min > 59 then
+    currentTime.hour = currentTime.hour + 1
+    currentTime.min = 0
+  end
+  
   if myHero.mov ~= "stand" then
     countNotHidden, countPlatForm = 0, 0
     local lin, col
@@ -63,12 +86,24 @@ end
 function Hud.Draw()
   
   love.graphics.setFont(hudFont)
+  
+  -- show time elpased
+  love.graphics.rectangle("fill", timerPart.x - 5, timerPart.y - 5, timerPart.w + 10, timerPart.h + 10)
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.rectangle("line", timerPart.x - 5, timerPart.y - 5, timerPart.w + 10, timerPart.h + 10)
+  love.graphics.printf(string.format("%.1f s", currentTime.sec), timerPart.x, timerPart.y, timerPart.w, "right")
+  if currentTime.min > 0 then
+    love.graphics.printf(string.format("%.0f m", currentTime.min), timerPart.x, timerPart.y, timerPart.w, "center")
+  end
+  if currentTime.hour > 0 then
+    love.graphics.printf(string.format("%.0f h", currentTime.hour), timerPart.x, timerPart.y, timerPart.w, "left")
+  end
+  
   -- draw the frames
   love.graphics.setColor(255, 255, 255)
   love.graphics.rectangle("line", heroPart.x, heroPart.y, heroPart.w, heroPart.h, 10, 10, 5)
   love.graphics.rectangle("line", mapPart.x, mapPart.y, mapPart.w, mapPart.h, 10, 10, 5)
   love.graphics.rectangle("line", mobPart.x, mobPart.y, mobPart.w, mobPart.h, 10, 10, 5)
-  
   
   -- right part
   love.graphics.printf("Mobs", mobPart.x + mobPart.w * (1/20), mobPart.y + mobPart.h * (1/7), 32, "left")
@@ -119,19 +154,22 @@ function Hud.Draw()
   love.graphics.printf("LV", heroPart.w * (1/10), heroPart.y + heroPart.h * (3/7), 32, "left")
   love.graphics.printf("Att.", heroPart.w * (4/10), heroPart.y + heroPart.h * (3/7), 32, "left")
   love.graphics.printf("Def.", heroPart.w * (7/10), heroPart.y + heroPart.h * (3/7), 32, "left")
-  love.graphics.printf("Exp.", heroPart.w * (1/40), heroPart.y + heroPart.h * (5/7), 64, "left")
+  if myHero.level < 25 then love.graphics.printf("Exp.", heroPart.w * (1/40), heroPart.y + heroPart.h * (5/7), 64, "left") end
   -- manage color of the health bar
   if myHero.healthBar >= 0.6 then love.graphics.setColor(0, 128, 0)
   elseif myHero.healthBar < 0.6 and myHero.healthBar >= 0.3 then love.graphics.setColor(255, 192, 0)
   elseif myHero.healthBar < 0.3 then love.graphics.setColor(255, 0, 0) end
   
   if myHero.isDead == false then
-    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (3/14), myHero.healthBar * (heroPart.w - 80), 5)
-    love.graphics.setColor(0, 64, 128)
-    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (11/14), myHero.xpBar * (heroPart.w - 80), 5)
+    love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (3/14), myHero.healthBar * (heroPart.w * 0.5), 5)
+    if myHero.level < 25 then 
+      love.graphics.setColor(0, 64, 128)
+      love.graphics.rectangle("fill", heroPart.x + 60, heroPart.y + heroPart.h * (11/14), myHero.xpBar * (heroPart.w * 0.5), 5)
+      love.graphics.setColor(255, 255, 255)
+      love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (11/14) - 1/2, (heroPart.w * 0.5), 7)
+    end
     love.graphics.setColor(255, 255, 255)
-    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (3/14) - 1/2, (heroPart.w - 78), 7)
-    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (11/14) - 1/2, (heroPart.w - 78), 7)
+    love.graphics.rectangle("line", heroPart.x + 59, heroPart.y + heroPart.h * (3/14) - 1/2, (heroPart.w * 0.5), 7)
     love.graphics.printf(myHero.level, heroPart.w * (2/10), heroPart.y + heroPart.h * (3/7), 16, "right")
     love.graphics.printf(myHero.ptsAttack, heroPart.w * (5/10), heroPart.y + heroPart.h * (3/7), 16, "right")
     love.graphics.printf(myHero.ptsDefense, heroPart.w * (8/10), heroPart.y + heroPart.h * (3/7), 16, "right")

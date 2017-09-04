@@ -101,7 +101,7 @@ function Hero.Update(dt)
   if Hero.isDead == false then
     
     Hero.healthBar = Hero.health/Hero.maxHealth
-    Hero.xpBar = Hero.xp/Hero.xpMax
+    if Hero.level < 25 then Hero.xpBar = Hero.xp/Hero.xpMax end
     
     -- calculate the position of the feet in pixel
     Hero.xFeet = Hero.x - Hero.sign * 10 + (Hero.w * Hero.scale)/2 - (Hero.w * Hero.scale)/2 -- the (- Hero.w/2) is for centered sprite
@@ -288,39 +288,40 @@ function Hero.Update(dt)
     end
   end
   
-  
-  if Hero.xp > ThresholdLevel[Hero.level + 1] then
-    
-    Hero.xp = Hero.xp - ThresholdLevel[Hero.level + 1]
-    Hero.level = Hero.level + 1
-    Hero.xpMax = ThresholdLevel[Hero.level + 1]
-    
-    local t = myEnemy.countDeadBodies
-    local key, max = 1, t[1]
-    for k, v in ipairs(t) do
-      if t[k] >= max then
-        key, max = k, v
+  if Hero.level < 25 then
+    if Hero.xp > ThresholdLevel[Hero.level + 1] then
+      
+      Hero.xp = Hero.xp - ThresholdLevel[Hero.level + 1]
+      Hero.level = Hero.level + 1
+      Hero.xpMax = ThresholdLevel[Hero.level + 1]
+      
+      local t = myEnemy.countDeadBodies
+      local key, max = 1, t[1]
+      for k, v in ipairs(t) do
+        if t[k] >= max then
+          key, max = k, v
+        end
       end
-    end
 
-    if key == 1 then
-      Hero.health = Hero.health + 2
-      Hero.maxHealth = Hero.maxHealth + 2
-      Hero.ptsAttack = Hero.ptsAttack + 1
-      Hero.ptsDefense = Hero.ptsDefense + 0
-    elseif key == 2 then
-      Hero.health = Hero.health + 4
-      Hero.maxHealth = Hero.maxHealth + 4
-      Hero.ptsAttack = Hero.ptsAttack + 2
-      Hero.ptsDefense = Hero.ptsDefense + 1
-    elseif key == 3 then
-      Hero.health = Hero.health + 8
-      Hero.maxHealth = Hero.maxHealth + 8
-      Hero.ptsAttack = Hero.ptsAttack + 4
-      Hero.ptsDefense = Hero.ptsDefense + 3
+      if key == 1 then
+        Hero.health = Hero.health + 2
+        Hero.maxHealth = Hero.maxHealth + 2
+        Hero.ptsAttack = Hero.ptsAttack + 1
+        Hero.ptsDefense = Hero.ptsDefense + 0
+      elseif key == 2 then
+        Hero.health = Hero.health + 4
+        Hero.maxHealth = Hero.maxHealth + 4
+        Hero.ptsAttack = Hero.ptsAttack + 2
+        Hero.ptsDefense = Hero.ptsDefense + 1
+      elseif key == 3 then
+        Hero.health = Hero.health + 8
+        Hero.maxHealth = Hero.maxHealth + 8
+        Hero.ptsAttack = Hero.ptsAttack + 4
+        Hero.ptsDefense = Hero.ptsDefense + 3
+      end
+      
+      myEnemy.countDeadBodies = {0, 0, 0}
     end
-    
-    myEnemy.countDeadBodies = {0, 0, 0}
   end
   
   if Hero.isDead == true then

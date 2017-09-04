@@ -42,6 +42,9 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
   item.dir = "left"
   item.sign = - 1
   item.scale = 1.5
+  item.difA = 0
+  item.difD = 0
+  
   if pInstant == "load" then item.x = math.random(windowWidth * 0.7, pMapSize - windowWidth * 0.7) end -- spawn in the map
   if pInstant == "update" then item.x = math.random(windowWidth * 0.3, windowWidth * 0.7) end -- spawn in the window
   item.y = 100
@@ -65,9 +68,9 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
     
     -- modify if level > 1
     if item.level > 1 then
-      item.ptsAttack = 2 * (item.level - 1) + item.ptsAttack
-      item.ptsDefense = 1.5 * (item.level - 1) + item.ptsDefense
-      item.health = 5 * (item.level - 1) + item.health
+      item.ptsAttack = math.floor(2 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(1.5 * (item.level - 1) + item.ptsDefense)
+      item.health = math.floor(5 * (item.level - 1) + item.health)
     end
     
     item.maxHealth = item.health    
@@ -103,9 +106,9 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
     item.health = math.random(18, 22)
     
     if item.level > 1 then
-      item.ptsAttack = 1.5 * (item.level - 1) + item.ptsAttack
-      item.ptsDefense = 2 * (item.level - 1) + item.ptsDefense
-      item.health = 10 * (item.level - 1) + item.health
+      item.ptsAttack = math.floor(1.5 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(2 * (item.level - 1) + item.ptsDefense)
+      item.health = math.floor(10 * (item.level - 1) + item.health)
     end
     
     item.maxHealth = item.health
@@ -172,6 +175,8 @@ function Enemy.Update(dt, pMap, pHero, pMaxEnemiesNb)
       if e.isDead == false then
         
         e.healthBar = e.health/e.maxHealth
+        e.difA = pHero.ptsAttack - e.ptsDefense -- difference if Hero attack
+        e.difD = e.ptsAttack - pHero.ptsDefense -- difference if Hero defend
         
         -- manage the walking animation
         if e.mov == "walk" then e.picCurrent = e.picCurrent + (e.speed.animWalk * dt) end
@@ -349,9 +354,12 @@ function Enemy.Draw()
           elseif e.healthBar < 0.6 and e.healthBar >= 0.3 then love.graphics.setColor(255, 192, 0)
           elseif e.healthBar < 0.3 then love.graphics.setColor(255, 0, 0) end
           
-          love.graphics.rectangle("fill", e.x - (e.w * e.scale)/2, e.y - 16, (e.healthBar)*(e.w * e.scale), 5)
+          love.graphics.rectangle("fill", e.x - (e.w * e.scale)/2, e.y - 8, (e.healthBar)*(e.w * e.scale), 5)
           love.graphics.setColor(0, 0, 0)
-          love.graphics.printf("LV "..e.level, e.x - (e.w * e.scale)/2, e.yHead - 32, e.w * e.scale, "center")
+          love.graphics.printf("LV "..e.level, e.x - (e.w * e.scale)/2, e.yHead - 24, e.w * e.scale, "center")
+          love.graphics.rectangle("line", e.x - (e.w * e.scale)/2 - 1, e.y - 8 - 1, e.w * e.scale, 7)
+          love.graphics.printf(e.difA, e.x - (e.w * e.scale), e.yHead - 24, e.w * e.scale * 2, "left")
+          love.graphics.printf(e.difD, e.x - (e.w * e.scale), e.yHead - 24, e.w * e.scale * 2, "right")
           love.graphics.setColor(255, 255, 255)
           
           love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],

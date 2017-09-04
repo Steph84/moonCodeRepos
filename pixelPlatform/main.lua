@@ -51,7 +51,6 @@ function love.draw()
   myHud.Draw()
   
   love.graphics.setColor(0, 0, 0)
-  love.graphics.printf("width : "..windowWidth.." / height : "..windowHeight, 10, 10, windowWidth, "left")
   love.graphics.printf("FPS : "..love.timer.getFPS(), 0, 10, windowWidth - 10, "right")
   love.graphics.setColor(255, 255, 255)
 end
