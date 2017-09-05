@@ -65,15 +65,15 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
     
   if pType == 1 then
     -- initialize level 1
-    item.ptsAttack = math.random(1.5*2, 1.5*3)
-    item.ptsDefense = math.random(1.5*1, 1.5*2)
+    item.ptsAttack = math.random(3, 5)
+    item.ptsDefense = math.random(1, 3)
     item.health = math.random(8, 12)
     
     -- modify if level > 1
     if item.level > 1 then
-      item.ptsAttack = math.floor(1.5*2 * (item.level - 1) + item.ptsAttack)
-      item.ptsDefense = math.floor(1.5*1.5 * (item.level - 1) + item.ptsDefense)
-      item.health = math.floor(1.5*5 * (item.level - 1) + item.health)
+      item.ptsAttack = math.floor(2.5 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(3 * (item.level - 1) + item.ptsDefense)
+      item.health = math.floor(5 * (item.level - 1) + item.health)
     end
     
     item.maxHealth = item.health    
@@ -104,14 +104,14 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
   
   if pType == 2 then
     -- initialize level 1
-    item.ptsAttack = math.random(1.5*3, 1.5*4)
-    item.ptsDefense = math.random(1.5*3, 1.5*4)
+    item.ptsAttack = math.random(5, 6)
+    item.ptsDefense = math.random(5, 6)
     item.health = math.random(18, 22)
     
     if item.level > 1 then
-      item.ptsAttack = math.floor(1.5*1.5 * (item.level - 1) + item.ptsAttack)
-      item.ptsDefense = math.floor(1.5*2 * (item.level - 1) + item.ptsDefense)
-      item.health = math.floor(1.5*10 * (item.level - 1) + item.health)
+      item.ptsAttack = math.floor(3.5 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(4.5 * (item.level - 1) + item.ptsDefense)
+      item.health = math.floor(10 * (item.level - 1) + item.health)
     end
     
     item.maxHealth = item.health
