@@ -151,10 +151,14 @@ function Hud.Draw()
   
   -- left part
   love.graphics.printf("Health", heroPart.w * (1/40), heroPart.y + heroPart.h * (1/7), 64, "left")
+  love.graphics.printf(myHero.health.."/"..myHero.maxHealth, heroPart.w * (30/40), heroPart.y + heroPart.h * (1/7), 64, "right")
   love.graphics.printf("LV", heroPart.w * (1/10), heroPart.y + heroPart.h * (3/7), 32, "left")
   love.graphics.printf("Att.", heroPart.w * (4/10), heroPart.y + heroPart.h * (3/7), 32, "left")
   love.graphics.printf("Def.", heroPart.w * (7/10), heroPart.y + heroPart.h * (3/7), 32, "left")
-  if myHero.level < 25 then love.graphics.printf("Exp.", heroPart.w * (1/40), heroPart.y + heroPart.h * (5/7), 64, "left") end
+  if myHero.level < 25 then
+    love.graphics.printf("Exp.", heroPart.w * (1/40), heroPart.y + heroPart.h * (5/7), 64, "left")
+    love.graphics.printf(myHero.xp.."/"..myHero.xpMax, heroPart.w * (30/40), heroPart.y + heroPart.h * (5/7), 64, "right")
+  end
   -- manage color of the health bar
   if myHero.healthBar >= 0.6 then love.graphics.setColor(0, 128, 0)
   elseif myHero.healthBar < 0.6 and myHero.healthBar >= 0.3 then love.graphics.setColor(255, 192, 0)
