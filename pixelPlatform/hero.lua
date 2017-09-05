@@ -88,10 +88,10 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
     ThresholdLevel[thigh] = math.ceil(2.5 * thigh^2 - 3 * thigh + 10)
   end
   
-  Hero.health = math.random(13, 17)
+  Hero.health = math.random(20, 30)
   Hero.maxHealth = Hero.health
-  Hero.ptsAttack = math.random(6, 8)
-  Hero.ptsDefense = math.random(2, 4)
+  Hero.ptsAttack = math.random(8, 10)
+  Hero.ptsDefense = math.random(4, 6)
   Hero.xpMax = ThresholdLevel[2]
   
 end
@@ -304,20 +304,20 @@ function Hero.Update(dt)
       end
 
       if key == 1 then
-        Hero.health = Hero.health + 2
-        Hero.maxHealth = Hero.maxHealth + 2
-        Hero.ptsAttack = Hero.ptsAttack + 1
-        Hero.ptsDefense = Hero.ptsDefense + 0
+        Hero.health = Hero.health + 1.5*2
+        Hero.maxHealth = Hero.maxHealth + 1.5*2
+        Hero.ptsAttack = Hero.ptsAttack + 1.5*1
+        Hero.ptsDefense = Hero.ptsDefense + 0 + 1
       elseif key == 2 then
-        Hero.health = Hero.health + 4
-        Hero.maxHealth = Hero.maxHealth + 4
-        Hero.ptsAttack = Hero.ptsAttack + 2
-        Hero.ptsDefense = Hero.ptsDefense + 1
+        Hero.health = Hero.health + 1.5*4
+        Hero.maxHealth = Hero.maxHealth + 1.5*4
+        Hero.ptsAttack = Hero.ptsAttack + 1.5*2
+        Hero.ptsDefense = Hero.ptsDefense + 1.5*1
       elseif key == 3 then
-        Hero.health = Hero.health + 8
-        Hero.maxHealth = Hero.maxHealth + 8
-        Hero.ptsAttack = Hero.ptsAttack + 4
-        Hero.ptsDefense = Hero.ptsDefense + 3
+        Hero.health = Hero.health + 1.5*8
+        Hero.maxHealth = Hero.maxHealth + 1.5*8
+        Hero.ptsAttack = Hero.ptsAttack + 1.5*4
+        Hero.ptsDefense = Hero.ptsDefense + 1.5*3
       end
       
       myEnemy.countDeadBodies = {0, 0, 0}

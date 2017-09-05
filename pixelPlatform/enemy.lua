@@ -20,6 +20,9 @@ Enemy.tankCount.inf = 0
 Enemy.tankCount.same = 0
 Enemy.tankCount.sup = 0
 
+local countDifA = {min = 100, max = -100}
+local countDifD = {min = 100, max = -100}
+
 function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMapSize, pHeroLevel)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
@@ -62,15 +65,15 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
     
   if pType == 1 then
     -- initialize level 1
-    item.ptsAttack = math.random(2, 3)
-    item.ptsDefense = math.random(1, 2)
+    item.ptsAttack = math.random(1.5*2, 1.5*3)
+    item.ptsDefense = math.random(1.5*1, 1.5*2)
     item.health = math.random(8, 12)
     
     -- modify if level > 1
     if item.level > 1 then
-      item.ptsAttack = math.floor(2 * (item.level - 1) + item.ptsAttack)
-      item.ptsDefense = math.floor(1.5 * (item.level - 1) + item.ptsDefense)
-      item.health = math.floor(5 * (item.level - 1) + item.health)
+      item.ptsAttack = math.floor(1.5*2 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(1.5*1.5 * (item.level - 1) + item.ptsDefense)
+      item.health = math.floor(1.5*5 * (item.level - 1) + item.health)
     end
     
     item.maxHealth = item.health    
@@ -101,14 +104,14 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
   
   if pType == 2 then
     -- initialize level 1
-    item.ptsAttack = math.random(3, 4)
-    item.ptsDefense = math.random(3, 4)
+    item.ptsAttack = math.random(1.5*3, 1.5*4)
+    item.ptsDefense = math.random(1.5*3, 1.5*4)
     item.health = math.random(18, 22)
     
     if item.level > 1 then
-      item.ptsAttack = math.floor(1.5 * (item.level - 1) + item.ptsAttack)
-      item.ptsDefense = math.floor(2 * (item.level - 1) + item.ptsDefense)
-      item.health = math.floor(10 * (item.level - 1) + item.health)
+      item.ptsAttack = math.floor(1.5*1.5 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(1.5*2 * (item.level - 1) + item.ptsDefense)
+      item.health = math.floor(1.5*10 * (item.level - 1) + item.health)
     end
     
     item.maxHealth = item.health
@@ -177,6 +180,11 @@ function Enemy.Update(dt, pMap, pHero, pMaxEnemiesNb)
         e.healthBar = e.health/e.maxHealth
         e.difA = pHero.ptsAttack - e.ptsDefense -- difference if Hero attack
         e.difD = e.ptsAttack - pHero.ptsDefense -- difference if Hero defend
+        
+        if e.difA < countDifA.min then countDifA.min = e.difA end
+        if e.difA > countDifA.max then countDifA.max = e.difA end
+        if e.difD < countDifD.min then countDifD.min = e.difD end
+        if e.difD > countDifD.max then countDifD.max = e.difD end
         
         -- manage the walking animation
         if e.mov == "walk" then e.picCurrent = e.picCurrent + (e.speed.animWalk * dt) end
@@ -379,6 +387,11 @@ function Enemy.Draw()
                          e.Dead.w/2, 1)
     end
   end
+  
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.printf("difA : "..countDifA.min.." / "..countDifA.max, 100, 20, windowWidth/2, "center")
+  love.graphics.printf("difD : "..countDifD.min.." / "..countDifD.max, 100, 50, windowWidth/2, "center")
+  love.graphics.setColor(255, 255, 255)
   
 end
 
