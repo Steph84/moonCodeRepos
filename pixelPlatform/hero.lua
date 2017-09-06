@@ -307,17 +307,17 @@ function Hero.Update(dt)
         Hero.health = Hero.health + 4
         Hero.maxHealth = Hero.maxHealth + 4
         Hero.ptsAttack = Hero.ptsAttack + 3
-        Hero.ptsDefense = Hero.ptsDefense + 1
+        Hero.ptsDefense = Hero.ptsDefense + 2
       elseif key == 2 then
         Hero.health = Hero.health + 6
         Hero.maxHealth = Hero.maxHealth + 6
         Hero.ptsAttack = Hero.ptsAttack + 4
-        Hero.ptsDefense = Hero.ptsDefense + 2
+        Hero.ptsDefense = Hero.ptsDefense + 3
       elseif key == 3 then
         Hero.health = Hero.health + 9
         Hero.maxHealth = Hero.maxHealth + 9
         Hero.ptsAttack = Hero.ptsAttack + 6
-        Hero.ptsDefense = Hero.ptsDefense + 3
+        Hero.ptsDefense = Hero.ptsDefense + 4
       end
       
       myEnemy.countDeadBodies = {0, 0, 0}

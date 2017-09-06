@@ -34,9 +34,11 @@ function Combat.Update(dt)
         
         if dxLeft < dWidthFighters or dxRight < dWidthFighters then
           if dyHead < dHeightFighters or dyFeet < dHeightFighters then
-            myHero.hitted = true
-            table.insert(tempEnemy, e)
-            counterHero = 0
+            if(e.ptsAttack - myHero.ptsDefense >0) then
+              myHero.hitted = true
+              table.insert(tempEnemy, e)
+              counterHero = 0
+            end
           end
         end
       end
@@ -59,9 +61,11 @@ function Combat.Update(dt)
         
         if dxLeft < dWidthFighters or dxRight < dWidthFighters then
           if dyHead < dHeightFighters or dyFeet < dHeightFighters then
-            e.hitted = true
-            tempEnemy[#tempEnemy + 1] = e
-            e.counter = 0
+            if(myHero.ptsAttack - e.ptsDefense >0) then
+              e.hitted = true
+              tempEnemy[#tempEnemy + 1] = e
+              e.counter = 0
+            end
           end
         end
       end
