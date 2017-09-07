@@ -30,7 +30,9 @@ function love.load()
   
   local e
   for e = 1, maxEnemiesNb do
-    local tempType = math.random(1, 2)
+    local rdType = math.random(1, 10)
+    local tempType = 1
+    if rdType > 7 then tempType = 2 end
     myEnemy.Load("load", tempType, windowWidth, windowHeight, TILE_SIZE, myMap.size.pixW, 0)
   end
   

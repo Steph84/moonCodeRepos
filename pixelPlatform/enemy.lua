@@ -48,7 +48,7 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
   item.difA = 0
   item.difD = 0
   
-  if pInstant == "load" then item.x = math.random(windowWidth * 0.7, pMapSize - windowWidth * 0.7) end -- spawn in the map
+  if pInstant == "load" then item.x = math.random(windowWidth * 0.7, pMapSize - windowWidth * 0.3) end -- spawn in the map
   if pInstant == "update" then item.x = math.random(windowWidth * 0.3, windowWidth * 0.7) end -- spawn in the window
   item.y = 100
   
@@ -147,8 +147,9 @@ function Enemy.Update(dt, pMap, pHero, pMaxEnemiesNb)
   
   -- if the enemies number decrease, spawn a new one with a type in relation to the kill
   if #Enemy.listEnemies < pMaxEnemiesNb then
+    local rdType = math.random(1, 10)
     local spawnType = 1
-    if Enemy.countDeadTypes[1] > Enemy.countDeadTypes[2] then spawnType = 2 end
+    if rdType > 7 then spawnType = 2 end
     Enemy.Load("update", spawnType, windowWidth, windowHeight, TILE_SIZE, mapSizePixW, pHero.level)
   end
   
@@ -167,12 +168,15 @@ function Enemy.Update(dt, pMap, pHero, pMaxEnemiesNb)
         if e.level < pHero.level then Enemy.goomCount.inf = Enemy.goomCount.inf + 1 end
         if e.level == pHero.level then Enemy.goomCount.same = Enemy.goomCount.same + 1 end
         if e.level > pHero.level then Enemy.goomCount.sup = Enemy.goomCount.sup + 1 end
+        -- if enemy level very low + 1
+        if e.level + 1 < pHero.level then Enemy.goomCount.inf = Enemy.goomCount.inf + 1 end
       end
       
       if e.type == 2 then -- tank mob
         if e.level < pHero.level then Enemy.tankCount.inf = Enemy.tankCount.inf + 1 end
         if e.level == pHero.level then Enemy.tankCount.same = Enemy.tankCount.same + 1 end
         if e.level > pHero.level then Enemy.tankCount.sup = Enemy.tankCount.sup + 1 end
+        if e.level + 2 < pHero.level then Enemy.tankCount.inf = Enemy.tankCount.inf + 1 end
       end
     
       if e.isDead == false then
@@ -355,21 +359,20 @@ function Enemy.Draw()
   
     if e.isDead == false then
       if e.x > (0 - 64) and e.x < (windowWidth + 64) then
+        -- manage color of the health bar
+        if e.healthBar >= 0.6 then love.graphics.setColor(0, 128, 0)
+        elseif e.healthBar < 0.6 and e.healthBar >= 0.3 then love.graphics.setColor(255, 192, 0)
+        elseif e.healthBar < 0.3 then love.graphics.setColor(255, 0, 0) end
+        
+        love.graphics.rectangle("fill", e.x - (e.w * e.scale)/2, e.y - 8, (e.healthBar)*(e.w * e.scale), 5)
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.printf("LV "..e.level, e.x - (e.w * e.scale)/2, e.yHead - 24, e.w * e.scale, "center")
+        love.graphics.rectangle("line", e.x - (e.w * e.scale)/2 - 1, e.y - 8 - 1, e.w * e.scale, 7)
+        love.graphics.printf(e.difA, e.x - (e.w * e.scale), e.yHead - 24, e.w * e.scale * 2, "left")
+        love.graphics.printf(e.difD, e.x - (e.w * e.scale), e.yHead - 24, e.w * e.scale * 2, "right")
+          
         if e.animHit == false or (e.animHit == true and isBlinking == false) then
-          
-          -- manage color of the health bar
-          if e.healthBar >= 0.6 then love.graphics.setColor(0, 128, 0)
-          elseif e.healthBar < 0.6 and e.healthBar >= 0.3 then love.graphics.setColor(255, 192, 0)
-          elseif e.healthBar < 0.3 then love.graphics.setColor(255, 0, 0) end
-          
-          love.graphics.rectangle("fill", e.x - (e.w * e.scale)/2, e.y - 8, (e.healthBar)*(e.w * e.scale), 5)
-          love.graphics.setColor(0, 0, 0)
-          love.graphics.printf("LV "..e.level, e.x - (e.w * e.scale)/2, e.yHead - 24, e.w * e.scale, "center")
-          love.graphics.rectangle("line", e.x - (e.w * e.scale)/2 - 1, e.y - 8 - 1, e.w * e.scale, 7)
-          love.graphics.printf(e.difA, e.x - (e.w * e.scale), e.yHead - 24, e.w * e.scale * 2, "left")
-          love.graphics.printf(e.difD, e.x - (e.w * e.scale), e.yHead - 24, e.w * e.scale * 2, "right")
           love.graphics.setColor(255, 255, 255)
-          
           love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
                              e.x, e.y, 0,
                              e.sign * e.scale, 1 * e.scale,
