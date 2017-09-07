@@ -304,18 +304,18 @@ function Hero.Update(dt)
       end
 
       if key == 1 then
-        Hero.health = Hero.health + 4
-        Hero.maxHealth = Hero.maxHealth + 4
+        Hero.health = Hero.health + 5
+        Hero.maxHealth = Hero.maxHealth + 5
         Hero.ptsAttack = Hero.ptsAttack + 3
         Hero.ptsDefense = Hero.ptsDefense + 2
       elseif key == 2 then
-        Hero.health = Hero.health + 6
-        Hero.maxHealth = Hero.maxHealth + 6
+        Hero.health = Hero.health + 7
+        Hero.maxHealth = Hero.maxHealth + 7
         Hero.ptsAttack = Hero.ptsAttack + 4
         Hero.ptsDefense = Hero.ptsDefense + 3
       elseif key == 3 then
-        Hero.health = Hero.health + 9
-        Hero.maxHealth = Hero.maxHealth + 9
+        Hero.health = Hero.health + 10
+        Hero.maxHealth = Hero.maxHealth + 10
         Hero.ptsAttack = Hero.ptsAttack + 6
         Hero.ptsDefense = Hero.ptsDefense + 4
       end

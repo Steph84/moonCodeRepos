@@ -75,7 +75,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pCoefMap)
   
   -- calculate th element number to fill the map
   -- except first screen and last and a half screen
-  local nbElts = coefMap + (coefMap - 4)
+  local nbElts = coefMap + (coefMap - 2)
   local nbPits = nbElts/2
   local nbHills = nbElts/2
   local nbPlatForms = nbElts

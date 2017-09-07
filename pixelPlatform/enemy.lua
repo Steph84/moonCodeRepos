@@ -48,9 +48,9 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
   item.difA = 0
   item.difD = 0
   
-  if pInstant == "load" then item.x = math.random(windowWidth * 0.7, pMapSize - windowWidth * 0.3) end -- spawn in the map
+  if pInstant == "load" then item.x = math.random(windowWidth * 0.5, pMapSize - windowWidth * 0.3) end -- spawn in the map
   if pInstant == "update" then item.x = math.random(windowWidth * 0.3, windowWidth * 0.7) end -- spawn in the window
-  item.y = 100
+  item.y = math.random(100, 200)
   
   item.animHit = false
   item.hitted = false
@@ -71,8 +71,8 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
     
     -- modify if level > 1
     if item.level > 1 then
-      item.ptsAttack = math.floor(2.7 * (item.level - 1) + item.ptsAttack)
-      item.ptsDefense = math.floor(3.9 * (item.level - 1) + item.ptsDefense)
+      item.ptsAttack = math.floor(2.8 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(4.0 * (item.level - 1) + item.ptsDefense)
       item.health = math.floor(5 * (item.level - 1) + item.health)
     end
     
@@ -109,8 +109,8 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
     item.health = math.random(18, 22)
     
     if item.level > 1 then
-      item.ptsAttack = math.floor(3.3 * (item.level - 1) + item.ptsAttack)
-      item.ptsDefense = math.floor(4.5 * (item.level - 1) + item.ptsDefense)
+      item.ptsAttack = math.floor(3.2 * (item.level - 1) + item.ptsAttack)
+      item.ptsDefense = math.floor(4.4 * (item.level - 1) + item.ptsDefense)
       item.health = math.floor(10 * (item.level - 1) + item.health)
     end
     

@@ -6,7 +6,7 @@ if arg[#arg] == "-debug" then require("mobdebug").start() end
 local windowWidth = 1280 -- 32x32px sprites value (40 columns)
 local windowHeight = 672 -- 32x32px sprites value (21 lines)
 local TILE_SIZE = 32
-local coefMap = 4
+local coefMap = 3
 local maxEnemiesNb = math.pow(coefMap, 2) + 1
 
 local myHero = require("hero")
