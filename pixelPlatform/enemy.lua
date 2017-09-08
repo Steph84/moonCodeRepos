@@ -47,6 +47,7 @@ function Enemy.Load(pInstant, pType, pWindowWidth, pWindowHeight, pTileSize, pMa
   item.scale = 1.5
   item.difA = 0
   item.difD = 0
+  item.animPow = 0
   
   if pInstant == "load" then item.x = math.random(windowWidth * 0.5, pMapSize - windowWidth * 0.3) end -- spawn in the map
   if pInstant == "update" then item.x = math.random(windowWidth * 0.3, windowWidth * 0.7) end -- spawn in the window
@@ -307,6 +308,7 @@ function Enemy.Update(dt, pMap, pHero, pMaxEnemiesNb)
           e.Dead.scale = e.scale
           e.Dead.sign = e.sign
           e.Dead.w = e.w
+          e.animPow = e.x
         end
       end
       
@@ -336,6 +338,7 @@ function Enemy.Update(dt, pMap, pHero, pMaxEnemiesNb)
         e.Dead.y = e.Dead.y - e.speed.alongY
         if pMap.mov == true then
           e.Dead.x = e.Dead.x - pHero.speed.walk * pHero.sign
+          e.animPow = e.animPow - pHero.speed.walk * pHero.sign
         end
         e.speed.alongY = e.speed.alongY - dt*9.81
         if e.Dead.y > windowHeight then
@@ -384,6 +387,7 @@ function Enemy.Draw()
     end
     
     if e.isDead == true then
+      love.graphics.circle("fill", e.animPow, e.y, 20)
       love.graphics.draw(e.anim, e.animWalk[math.floor(e.picCurrent)],
                          e.Dead.x, e.Dead.y, e.Dead.rot,
                          e.Dead.sign * e.Dead.scale, 1 * e.Dead.scale,

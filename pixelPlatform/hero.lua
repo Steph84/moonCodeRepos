@@ -9,6 +9,7 @@ local timeElapsedAttack, timeElapsedAnimHit, timeElapsedAnimLevelUp = 0, 0, 0
 local isBlinking = false
 local ScaleLevel = {}
 local ThresholdLevel = {}
+local animMove = 0
 
 function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   windowWidth = pWindowWidth
@@ -293,17 +294,19 @@ function Hero.Update(dt)
     
     if Hero.levelUp == true then
       timeElapsedAnimLevelUp = timeElapsedAnimLevelUp + dt
-      Hero.levelUpY = Hero.levelUpY - 10 * dt
-      if timeElapsedAnimLevelUp > 2 then
+      animMove = animMove - 20 * dt
+      Hero.levelUpY = Hero.y + animMove
+      if timeElapsedAnimLevelUp > 3 then
         timeElapsedAnimLevelUp = 0
         Hero.levelUp = false
         Hero.levelUpY = Hero.y
       end
     end
     
-    if Hero.xp > ThresholdLevel[Hero.level + 1] then
+    if Hero.xp >= ThresholdLevel[Hero.level + 1] then
       Hero.levelUp = true
       Hero.levelUpY = Hero.y
+      animMove = 0
       Hero.xp = Hero.xp - ThresholdLevel[Hero.level + 1]
       Hero.level = Hero.level + 1
       Hero.xpMax = ThresholdLevel[Hero.level + 1]
@@ -348,11 +351,11 @@ end
 function Hero.Draw()
   
   if Hero.isDead == false then
-    --if Hero.levelUp == true then
+    if Hero.levelUp == true then
       love.graphics.setColor(0, 0, 0)
       love.graphics.printf("LEVEL UP !", Hero.x - Hero.w/2, Hero.levelUpY, 200, "left")
       love.graphics.setColor(255, 255, 255)
-    --end
+    end
     if Hero.animHit == false then
       if Hero.attack == true then love.graphics.draw(Hero.attackPic,
                                                      Hero.x, Hero.y, 0,
