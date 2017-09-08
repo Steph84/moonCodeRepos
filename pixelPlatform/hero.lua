@@ -5,8 +5,7 @@ local myMap = require("map")
 local myEnemy = require("enemy")
 local textureUnder, textureAbove, textureLeft, textureRight = 0, 0, 0, 0
 local groundCollision = false
-local timeElapsedAttack = 0
-local timeElapsedAnimHit = 0
+local timeElapsedAttack, timeElapsedAnimHit, timeElapsedAnimLevelUp = 0, 0, 0
 local isBlinking = false
 local ScaleLevel = {}
 local ThresholdLevel = {}
@@ -54,6 +53,8 @@ function Hero.Load(pWindowWidth, pWindowHeight, pTileSize)
   Hero.ptsAttack = 0
   Hero.ptsDefense = 0
   Hero.level = 1
+  Hero.levelUp = false
+  Hero.levelUpY = Hero.y
   Hero.xp = 0
   Hero.xpBar = 0
   Hero.xpMax = 0
@@ -289,8 +290,20 @@ function Hero.Update(dt)
   end
   
   if Hero.level < 25 then
+    
+    if Hero.levelUp == true then
+      timeElapsedAnimLevelUp = timeElapsedAnimLevelUp + dt
+      Hero.levelUpY = Hero.levelUpY - 10 * dt
+      if timeElapsedAnimLevelUp > 2 then
+        timeElapsedAnimLevelUp = 0
+        Hero.levelUp = false
+        Hero.levelUpY = Hero.y
+      end
+    end
+    
     if Hero.xp > ThresholdLevel[Hero.level + 1] then
-      
+      Hero.levelUp = true
+      Hero.levelUpY = Hero.y
       Hero.xp = Hero.xp - ThresholdLevel[Hero.level + 1]
       Hero.level = Hero.level + 1
       Hero.xpMax = ThresholdLevel[Hero.level + 1]
@@ -335,6 +348,11 @@ end
 function Hero.Draw()
   
   if Hero.isDead == false then
+    --if Hero.levelUp == true then
+      love.graphics.setColor(0, 0, 0)
+      love.graphics.printf("LEVEL UP !", Hero.x - Hero.w/2, Hero.levelUpY, 200, "left")
+      love.graphics.setColor(255, 255, 255)
+    --end
     if Hero.animHit == false then
       if Hero.attack == true then love.graphics.draw(Hero.attackPic,
                                                      Hero.x, Hero.y, 0,
