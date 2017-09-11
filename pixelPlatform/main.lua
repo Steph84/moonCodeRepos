@@ -22,7 +22,7 @@ function love.load()
   windowHeight = (math.floor(displayHeight/TILE_SIZE) - 4) * TILE_SIZE
   love.window.setMode(windowWidth, windowHeight)
   love.window.setTitle("PixelPlatform")
-  
+    
   myHud.Load(windowWidth, windowHeight, TILE_SIZE)
   myHero.Load(windowWidth, windowHeight, TILE_SIZE)
   myMap.Load(windowWidth, windowHeight, TILE_SIZE, coefMap)
@@ -47,6 +47,7 @@ function love.update(dt)
 end
 
 function love.draw()
+  love.graphics.scale(0.5, 0.5)
   myMap.Draw()
   myHero.Draw()
   myEnemy.Draw()
