@@ -1,14 +1,6 @@
- -- initialiser le random
 math.randomseed(os.time())
-
--- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
 io.stdout:setvbuf('no')
-
--- Empèche Love de filtrer les contours des images quand elles sont redimentionnées
--- Indispensable pour du pixel art
 love.graphics.setDefaultFilter("nearest")
-
--- Cette ligne permet de déboguer pas à pas dans ZeroBraneStudio
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 local windowWidth = 960 -- default value
@@ -20,11 +12,30 @@ local windowHeight = 576 -- default value
 
 local Map = {}
 Map.grid = {}
+Map.grid[1] = "000000000000000000000000000000"
+Map.grid[2] = "000000000000000000000000000000"
+Map.grid[3] = "000000000000000000000000000000"
+Map.grid[4] = "000000000000000000000000000000"
+Map.grid[5] = "000000000000000000000000000000"
+Map.grid[6] = "000000400000000000000000000000"
+Map.grid[7] = "000000000000000000000000000000"
+Map.grid[8] = "000000000000000000000000000000"
+Map.grid[9] = "000000000000000000000000000000"
+Map.grid[10] = "000000000000000000000001110000"
+Map.grid[11] = "000030000000000000000000000000"
+Map.grid[12] = "000000000000000000000000000000"
+Map.grid[13] = "020000000000000000000000000000"
+Map.grid[14] = "000000005500000600000000001000"
+Map.grid[15] = "000000000000000000000000000100"
+Map.grid[16] = "111111111111111111111111111111"
 local TileSet = {}
 local TileTextures = {}
 local scale = 1
 local TILE_SIZE = 32 * scale
 local setTileSize = 32
+
+local Cube = {}
+local bJumpReady = true
 
 function love.load()
   
@@ -55,7 +66,7 @@ function love.load()
     id = id + 1
     end
   end
-  
+  --[[
   -- building the map
   local lin, col
   local idGrid = 0
@@ -71,22 +82,71 @@ function love.load()
       
     end
   end
+  --]]
   
+  Cube.x = 100
+  Cube.y = 100
+  Cube.size = 32
+  Cube.vx = 0
+  Cube.vy = 0
+  Cube.standing = true
   
 end
 
-function love.update(dt)
+function updatePlayer(pPlayer, dt)
+  -- Locals for Physics
+  local accel = 500
+  local friction = 150
+  local maxSpeed = 150
+  local jumpVelocity = -280
 
+  -- Friction
+  if pPlayer.vx > 0 then
+    pPlayer.vx = pPlayer.vx - friction * dt
+    if pPlayer.vx < 0 then pPlayer.vx = 0 end
+  end
+  if pPlayer.vx < 0 then
+    pPlayer.vx = pPlayer.vx + friction * dt
+    if pPlayer.vx > 0 then pPlayer.vx = 0 end
+  end
+  -- Keyboard
+  if love.keyboard.isDown("right") then
+    pPlayer.vx = pPlayer.vx + accel*dt
+    if pPlayer.vx > maxSpeed then pPlayer.vx = maxSpeed end
+  end
+  if love.keyboard.isDown("left") then
+    pPlayer.vx = pPlayer.vx - accel*dt
+    if pPlayer.vx < -maxSpeed then pPlayer.vx = -maxSpeed end
+  end
+  if love.keyboard.isDown("up") and pPlayer.standing and bJumpReady then
+    pPlayer.vy = jumpVelocity
+    pPlayer.standing = false
+    bJumpReady = false
+  end
+  if love.keyboard.isDown("up") == false and bJumpReady == false then
+    bJumpReady = true
+  end
+  -- Move
+  pPlayer.x = pPlayer.x + pPlayer.vx * dt
+  pPlayer.y = pPlayer.y + pPlayer.vy * dt
+end
+
+function love.update(dt)
+  updatePlayer(Cube, dt)
 end
 
 function love.draw()
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
-      local g = Map.grid[lin][col]
-      if g.idText ~= 37 then
-        love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y, 0, g.scale, g.scale)
+      local char = string.sub(Map.grid[lin],col,col)
+      if tonumber(char) > 0 then
+        love.graphics.draw(TileSet, TileTextures[tonumber(char)],
+                          (col-1)*TILE_SIZE, (lin-1)*TILE_SIZE, 0, 1, 1)
       end
     end
   end
+  
+  love.graphics.rectangle("fill", Cube.x, Cube.y, Cube.size, Cube.size)
+  
 end
