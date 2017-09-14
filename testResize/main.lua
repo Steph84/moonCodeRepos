@@ -3,39 +3,39 @@ io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
-local windowWidth = 960 -- default value
-local windowHeight = 576 -- default value
+local windowWidth = 960 -- default value 30 columns
+local windowHeight = 576 -- default value 18 lines (2 for the hud)
 --local windowWidth = 1340 -- max value
 --local windowHeight = 682 -- max value
 --local windowWidth = 1280 -- 32x32px sprites value (40 columns)
 --local windowHeight = 672 -- 32x32px sprites value (21 lines)
 
 local Map = {}
-Map.grid = {}
-Map.grid[1] = "000000000000000000000000000000"
-Map.grid[2] = "000000000000000000000000000000"
-Map.grid[3] = "000000000000000000000000000000"
-Map.grid[4] = "000000000000000000000000000000"
-Map.grid[5] = "000000000000000000000000000000"
-Map.grid[6] = "000000400000000000000000000000"
-Map.grid[7] = "000000000000000000000000000000"
-Map.grid[8] = "000000000000000000000000000000"
-Map.grid[9] = "000000000000000000000000000000"
-Map.grid[10] = "000000000000000000000001110000"
-Map.grid[11] = "000030000000000000000000000000"
-Map.grid[12] = "000000000000000000000000000000"
-Map.grid[13] = "020000000000000000000000000000"
-Map.grid[14] = "000000005500000600000000001000"
-Map.grid[15] = "000000000000000000000000000100"
-Map.grid[16] = "111111111111111111111111111111"
-local TileSet = {}
-local TileTextures = {}
-local scale = 1
-local TILE_SIZE = 32 * scale
-local setTileSize = 32
+Map.grid = {
+              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0},
+              {0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0},
+              {0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0},
+              {0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0},
+              {0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0},
+              {0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0},
+              {0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0},
+              {0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0},
+              {0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+              {0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+              {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+              {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+              {0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6}
+           }
+
+local TILE_SIZE = 32
+local reInitVY = 10
 
 local Cube = {}
-local bJumpReady = true
+
+local myColor = require("color")
 
 function love.load()
   
@@ -45,27 +45,7 @@ function love.load()
   -- initialize the size of the map
   Map.size = { w = windowWidth/TILE_SIZE, h = (windowHeight - (2 * TILE_SIZE))/TILE_SIZE,
                pixW = windowWidth, pixH = windowHeight - (2 * TILE_SIZE)}
-  -- load the tile sheet
-  TileSet = love.graphics.newImage("pictures/platFormTileSet02_32x32.png")
-  local nbColumns = TileSet:getWidth() / setTileSize
-  local nbLines = TileSet:getHeight() / setTileSize
   
-  -- extract all the tiles in the tile sheet
-  local l, c
-  local id = 1
-  TileTextures[0] = nil
-  for l = 1, nbLines do
-    for c = 1, nbColumns do
-    TileTextures[id] = love.graphics.newQuad(
-                              (c-1)*setTileSize,
-                              (l-1)*setTileSize,
-                              setTileSize,
-                              setTileSize,
-                              TileSet:getDimensions()
-                              )
-    id = id + 1
-    end
-  end
   --[[
   -- building the map
   local lin, col
@@ -87,66 +67,88 @@ function love.load()
   Cube.x = 100
   Cube.y = 100
   Cube.size = 32
-  Cube.vx = 0
-  Cube.vy = 0
-  Cube.standing = true
+  Cube.vx = 5
+  Cube.vy = reInitVY
+  Cube.state = "stand"
   
 end
 
-function updatePlayer(pPlayer, dt)
-  -- Locals for Physics
-  local accel = 500
-  local friction = 150
-  local maxSpeed = 150
-  local jumpVelocity = -280
+local function getTileAt(pX, pY)
+  local col = math.floor(pX / 32) + 1
+  local lig = math.floor(pY / 32) + 1
+  if col > 0 and col <= #Map.grid[1] and lig > 0 and lig <= #Map.grid then
+    local id = Map.grid[lig][col]
+    return id
+  end
+  return 0
+end
 
-  -- Friction
-  if pPlayer.vx > 0 then
-    pPlayer.vx = pPlayer.vx - friction * dt
-    if pPlayer.vx < 0 then pPlayer.vx = 0 end
-  end
-  if pPlayer.vx < 0 then
-    pPlayer.vx = pPlayer.vx + friction * dt
-    if pPlayer.vx > 0 then pPlayer.vx = 0 end
-  end
-  -- Keyboard
-  if love.keyboard.isDown("right") then
-    pPlayer.vx = pPlayer.vx + accel*dt
-    if pPlayer.vx > maxSpeed then pPlayer.vx = maxSpeed end
-  end
-  if love.keyboard.isDown("left") then
-    pPlayer.vx = pPlayer.vx - accel*dt
-    if pPlayer.vx < -maxSpeed then pPlayer.vx = -maxSpeed end
-  end
-  if love.keyboard.isDown("up") and pPlayer.standing and bJumpReady then
-    pPlayer.vy = jumpVelocity
-    pPlayer.standing = false
-    bJumpReady = false
-  end
-  if love.keyboard.isDown("up") == false and bJumpReady == false then
-    bJumpReady = true
-  end
-  -- Move
-  pPlayer.x = pPlayer.x + pPlayer.vx * dt
-  pPlayer.y = pPlayer.y + pPlayer.vy * dt
+local function isSolid(pID)
+  if pID == 0 then return false end
+  if pID > 0 then return true end
+end
+
+local function Collide(pSprite)
+  local id = getTileAt(pSprite.x + TILE_SIZE/2, pSprite.y + TILE_SIZE/2)
+  return isSolid(id)
 end
 
 function love.update(dt)
-  updatePlayer(Cube, dt)
+  if love.keyboard.isDown("right") then
+    Cube.x = Cube.x + Cube.vx
+    Cube.state = "walk"
+  elseif love.keyboard.isDown("left") then
+    Cube.x = Cube.x - Cube.vx
+    Cube.state = "walk"
+  else
+    Cube.state = "stand"
+  end
+    
+  if (love.keyboard.isDown("space") and Cube.state ~= "jump") or Cube.y < Map.size.pixH then
+    Cube.state = "jump"
+  end
+  
+  if Cube.state == "jump" then
+    Cube.y = Cube.y - Cube.vy
+    Cube.vy = Cube.vy - 10 * dt
+  else
+    Cube.vy = reInitVY
+  end
+  
+  local collide = false
+  if Cube.vx ~= 0 then collide = Collide(Cube) end
+
+  if collide then
+    Cube.vx = 0
+    local col = math.floor((Cube.x + 16) / 32) + 1
+    Cube.x = (col-1)*16
+  end
+
+  if Cube.vy ~= 0 then
+    collide = Collide(Cube)
+    if collide then
+      Cube.vy = 0
+      local lig = math.floor((Cube.y + 16) / 32) + 1
+      Cube.y = (lig-1)*16
+    end
+  end
+
+  
+  
 end
 
 function love.draw()
   local lin, col
   for lin = 1, Map.size.h do
     for col = 1, Map.size.w do
-      local char = string.sub(Map.grid[lin],col,col)
-      if tonumber(char) > 0 then
-        love.graphics.draw(TileSet, TileTextures[tonumber(char)],
-                          (col-1)*TILE_SIZE, (lin-1)*TILE_SIZE, 0, 1, 1)
+      local g = Map.grid[lin][col]
+      if g > 0 then
+        love.graphics.setColor(myColor.RGBData[g])
+        love.graphics.rectangle("fill", (col-1)*TILE_SIZE, (lin-1)*TILE_SIZE, TILE_SIZE, TILE_SIZE)
       end
     end
   end
-  
+  love.graphics.setColor(255, 255, 255)
   love.graphics.rectangle("fill", Cube.x, Cube.y, Cube.size, Cube.size)
   
 end
