@@ -3,7 +3,7 @@ io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 if arg[#arg] == "-debug" then require("mobdebug").start() end
 
-local windowWidth = 960 -- default value 30 columns
+local windowWidth = 1152 --960 -- default value 30 columns
 local windowHeight = 576 -- default value 18 lines (2 for the hud)
 --local windowWidth = 1340 -- max value
 --local windowHeight = 682 -- max value
