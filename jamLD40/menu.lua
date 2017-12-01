@@ -166,11 +166,11 @@ function Menu.Draw()
     -- draw the title and subtitle
     love.graphics.setColor(0, 0, 255)
     love.graphics.setFont(itemFonts.titles)
-    love.graphics.printf("SALEM", 0, anchorTitleY, windowWidth, "center")
+    love.graphics.printf("Programming in progress...", 0, anchorTitleY, windowWidth, "center")
     
     love.graphics.setColor(255, 0, 255)
     love.graphics.setFont(itemFonts.subTitles)
-    love.graphics.printf("Story", 0, anchorTitleY + sizeFonts.titles, windowWidth, "center")
+    love.graphics.printf("Ludum Dare 40", 0, anchorTitleY + sizeFonts.titles, windowWidth, "center")
     
     local tweenXDraw, tweenLimitDraw
     tweenXDraw = easeOutSin(selectionCoorX.time, selectionCoorX.value, selectionCoorX.distance, selectionCoorX.duration)
