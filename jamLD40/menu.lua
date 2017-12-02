@@ -37,7 +37,7 @@ local function EnterMenu()
   
 end
 
-function Menu.Load(pWindowWidth, pWindowHeight, pTILE_SIZE)
+function Menu.Load(pWindowWidth, pWindowHeight, pFONT_SIZE)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   
@@ -48,7 +48,7 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTILE_SIZE)
   bMenuStable = false
   EnterMenu()
   
-  sizeFonts.fontSize = pTILE_SIZE
+  sizeFonts.fontSize = pFONT_SIZE
   sizeFonts.titles = sizeFonts.fontSize * 2
   sizeFonts.selections = sizeFonts.fontSize * 1
   sizeFonts.version = sizeFonts.fontSize * 0.75
@@ -80,11 +80,6 @@ function Menu.Load(pWindowWidth, pWindowHeight, pTILE_SIZE)
   soundObjects.back = love.audio.newSource("sounds/headBack.wav", "static")
   soundObjects.back:setVolume(0.5)
   
-  -- load the background music
-  --soundObjects.bgMusic = love.audio.newSource("musics/dkSNESTheme.mp3", "stream")
-  --soundObjects.bgMusic:setLooping(true)
-  --soundObjects.bgMusic:setVolume(0.25)
-  --soundObjects.bgMusic:play()
 end
 
 
