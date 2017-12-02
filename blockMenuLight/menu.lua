@@ -37,7 +37,7 @@ local function EnterMenu()
   
 end
 
-function Menu.Load(pWindowWidth, pWindowHeight)
+function Menu.Load(pWindowWidth, pWindowHeight, pTILE_SIZE)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   
@@ -48,7 +48,7 @@ function Menu.Load(pWindowWidth, pWindowHeight)
   bMenuStable = false
   EnterMenu()
   
-  sizeFonts.fontSize = 32
+  sizeFonts.fontSize = pTILE_SIZE
   sizeFonts.titles = sizeFonts.fontSize * 2
   sizeFonts.selections = sizeFonts.fontSize * 1
   sizeFonts.version = sizeFonts.fontSize * 0.75
