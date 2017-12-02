@@ -25,7 +25,7 @@ function love.load()
   love.window.setTitle("my Title")
   
   myMenu.Load(windowWidth, windowHeight, FONT_SIZE)
-  myGame.Load(windowWidth, windowHeight, TILE_SIZE)
+  myGame.Load(windowWidth, windowHeight, TILE_SIZE, FONT_SIZE)
   
 end
 
