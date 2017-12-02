@@ -9,16 +9,16 @@ local TILE_SIZE = 32
 local gameState = "menu"
 
 local myMenu = require("menu")
+local myWindowDimension = require("windowDimension")
 
 function love.load()
   
-  -- to adapt the window size to the display size
-  local displayWidth, displayHeight
-  displayWidth, displayHeight = love.window.getDesktopDimensions()
-  windowWidth = (math.floor(displayWidth/TILE_SIZE) - 2) * TILE_SIZE
-  windowHeight = (math.floor(displayHeight/TILE_SIZE) - 3) * TILE_SIZE
+  -- resize depending on the display dimensions
+  myWindowDimension.Load()
   
-  love.window.setMode(windowWidth, windowHeight)
+  local flags = nil
+  windowWidth, windowHeight, flags = love.window.getMode( )
+  
   love.window.setTitle("my Title")
   
   myMenu.Load(windowWidth, windowHeight)
