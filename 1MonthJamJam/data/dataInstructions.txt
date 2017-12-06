@@ -1,0 +1,4 @@
+Action : Direction
+Control : Left and Right arrow keys
+Action : Slash
+Control : Space key
