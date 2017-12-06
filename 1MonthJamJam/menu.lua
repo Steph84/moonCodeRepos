@@ -2,7 +2,7 @@ local Menu = {}
 
 Menu.menuState = nil
 
-local windowWidth, windowHeight, gameVersion, anchorTitleY, anchorSelectionY, bMenuStable
+local windowWidth, windowHeight, gameVersion, anchorTitleY, anchorSelectionY, bMenuStable, jamDate
 local selectionItems = {}
 local sizeFonts = {}
 local itemFonts = {}
@@ -42,6 +42,7 @@ function Menu.Load(pWindowWidth, pWindowHeight, pFONT_SIZE)
   
   Menu.menuState = "title"
   gameVersion = "v1.0"
+  jamDate = "December 2017"
   
   -- menu tweening
   bMenuStable = false
@@ -50,13 +51,13 @@ function Menu.Load(pWindowWidth, pWindowHeight, pFONT_SIZE)
   sizeFonts.fontSize = pFONT_SIZE
   sizeFonts.titles = sizeFonts.fontSize * 2
   sizeFonts.selections = sizeFonts.fontSize * 1
-  sizeFonts.version = sizeFonts.fontSize * 0.75
+  sizeFonts.versionDate = sizeFonts.fontSize * 0.75
   sizeFonts.credits = sizeFonts.fontSize * 0.75
   
   itemFonts.titles = love.graphics.newFont("fonts/Capture_it.ttf", sizeFonts.titles)
   itemFonts.subTitles = love.graphics.newFont("fonts/AlexBrush-Regular.ttf", sizeFonts.titles)
   itemFonts.selections = love.graphics.newFont("fonts/Pacifico.ttf", sizeFonts.selections)
-  itemFonts.version = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", sizeFonts.version)
+  itemFonts.versionDate = love.graphics.newFont("fonts/Times_New_Roman_Normal.ttf", sizeFonts.versionDate)
   
   anchorTitleY = windowHeight*0.05
   anchorSelectionY = windowHeight*0.5
@@ -191,10 +192,11 @@ function Menu.Draw()
       love.graphics.printf(msg, tweenXDraw * i, anchorSelectionY + 1.5*(i-1) * sizeFonts.selections, tweenLimitDraw, "center")
     end
     
-    -- draw the game version
+    -- draw the game version and jam date
     love.graphics.setColor(255, 255, 255)
-    love.graphics.setFont(itemFonts.version)
-    love.graphics.printf(gameVersion, 0, windowHeight - sizeFonts.version, windowWidth, "right")
+    love.graphics.setFont(itemFonts.versionDate)
+    love.graphics.printf(gameVersion, 0, windowHeight - sizeFonts.versionDate, windowWidth, "right")
+    love.graphics.printf(jamDate, windowWidth*0.02 + 192, windowHeight - sizeFonts.versionDate, windowWidth, "left")
   end
   
   if Menu.menuState == "credits" then myCredits.Draw() end
