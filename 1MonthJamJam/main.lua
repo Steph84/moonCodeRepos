@@ -7,7 +7,7 @@ local GameSizeCoefficient = 1
 local FONT_SIZE = 32
 local TILE_SIZE = 64
 
-local gameState = "menu"
+local gameState = "game"
 
 local myMenu = require("menu")
 local myWindowDimension = require("windowDimension")
