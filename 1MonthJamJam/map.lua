@@ -5,9 +5,10 @@ local myPlayer = {}
 local timeElpased = 0
 
 local hoveredOffSet = 5
+local hoveredTile
 
 local TileSet, TileTextures = {}, {}
-Map.grid = {}
+Map.Grid = {}
 Map.TILE_SIZE = 0
 
 function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pMyPlayer)
@@ -17,7 +18,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pMyPlayer)
   myPlayer = pMyPlayer
   
 -- initialize the size of the map
-  Map.size = { w = windowWidth/Map.TILE_SIZE, h = (windowHeight - Map.TILE_SIZE)/Map.TILE_SIZE}
+  Map.Size = { w = windowWidth/Map.TILE_SIZE, h = (windowHeight - Map.TILE_SIZE)/Map.TILE_SIZE}
   
   -- load the tile sheet
   TileSet = love.graphics.newImage("pictures/texture01MonthJamJam.png")
@@ -43,34 +44,32 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pMyPlayer)
   -- building the map
   local lin, col
   local idTile = 0
-  for lin = 1, Map.size.h do
-    Map.grid[lin] = {}
-    for col = 1, Map.size.w do
+  for lin = 1, Map.Size.h do
+    Map.Grid[lin] = {}
+    for col = 1, Map.Size.w do
       idTile = idTile + 1
       -- initialize the map
-      Map.grid[lin][col] = {id = idTile,
+      Map.Grid[lin][col] = {id = idTile,
                             x = (col-1)*Map.TILE_SIZE, y = (lin-1)*Map.TILE_SIZE,
                             w = Map.TILE_SIZE, h = Map.TILE_SIZE, 
-                            idText = 1, texture = "grass"}
+                            idText = 1, texture = "grass", isSelected = false}
     end
   end
 end
 
-function Map.Update(dt)
-  
+function Map.Update(dt, pPlayerPosition)
+  hoveredTile = Map.Grid[pPlayerPosition.lin][pPlayerPosition.col]
 end
 
 function Map.Draw()
-  
-  local hoveredTile = Map.grid[myPlayer.position.lin][myPlayer.position.col]
   
   hoveredTile.x = hoveredTile.x + hoveredOffSet
   hoveredTile.y = hoveredTile.y - hoveredOffSet
   
   local lin, col
-  for lin = 1, Map.size.h do
-    for col = 1, Map.size.w do
-      local g = Map.grid[lin][col]
+  for lin = 1, Map.Size.h do
+    for col = 1, Map.Size.w do
+      local g = Map.Grid[lin][col]
       love.graphics.rectangle("line", g.x, g.y, 64, 64)
       love.graphics.draw(TileSet, TileTextures[g.idText], g.x, g.y)
     end
