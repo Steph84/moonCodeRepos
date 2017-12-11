@@ -57,7 +57,7 @@ function Map.Load(pWindowWidth, pWindowHeight, pTileSize, pMyPlayer)
 end
 
 function Map.Update(dt)
-    
+  
 end
 
 function Map.Draw()
