@@ -8,7 +8,6 @@ local TILE_SIZE = 32
 
 local gameState = "menu"
 
-local myMenu = require("menu")
 local myWindowDimension = require("windowDimension")
 
 function love.load()
@@ -22,22 +21,14 @@ function love.load()
   
   love.window.setTitle("my Title")
   
-  myMenu.Load(windowWidth, windowHeight, TILE_SIZE)
-  
 end
 
 function love.update(dt)
   
-  if gameState == "menu" then
-    myMenu.Update(dt)
-  end
   
 end
 
 function love.draw()
   
-  if gameState == "menu" then
-    myMenu.Draw()
-  end
   
 end
