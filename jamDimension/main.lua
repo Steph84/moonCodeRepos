@@ -6,9 +6,11 @@ local windowWidth, windowHeight
 local GameSizeCoefficient = 1
 local TILE_SIZE = 32
 
-local gameState = "menu"
+local gameState = "game"
 
 local myWindowDimension = require("windowDimension")
+local myGame = require("game")
+
 
 function love.load()
   
@@ -21,14 +23,19 @@ function love.load()
   
   love.window.setTitle("my Title")
   
+  myGame.Load(GameSizeCoefficient, windowWidth, windowHeight)
+  
 end
 
 function love.update(dt)
-  
-  
+  if gameState == "game" then
+    myGame.Update(dt)
+  end
 end
 
 function love.draw()
-  
+  if gameState == "game" then
+    myGame.Draw()
+  end
   
 end
