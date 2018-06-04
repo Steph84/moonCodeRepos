@@ -2,7 +2,7 @@ local Game = {}
 
 local windowWidth, windowHeight
 local BlackHole = {}
-BlackHole.tileSheet = {}
+BlackHole.src = {}
 
 
 local objectNumber = 20
@@ -34,10 +34,14 @@ end
 function Game.Load(GameSizeCoefficient, pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
-  --BlackHole.tileSheet = love.graphics.newImage("pictures/color_fish.png")
+  BlackHole.src = love.graphics.newImage("pictures/blackHole.png")
   BlackHole.x = windowWidth/2
   BlackHole.y = windowHeight/2
-  BlackHole.speed = 10
+  BlackHole.speed = 5
+  BlackHole.picW = BlackHole.src:getWidth()
+  BlackHole.picH = BlackHole.src:getHeight()
+  BlackHole.rotation = 0
+
   
   local i
   for i = 1, objectNumber do
@@ -47,6 +51,8 @@ end
 
 
 function Game.Update(dt)
+  
+  BlackHole.rotation = BlackHole.rotation + 0.005
   
   while #listObjects < objectNumber do createObject(#listObjects + 1, windowWidth, windowHeight) end
   
@@ -87,6 +93,9 @@ end
 
 function Game.Draw()
   love.graphics.setColor(255, 255, 255) -- white
+  
+  love.graphics.draw(BlackHole.src, BlackHole.x, BlackHole.y,
+                     BlackHole.rotation, 1, 1, BlackHole.picW/2, BlackHole.picH/2)
   
   local i
   for i = #listObjects, 1, -1 do
