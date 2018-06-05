@@ -4,7 +4,6 @@ local windowWidth, windowHeight
 local BlackHole = {}
 BlackHole.src = {}
 
-
 local objectNumber = 20
 local listObjects = {}
 
@@ -12,7 +11,7 @@ function createObject(id, windowWidth, windowHeight)
   local item = {}
   
   item.id = id
-  --item.nature = nature
+  item.nature = nature
   item.x = windowWidth/2
   item.y = windowHeight/2
   
@@ -33,6 +32,17 @@ function createObject(id, windowWidth, windowHeight)
   item.scaleX = 1
   item.scaleY = 1
   
+  if Game.phase == "0D" then
+    item.circSize = 5
+  elseif Game.phase == "1D" then
+    item.lineSize = 50
+    item.x2 = math.random(item.x - item.lineSize, item.x + item.lineSize)
+    item.y2 = math.random(item.y - item.lineSize, item.y + item.lineSize)
+  elseif Game.phase == "2D" then
+    item.size = 100
+    --item.
+  end
+  
   item.boundary = 50
   
   table.insert(listObjects, item)
@@ -41,16 +51,17 @@ end
 function Game.Load(GameSizeCoefficient, pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
+  Game.phase = "1D"
+  
   BlackHole.src = love.graphics.newImage("pictures/blackHole.png")
   BlackHole.x = windowWidth/2
   BlackHole.y = windowHeight/2
-  BlackHole.speed = 5
+  BlackHole.speed = 1
   BlackHole.picW = BlackHole.src:getWidth()
   BlackHole.picH = BlackHole.src:getHeight()
   BlackHole.rotation = 0
   BlackHole.move = "forth"
 
-  
   local i
   for i = 1, objectNumber do
     createObject(i, windowWidth, windowHeight)
@@ -102,6 +113,12 @@ function Game.Update(dt)
     -- objects AI
     o.x = o.x + o.vx
     o.y = o.y + o.vy
+    
+    if Game.phase == "1D" then
+      o.x2 = o.x2 + o.vx
+      o.y2 = o.y2 + o.vy
+    end
+    
     if o.x > windowWidth + o.boundary or o.x < 0 - o.boundary or
        o.y < 0 - o.boundary or o.y > windowHeight + o.boundary then
         table.remove(listObjects, i)
@@ -125,7 +142,13 @@ function Game.Draw()
   for i = #listObjects, 1, -1 do
     local o = listObjects[i]
     
-    love.graphics.circle("fill", o.x, o.y, 5)
+    if Game.phase == "0D" then
+      love.graphics.circle("fill", o.x, o.y, o.circSize)
+    elseif Game.phase == "1D" then
+      love.graphics.line(o.x, o.y, o.x2, o.y2)
+    elseif Game.phase == "2D" then
+      -- ellipse, rectangle, polygon
+    end
     
   end
   
