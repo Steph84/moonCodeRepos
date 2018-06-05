@@ -4,7 +4,7 @@ local windowWidth, windowHeight
 local BlackHole = {}
 BlackHole.src = {}
 
-local objectNumber = 20
+local objectNumber = 10
 local listObjects = {}
 
 function createObject(id, windowWidth, windowHeight)
@@ -16,11 +16,11 @@ function createObject(id, windowWidth, windowHeight)
   item.y = windowHeight/2
   
   while item.x > 0 and item.x < windowWidth do
-    item.x = math.random(-25, windowWidth + 25)
+    item.x = math.random(-5, windowWidth + 5)
   end
   
   while item.y > 0 and item.y < windowHeight do
-    item.y = math.random(-25, windowHeight + 25)
+    item.y = math.random(-5, windowHeight + 5)
   end
   
   item.vx = 0
@@ -40,10 +40,19 @@ function createObject(id, windowWidth, windowHeight)
     item.y2 = math.random(item.y - item.lineSize, item.y + item.lineSize)
   elseif Game.phase == "2D" then
     item.size = 100
-    --item.
+    item.vertexNb = math.random(3, 5)
+    item.vertices = {}
+    table.insert(item.vertices, item.x)
+    table.insert(item.vertices, item.y)
+    while #item.vertices < (item.vertexNb * 2) do
+      local tempX = math.random(item.x - item.size, item.x + item.size)
+      table.insert(item.vertices, tempX)
+      local tempY = math.random(item.y - item.size, item.y + item.size)
+      table.insert(item.vertices, tempY)
+    end
   end
   
-  item.boundary = 50
+  item.boundary = 20
   
   table.insert(listObjects, item)
 end
@@ -51,7 +60,7 @@ end
 function Game.Load(GameSizeCoefficient, pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
-  Game.phase = "1D"
+  Game.phase = "2D"
   
   BlackHole.src = love.graphics.newImage("pictures/blackHole.png")
   BlackHole.x = windowWidth/2
@@ -86,7 +95,9 @@ function Game.Update(dt)
     end
   end
   
-  while #listObjects < objectNumber do createObject(#listObjects + 1, windowWidth, windowHeight) end
+  while #listObjects < objectNumber do
+    createObject(#listObjects + 1, windowWidth, windowHeight)
+  end
   
   -- blackHole movements
   if love.keyboard.isDown("down") then
@@ -111,22 +122,53 @@ function Game.Update(dt)
     local o = listObjects[i]
     
     -- objects AI
-    o.x = o.x + o.vx
-    o.y = o.y + o.vy
+    if Game.phase ~= "2D" then
+      o.x = o.x + o.vx
+      o.y = o.y + o.vy
+    end
     
     if Game.phase == "1D" then
       o.x2 = o.x2 + o.vx
       o.y2 = o.y2 + o.vy
     end
     
-    if o.x > windowWidth + o.boundary or o.x < 0 - o.boundary or
-       o.y < 0 - o.boundary or o.y > windowHeight + o.boundary then
-        table.remove(listObjects, i)
+    if Game.phase == "2D" then
+      for j = 1, #o.vertices do
+        --local coor = o.vertices[j]
+        if (j % 2 == 0) then
+          -- even == y
+          o.vertices[j] = o.vertices[j] + o.vx
+        else
+          -- odd == x
+          o.vertices[j] = o.vertices[j] + o.vy
+        end
+      end
     end
     
+    
     -- collision with blackHole
-    if math.abs(o.x - BlackHole.x) < 25 and math.abs(o.y - BlackHole.y) < 25 then
-      table.remove(listObjects, i)
+    if Game.phase == "2D" then
+      
+      if math.abs(o.vertices[1] - BlackHole.x) < 25 and math.abs(o.vertices[2] - BlackHole.y) < 25 then
+        table.remove(listObjects, i)
+      end
+      
+      if o.vertices[1] > windowWidth + o.boundary or o.vertices[1] < 0 - o.boundary or
+         o.vertices[2] < 0 - o.boundary or o.vertices[2] > windowHeight + o.boundary then
+          table.remove(listObjects, i)
+      end
+      
+    else
+    
+      if math.abs(o.x - BlackHole.x) < 25 and math.abs(o.y - BlackHole.y) < 25 then
+        table.remove(listObjects, i)
+      end
+      
+      if o.x > windowWidth + o.boundary or o.x < 0 - o.boundary or
+         o.y < 0 - o.boundary or o.y > windowHeight + o.boundary then
+          table.remove(listObjects, i)
+      end
+      
     end
     
   end
@@ -147,12 +189,15 @@ function Game.Draw()
     elseif Game.phase == "1D" then
       love.graphics.line(o.x, o.y, o.x2, o.y2)
     elseif Game.phase == "2D" then
-      -- ellipse, rectangle, polygon
+      love.graphics.polygon("fill", o.vertices)
+      love.graphics.print("x : "..o.vertices[1]..", y : "..o.vertices[2], o.vertices[1], o.vertices[2])
     end
     
   end
   
   --love.graphics.printf("angle : "..BlackHole.rotation, 50, 50, 200, "left")
+  love.graphics.printf("nbObjects : "..#listObjects, 50, 50, 200, "left")
+  
   love.graphics.setColor(0, 0, 0) -- black
   
 end
