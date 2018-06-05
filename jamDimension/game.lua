@@ -12,15 +12,22 @@ function createObject(id, windowWidth, windowHeight)
   local item = {}
   
   item.id = id
+  --item.nature = nature
+  item.x = windowWidth/2
+  item.y = windowHeight/2
   
-  item.x = math.random(100, windowWidth - 100)
-  item.y = math.random(100, windowHeight - 100)
-
-  item.dir = 0
-  while item.dir == 0 do item.dir = math.random(-1, 1) end
+  while item.x > 0 and item.x < windowWidth do
+    item.x = math.random(-25, windowWidth + 25)
+  end
   
+  while item.y > 0 and item.y < windowHeight do
+    item.y = math.random(-25, windowHeight + 25)
+  end
+  
+  item.vx = 0
   item.vy = 0
-  item.vx = item.dir *  math.random(1, 10)/10
+
+  while item.vx == 0 do item.vx = math.random(-10, 10)/10 end
   while item.vy == 0 do item.vy = math.random(-10, 10)/10 end
   
   item.scaleX = 1
@@ -41,6 +48,7 @@ function Game.Load(GameSizeCoefficient, pWindowWidth, pWindowHeight)
   BlackHole.picW = BlackHole.src:getWidth()
   BlackHole.picH = BlackHole.src:getHeight()
   BlackHole.rotation = 0
+  BlackHole.move = "forth"
 
   
   local i
@@ -52,7 +60,20 @@ end
 
 function Game.Update(dt)
   
-  BlackHole.rotation = BlackHole.rotation + 0.005
+  -- oscillation of the blackHole
+  if BlackHole.move == "forth" then
+    if BlackHole.rotation < 0.25 then
+      BlackHole.rotation = BlackHole.rotation + 0.005
+    else
+      BlackHole.move = "back"
+    end
+  else
+    if BlackHole.rotation > - 0.25 then
+      BlackHole.rotation = BlackHole.rotation - 0.005
+    else
+      BlackHole.move = "forth"
+    end
+  end
   
   while #listObjects < objectNumber do createObject(#listObjects + 1, windowWidth, windowHeight) end
   
@@ -74,18 +95,21 @@ function Game.Update(dt)
     BlackHole.x = BlackHole.x + BlackHole.speed
   end
   
-  -- objects AI
   local i
   for i = #listObjects, 1, -1 do
     local o = listObjects[i]
     
-    -- movement
+    -- objects AI
     o.x = o.x + o.vx
     o.y = o.y + o.vy
-    
     if o.x > windowWidth + o.boundary or o.x < 0 - o.boundary or
        o.y < 0 - o.boundary or o.y > windowHeight + o.boundary then
         table.remove(listObjects, i)
+    end
+    
+    -- collision with blackHole
+    if math.abs(o.x - BlackHole.x) < 25 and math.abs(o.y - BlackHole.y) < 25 then
+      table.remove(listObjects, i)
     end
     
   end
@@ -105,7 +129,9 @@ function Game.Draw()
     
   end
   
+  --love.graphics.printf("angle : "..BlackHole.rotation, 50, 50, 200, "left")
   love.graphics.setColor(0, 0, 0) -- black
+  
 end
   
 return Game
