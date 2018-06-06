@@ -10,6 +10,7 @@ Game.duration = 0
 Game.timeElapsed = 0
 Game.bilan = {0, 0, 0, 0}
 Game.score = 0
+local GameSizeCoefficient = 0
 
 function createObject(id, windowWidth, windowHeight, pNature)
   local item = {}
@@ -64,10 +65,12 @@ function createObject(id, windowWidth, windowHeight, pNature)
   table.insert(listObjects, item)
 end
 
-function Game.Load(GameSizeCoefficient, pWindowWidth, pWindowHeight)
+function Game.Load(pGameSizeCoefficient, pWindowWidth, pWindowHeight)
   windowWidth = pWindowWidth
   windowHeight = pWindowHeight
   Game.phase = 0
+  Game.objectNumber = Game.objectNumber * pGameSizeCoefficient
+  GameSizeCoefficient = pGameSizeCoefficient
   
   BlackHole.src = love.graphics.newImage("pictures/blackHole.png")
   BlackHole.x = windowWidth/2
@@ -216,7 +219,8 @@ function Game.Draw()
   love.graphics.setColor(255, 255, 255) -- white
   
   love.graphics.draw(BlackHole.src, BlackHole.x, BlackHole.y,
-                     BlackHole.rotation, 1, 1, BlackHole.picW/2, BlackHole.picH/2)
+                     BlackHole.rotation, GameSizeCoefficient, GameSizeCoefficient,
+                     BlackHole.picW/2, BlackHole.picH/2)
   
   local i
   for i = #listObjects, 1, -1 do
