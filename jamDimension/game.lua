@@ -8,7 +8,8 @@ local objectNumber = 10
 local listObjects = {}
 local bgMusic = {}
 Game.duration = 0
-Game.timeElapsed = 0
+Game.timeElapsed = 100
+Game.bilan = {0, 0, 0}
 
 function createObject(id, windowWidth, windowHeight, pNature)
   local item = {}
@@ -80,6 +81,7 @@ function Game.Load(GameSizeCoefficient, pWindowWidth, pWindowHeight)
   local i
   for i = 1, objectNumber do
     createObject(i, windowWidth, windowHeight)
+    Game.bilan[1] = Game.bilan[1] + 1
   end
   
   -- load the background music
@@ -92,13 +94,15 @@ function Game.Load(GameSizeCoefficient, pWindowWidth, pWindowHeight)
 end
 
 
-function Game.Update(dt)
+function Game.Update(dt, pGameState)
   
   -- manage the phases in relation to the time
   if Game.timeElapsed > 125 and Game.timeElapsed < 280 then
     Game.phase = 1
-  elseif Game.timeElapsed >= 280 then
+  elseif Game.timeElapsed >= 280 and Game.timeElapsed < Game.duration then
     Game.phase = 2
+  elseif Game.timeElapsed > Game.duration then
+    Game.phase = 3
   end
   
   
@@ -167,40 +171,44 @@ function Game.Update(dt)
       end
     end
     
-    
-    -- collision with blackHole
-    if Game.phase == 2 then
-      
-      if math.abs(o.vertices[1] - BlackHole.x) < 25 and math.abs(o.vertices[2] - BlackHole.y) < 25 then
-        table.remove(listObjects, i)
-      end
-      
-      if o.vertices[1] > windowWidth + o.boundary or o.vertices[1] < 0 - o.boundary or
-         o.vertices[2] < 0 - o.boundary or o.vertices[2] > windowHeight + o.boundary then
-          table.remove(listObjects, i)
-      end
-      
+    if Game.phase == 3 then
+      pGameState = "gameOver"
     else
-    
-      if math.abs(o.x - BlackHole.x) < 25 and math.abs(o.y - BlackHole.y) < 25 then
-        table.remove(listObjects, i)
-        if o.nature == Game.phase then -- if it is the good phase/dimension
-          createObject(#listObjects + 1, windowWidth, windowHeight, Game.phase + 1) -- ok
-        else
-          createObject(#listObjects + 1, windowWidth, windowHeight, 0) -- else create points
+      if o.nature == 2 then
+        if o.vertices[1] > windowWidth + o.boundary or o.vertices[1] < 0 - o.boundary or
+           o.vertices[2] < 0 - o.boundary or o.vertices[2] > windowHeight + o.boundary then
+            createObject(#listObjects + 1, windowWidth, windowHeight, o.nature) -- ok
+            table.remove(listObjects, i)
+        end
+      else
+        if math.abs(o.x - BlackHole.x) < 25 and math.abs(o.y - BlackHole.y) < 25 then
+          table.remove(listObjects, i)
+          if o.nature == Game.phase then -- if it is the good phase/dimension
+            createObject(#listObjects + 1, windowWidth, windowHeight, Game.phase + 1) -- ok
+          else
+            createObject(#listObjects + 1, windowWidth, windowHeight, 0) -- else create points
+          end
+        end
+        
+        if o.x > windowWidth + o.boundary or o.x < 0 - o.boundary or
+           o.y < 0 - o.boundary or o.y > windowHeight + o.boundary then
+            createObject(#listObjects + 1, windowWidth, windowHeight, o.nature) -- ok
+            table.remove(listObjects, i)
         end
       end
-      
-      if o.x > windowWidth + o.boundary or o.x < 0 - o.boundary or
-         o.y < 0 - o.boundary or o.y > windowHeight + o.boundary then
-          table.remove(listObjects, i)
-          createObject(#listObjects + 1, windowWidth, windowHeight, o.nature) -- ok
-      end
-      
     end
-    
   end
+  
+  
+  local m
+  Game.bilan = {0, 0, 0}
+  for m = 1, #listObjects do
+    local n = listObjects[m]
+    Game.bilan[n.nature + 1] = Game.bilan[n.nature + 1] + 1
+  end
+  
   Game.timeElapsed = Game.timeElapsed + dt
+  return pGameState
 end
 
 function Game.Draw()
@@ -219,14 +227,24 @@ function Game.Draw()
       love.graphics.line(o.x, o.y, o.x2, o.y2)
     elseif o.nature == 2 then
       love.graphics.polygon("fill", o.vertices)
-      love.graphics.print("x : "..o.vertices[1]..", y : "..o.vertices[2], o.vertices[1], o.vertices[2])
     end
     
   end
   
   --love.graphics.printf("angle : "..BlackHole.rotation, 50, 50, 200, "left")
+  if Game.phase ~= 3 then
+    love.graphics.printf("PHASE "..Game.phase, 10, 10, windowWidth, "left")
+    love.graphics.printf("Make the "..Game.phase.." dimension objects fall into the blackhole", 0, 10, windowWidth - 10, "right")
+
+    if (Game.timeElapsed > 125 and Game.timeElapsed < 135) or (Game.timeElapsed > 280 and Game.timeElapsed < 290) then
+      love.graphics.printf("You just gain another dimension !", 0, 100, windowWidth, "center", 0, 1, 1)
+    end
+  end
   
-  love.graphics.printf("PHASE "..Game.phase, 10, 10, windowWidth, "left")
+  local k
+  for k = 1, #Game.bilan do
+    love.graphics.printf("nature : "..(k-1).." nb : "..Game.bilan[k], 10 * k, 100 + 10 * k, windowWidth, "left")
+  end
   
   love.graphics.setColor(0, 0, 0) -- black
   

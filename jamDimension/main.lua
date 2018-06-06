@@ -29,7 +29,7 @@ end
 
 function love.update(dt)
   if gameState == "game" then
-    myGame.Update(dt)
+    gameState = myGame.Update(dt, gameState)
   end
 end
 
@@ -37,5 +37,7 @@ function love.draw()
   if gameState == "game" then
     myGame.Draw()
   end
-  
+  if gameState == "gameOver" then
+    
+  end
 end
